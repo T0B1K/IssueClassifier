@@ -1,6 +1,6 @@
 # IssueClassifier
 ## Repos crawled
-"- Automattic / wp-calypso,
+- Automattic / wp-calypso,
 - Horusiath / Akkling,
 - NativeScript / NativeScript,
 - NixOS / nixpkgs,
@@ -50,4 +50,4 @@
 - microsoft / botframework-solutions,
 - ocaml /ocaml,
 - polkadot-js / api,
-- spree /spree"
+- spree /spree
