@@ -49,12 +49,12 @@
 - Perl / perl5,
 - directus /api,
 - disease-sh /API,
+- flutter / flutter,
+- freeCodeCamp / freeCodeCamp,
 - istio /api,
 - microsoft / botframework-solutions,
 - ocaml /ocaml,
+- ohmyzsh / ohmyzsh,
 - polkadot-js / api,
-- spree /spree
-- ohmyzsh / ohmyzsh
+- spree /spree,
 - tensorflow / tensorflow
-- freeCodeCamp / freeCodeCamp
-- flutter / flutter
