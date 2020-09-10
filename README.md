@@ -51,3 +51,7 @@
 - ocaml /ocaml,
 - polkadot-js / api,
 - spree /spree
+- ohmyzsh / ohmyzsh
+- tensorflow / tensorflow
+- freeCodeCamp / freeCodeCamp
+- flutter / flutter
