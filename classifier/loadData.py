@@ -32,11 +32,10 @@ class DataPreprocessor:
             data=file.read()
         #we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents[:20])
+        return np.array(documents)
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
-        print("loading documents from classes")
         listOfDocuments = []
         for lblClass in self.labelClasses:
             path = "{}/{}.json".format(self.folderName, lblClass)
@@ -100,7 +99,6 @@ class DataPreprocessor:
 
     def findDocument(self, permutedIdx, category, justReturnIndex=False):
         docs = self.loadDataFromClasses(consoleOutput=False)
-        print(category)
         X, y = next(self.dataCategorie(docs, output=False))[1]
         catIdx = self.categories.index(category[0])
         permutation = self.reverseData[catIdx]
@@ -153,7 +151,7 @@ class DataPreprocessor:
         testedPart = list(map(lambda x: x+lenPred, range(lenPred)))
         classified = self.findDocument(testedPart, category, justReturnIndex=True)
         for x in classified:
-            antmap[x] = "✔"
+            antmap[x] = "✓"
         return antmap
 
     def saveWrongClassifiedToFile(self, filename, data):

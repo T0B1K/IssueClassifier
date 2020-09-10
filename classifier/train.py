@@ -79,7 +79,6 @@ for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData(labelClass
     print("ensemble-score:{}".format(np.mean(finalPrediction == y_test)))
     print("trained on: {}% == {} documents\ntested on: {} documents".format(trainingPercentage, X_train.shape[0], X_test.shape[0]))
     plt.show()
-    #saveWrongPredictions(y_test, finalPrediction, "wrongClassified.json")
 
     hue.createAntMapAndDocumentView(finalPrediction, y_test, X_train, [categories[catIDX]])
     catIDX += 1
