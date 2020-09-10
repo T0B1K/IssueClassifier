@@ -32,7 +32,7 @@ class DataPreprocessor:
             data=file.read()
         #we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents)
+        return np.array(documents[:20])
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -72,11 +72,11 @@ class DataPreprocessor:
     #it returns the training data normalized to tfidf and the vectorized test data
     def createFeatureVectors(self, X_train_documents, X_test_documents):
         #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
+        
         vectorizer = TfidfVectorizer(tokenizer=None,\
-            strip_accents=self.stripAccents, ngram_range=self.ngram,
-            stop_words=self.stopWords, lowercase=self.lowerCase,
-            min_df=2)
-            
+                strip_accents=self.stripAccents, ngram_range=self.ngram,
+                stop_words=self.stopWords, lowercase=self.lowerCase,
+                min_df=2)
         X_train_vectorized = vectorizer.fit_transform(X_train_documents)               #vectorisation
         X_test_vectorized = vectorizer.transform(X_test_documents)
         return X_train_vectorized, X_test_vectorized

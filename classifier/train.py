@@ -16,11 +16,11 @@ from sklearn.svm import SVC
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 #nltk.download('wordnet')
 
-import json 
 import seaborn as sn
 import pandas as pd
 
 import loadData
+import joblib
 
 labelClasses = ["bug", "enhancement", "api", "doku"]
 categories = [("bug", "enhancement"), ("api", "bug"), ("doku", "bug")]
@@ -32,14 +32,7 @@ estimators=[('MultinomialNB', MultinomialNB()), \
     ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))
     ]
 
-scores = []             #scores of the classifiers
-X_test_documents = None #the texts of the test documents
-documentTexts = None    #all the documents
 trainingPercentage=0.7  #This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
-permutation = None      #how the data was permuted
-
-numberToWordMapping = None
-tidvectorizer = None
 listOfPropab = []
 
 #This method is used to train the given classifiers
@@ -58,25 +51,30 @@ def trainClassifiers(X_train_featureVector, X_test_featureVector, y_train, y_tes
     return predictions
     
 
-#This method is used for ensemble learning, to get a majority decission based on the weights
-#it returns the decission of the classifiers
-def classifierVoting(classifiers, x_train, x_test, y_train ,voteStrength=None, cat = ("bug", "feature")):
-    ensemble = VotingClassifier(estimators,weights=voteStrength, voting='hard')
-    #fit the esemble model, after fitting the other ones
-    ensemble.fit(x_train, y_train)#test our model on the test data
-    plot_confusion_matrix(ensemble, x_test, y_test, normalize="all",display_labels=[cat[0],cat[1]])
-    return ensemble.predict(x_test)
-
 #---------------------
 hue = loadData.DataPreprocessor()
 
+folder = '../trainedClassifier/'
+newClassifier = True
 catIDX = 0
+
 for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData(labelClasses, categories):
     print("training on: {}% == {} documents\ntesting on: {} documents".format(trainingPercentage, X_train.shape[0], X_test.shape[0]))
     #classifierPredictions = trainClassifiers(X_train, X_test, y_train, y_test, estimators, categories[catIDX])
-
-    finalPrediction = classifierVoting(estimators, X_train, X_test, y_train)
-    scores = []
+    
+    #TODO speichere den TFIDF Vektorizer, da es sonst zu einem dimmension missmatch kommt
+    ensemble = None
+    nameAddon = "_{}-{}.joblib.pkl".format(categories[catIDX][0],categories[catIDX][1])
+    tmpName = folder + "ensembleClassifier" + nameAddon
+    if newClassifier:
+        ensemble = VotingClassifier(estimators, voting='hard')
+        ensemble.fit(X_train, y_train)#test our model on the test data
+        _ = joblib.dump(ensemble, tmpName, compress=9)
+        plot_confusion_matrix(ensemble, X_test, y_test, normalize="all",display_labels=[categories[catIDX][0],categories[catIDX][1]])
+    else:
+        ensemble = joblib.load(tmpName)
+    
+    finalPrediction = ensemble.predict(X_test)
 
     print("ensemble-score:{}".format(np.mean(finalPrediction == y_test)))
     print("trained on: {}% == {} documents\ntested on: {} documents".format(trainingPercentage, X_train.shape[0], X_test.shape[0]))
