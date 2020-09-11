@@ -90,7 +90,8 @@ class DataPreprocessor:
         X_unvectorized_train = X[rnd_idx[:threshold]]           #just normal array slices
         X_unvectorized_test = X[rnd_idx[threshold:]]
 
-        #print(X_unvectorized_train[3] == X[2])                 #mapping X_train[idx] = X[ rnd_idx[idx]] 
+        print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
+        print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
         self.reverseData.append(rnd_idx)                        # rnd_idx = reverseData[i][1]
 
         y_train = y[rnd_idx[:threshold]]
@@ -135,7 +136,7 @@ class DataPreprocessor:
             if classification[i] == 1:
                 classAs = category[0][1]
             classificationMistakes.append(classAs)
-            tmpInxList.append(i+lenPred)
+            tmpInxList.append(i+lenTrain)
 
         wrongClassifiedDocumentIdx = self.findDocument(tmpInxList, category, justReturnIndex=True)
         wrongClassifiedDocuments = self.findDocument(tmpInxList, category)
