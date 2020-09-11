@@ -28,7 +28,7 @@ class DataPreprocessor:
 
     # This method opens a file and returns all the documents
     def openFile(self, filename):
-        with open(filename, "r") as file:
+        with open(filename, "r",encoding='utf-8', errors='ignore') as file:
             data=file.read()
         #we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
@@ -76,7 +76,7 @@ class DataPreprocessor:
         
         vectorizer = TfidfVectorizer(tokenizer=None,\
                 strip_accents=self.stripAccents, ngram_range=self.ngram,
-                stop_words=self.stopWords, lowercase=self.lowerCase,
+                stop_words=self.stopWords,
                 min_df=2)
         X_train_vectorized = vectorizer.fit_transform(X_train_documents)               #vectorisation
         X_test_vectorized = vectorizer.transform(X_test_documents)
@@ -159,7 +159,7 @@ class DataPreprocessor:
     def saveWrongClassifiedToFile(self, filename, data):
         path = self.outputFolder+"/"+filename
         print(">\tsaving Wrong Classified Texts in {}".format(path))
-        f = open(path, "w")
+        f = open(path, "w",encoding='utf-8', errors='ignore')
         jsonData = []
         for classified, document in data:
             jsonData.append({
@@ -173,6 +173,6 @@ class DataPreprocessor:
     def saveAntmapToFile(self, filename, data):
         path = self.outputFolder+"/"+filename
         print(">\tsaving antmap in {}".format(path))
-        f = open(path, "w",encoding='utf-8')
+        f = open(path, "w",encoding='utf-8', errors='ignore')
         f.write(data)
         f.close()
