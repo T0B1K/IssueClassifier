@@ -32,7 +32,7 @@ class DataPreprocessor:
             data=file.read()
         #we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents)
+        return np.array(documents[:10])
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
