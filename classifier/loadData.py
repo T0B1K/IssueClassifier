@@ -7,12 +7,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import plot_confusion_matrix
 
 from nltk.stem import WordNetLemmatizer, PorterStemmer
-#nltk.download('wordnet')
+# nltk.download('wordnet')
 import json
 
+
 class DataPreprocessor:
-    def __init__(self, trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
-        numberToWordMapping = None, outputFolder="../auswertungen"):
+    def __init__(self, trainingPercentage=0.7, ngram=(1, 2),
+                 lowerCase=True, stripAccents=None, stopWords=None,
+                 numberToWordMapping=None, outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
         self.ngram = ngram
         self.stripAccents = stripAccents
@@ -27,8 +29,8 @@ class DataPreprocessor:
     # This method opens a file and returns all the documents
     def openFile(self, filename):
         with open(filename, "r") as file:
-            data=file.read()
-        #we just take all the "text" from the JSON
+            data = file.read()
+        # we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
         return np.array(documents)
 
@@ -58,44 +60,48 @@ class DataPreprocessor:
             y = np.append(np.zeros(minLen), np.ones(minLen))
             yield (name1, name2), (X, y)
 
-    #this is a stemmer
+    # this is a stemmer
     def stemmer(self, text):
         return [PorterStemmer().stem(token) for token in text]
 
-    #this is a lemmatizer
+    # this is a lemmatizer
     def lemmatizer(self, text):
         return [WordNetLemmatizer().lemmatize(token) for token in text]
 
-    #This method is used to convert the documents to actual numbers
-    #TODO maybe store
-    #it returns the training data normalized to tfidf and the vectorized test data
+    # This method is used to convert the documents to actual numbers
+    # TODO maybe store
+    # It returns the training data normalized to tfidf and the vectorized test data
     def createFeatureVectors(self, X_train_documents, X_test_documents):
-        #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        
-        vectorizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=self.stripAccents, ngram_range=self.ngram,
-                stop_words=self.stopWords,
-                min_df=2)
-        X_train_vectorized = vectorizer.fit_transform(X_train_documents)               #vectorisation
+        # the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
+
+        vectorizer = TfidfVectorizer(tokenizer=None,
+                                     strip_accents=self.stripAccents, ngram_range=self.ngram,
+                                     stop_words=self.stopWords, lowercase=self.lowerCase,
+                                     min_df=2)
+        X_train_vectorized = vectorizer.fit_transform(
+            X_train_documents)  # vectorisation
         X_test_vectorized = vectorizer.transform(X_test_documents)
         return X_train_vectorized, X_test_vectorized
-    
 
     def train_test_split(self, X, y):
         np.random.seed(2020)
-        threshold = int(self.trainingPercentage*X.shape[0])     #70% for training, 30% for testing - no cross validation yet
-        rnd_idx = np.random.permutation(X.shape[0])             #this is a random permutation
-        X_unvectorized_train = X[rnd_idx[:threshold]]           #just normal array slices
+        # 70% for training, 30% for testing - no cross validation yet
+        threshold = int(self.trainingPercentage*X.shape[0])
+        # this is a random permutation
+        rnd_idx = np.random.permutation(X.shape[0])
+        # just normal array slices
+        X_unvectorized_train = X[rnd_idx[:threshold]]
         X_unvectorized_test = X[rnd_idx[threshold:]]
 
-        print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
-        print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
-        self.reverseData.append(rnd_idx)                        # rnd_idx = reverseData[i][1]
+        # print(X_unvectorized_train[3] == X[2])                 #mapping X_train[idx] = X[ rnd_idx[idx]]
+        # rnd_idx = reverseData[i][1]
+        self.reverseData.append(rnd_idx)
 
         y_train = y[rnd_idx[:threshold]]
         y_test = y[rnd_idx[threshold:]]
-        #create feature vectors TODO maby store the create vector func
-        X_train, X_test = self.createFeatureVectors(X_unvectorized_train, X_unvectorized_test)
+        # create feature vectors TODO maby store the create vector func
+        X_train, X_test = self.createFeatureVectors(
+            X_unvectorized_train, X_unvectorized_test)
         return X_train, X_test, y_train, y_test
 
     def findDocument(self, permutedIdx, category, justReturnIndex=False):
@@ -112,19 +118,20 @@ class DataPreprocessor:
         self.labelClasses = labelClasses
         self.categories = categories
         docs = self.loadDataFromClasses()
-        for i,j in self.dataCategorie(docs):
+        for i, j in self.dataCategorie(docs):
             print(i)
-            yield self.train_test_split(j[0],j[1])
+            yield self.train_test_split(j[0], j[1])
 
     def createAntMapAndDocumentView(self, Xpredicted, yTest, Xtrain, category):
-        #idee: erst alles auf trainingsdata also "."; danach predicted len auf "-" und dann die fehler auf "X"
+        # idee: erst alles auf trainingsdata also "."; danach predicted len auf "-" und dann die fehler auf "X"
         if not Xpredicted.shape == yTest.shape:
             raise AttributeError("prediction shape doesn't match test shape")
         lenTrain = Xtrain.shape[0]
         lenPred = Xpredicted.shape[0]
         antmap = self.antmapPreprocessing(lenTrain, lenPred, category)
-        
-        classification = Xpredicted-yTest   #(1,1) || (0,0) => 0; (1,0)=> 1 = predicted category[1] but was category[0]; (0,1)=>-1 = pred. cat.[0] but was cat.[1]
+
+        # (1,1) || (0,0) => 0; (1,0)=> 1 = predicted category[1] but was category[0]; (0,1)=>-1 = pred. cat.[0] but was cat.[1]
+        classification = Xpredicted-yTest
         tmpInxList = []
         classificationMistakes = []
         for i in range(lenPred):
@@ -136,21 +143,26 @@ class DataPreprocessor:
             classificationMistakes.append(classAs)
             tmpInxList.append(i+lenTrain)
 
-        wrongClassifiedDocumentIdx = self.findDocument(tmpInxList, category, justReturnIndex=True)
+        wrongClassifiedDocumentIdx = self.findDocument(
+            tmpInxList, category, justReturnIndex=True)
         wrongClassifiedDocuments = self.findDocument(tmpInxList, category)
         for idx in wrongClassifiedDocumentIdx:
             antmap[idx] = "✖"
-        antmap[(int)(len(antmap)/2)] += "\n\n----  ▲ {} --------- {} ▼  ----\n\n".format(category[0][0], category[0][1])
+        antmap[(int)(len(antmap)/2)] += "\n\n----  ▲ {} --------- {} ▼  ----\n\n".format(
+            category[0][0], category[0][1])
         nameAddon = "_{}-{}".format(category[0][0], category[0][1])
-        
-        self.saveWrongClassifiedToFile("newWrongClassifiedDocuments{}.json".format(nameAddon), zip(classificationMistakes, wrongClassifiedDocuments))
-        self.saveAntmapToFile("newAntmap{}.txt".format(nameAddon), " ".join(antmap))
+
+        self.saveWrongClassifiedToFile("newWrongClassifiedDocuments{}.json".format(
+            nameAddon), zip(classificationMistakes, wrongClassifiedDocuments))
+        self.saveAntmapToFile("newAntmap{}.txt".format(
+            nameAddon), " ".join(antmap))
 
     def antmapPreprocessing(self, lenTrain, lenPred, category):
         antmap = ["_"]*(lenPred+lenTrain)
-        #train = [0, treshold]; test = (treshold, inf] (so we have to add lenPred onto the idx to get the testIdx)
+        # train = [0, treshold]; test = (treshold, inf] (so we have to add lenPred onto the idx to get the testIdx)
         testedPart = list(map(lambda x: x+lenPred, range(lenPred)))
-        classified = self.findDocument(testedPart, category, justReturnIndex=True)
+        classified = self.findDocument(
+            testedPart, category, justReturnIndex=True)
         for x in classified:
             antmap[x] = "✓"
         return antmap
@@ -168,10 +180,10 @@ class DataPreprocessor:
             # convert into JSON:
         f.write(json.dumps(jsonData))
         f.close()
-    
+
     def saveAntmapToFile(self, filename, data):
         path = self.outputFolder+"/"+filename
         print(">\tsaving antmap in {}".format(path))
-        f = open(path, "w",encoding='utf-8', errors='ignore')
+        f = open(path, "w", encoding='utf-8')
         f.write(data)
         f.close()
