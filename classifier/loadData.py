@@ -30,7 +30,7 @@ class DataPreprocessor:
             data=file.read()
         #we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents)
+        return np.array(documents[:4500])
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -71,11 +71,10 @@ class DataPreprocessor:
     #it returns the training data normalized to tfidf and the vectorized test data
     def createFeatureVectors(self, X_train_documents, X_test_documents):
         #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        
         vectorizer = TfidfVectorizer(tokenizer=None,\
                 strip_accents=self.stripAccents, ngram_range=self.ngram,
                 stop_words=self.stopWords,
-                min_df=2)
+                min_df=2, lowercase=None)
         X_train_vectorized = vectorizer.fit_transform(X_train_documents)               #vectorisation
         X_test_vectorized = vectorizer.transform(X_test_documents)
         return X_train_vectorized, X_test_vectorized
@@ -88,8 +87,8 @@ class DataPreprocessor:
         X_unvectorized_train = X[rnd_idx[:threshold]]           #just normal array slices
         X_unvectorized_test = X[rnd_idx[threshold:]]
 
-        print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
-        print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
+        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
+        #print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
         self.reverseData.append(rnd_idx)                        # rnd_idx = reverseData[i][1]
 
         y_train = y[rnd_idx[:threshold]]
