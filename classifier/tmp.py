@@ -15,5 +15,5 @@ def saveWrongClassifiedToFile(filename, data):
     f.write(json.dumps(jsonData))
     f.close()
 
-tmp = openFile("../documents/bug.json")
-saveWrongClassifiedToFile("../documents/bug.json", tmp)
+tmp = openFile("../documents/api.json")
+saveWrongClassifiedToFile("../documents/api.json", tmp)
