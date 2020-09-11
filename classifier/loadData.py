@@ -38,6 +38,8 @@ class DataPreprocessor:
     def loadDataFromClasses(self, consoleOutput=True):
         listOfDocuments = []
         for lblClass in self.labelClasses:
+            if consoleOutput:
+                print(lblClass)
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)
             listOfDocuments.append(tmp)
