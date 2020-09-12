@@ -51,8 +51,24 @@ def trainClassifiers(X_train_featureVector, X_test_featureVector, y_train, y_tes
     return predictions
     
 
+def prepareVectorizer(processor):
+        Vectorizer = None
+        try:
+            Vecotrizer = joblib.load('../vectorizer.vz', )
+        except :
+            train_Data = processor.loadDataFromClasses()
+            Vecotrizer = TfidfVectorizer(tokenizer=None,\
+                strip_accents=processor.stripAccents, ngram_range=processor.ngram,
+                stop_words=processor.stopWords,
+                min_df=2)
+            Vecotrizer.fit_transform(train_Data)
+            joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
+        processor.setVectorizer(Vectorizer)
 #---------------------
 hue = loadData.DataPreprocessor()
+hue.labelClasses = labelClasses
+
+prepareVectorizer(hue)
 
 folder = '../trainedClassifier/'
 newClassifier = True

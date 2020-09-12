@@ -9,8 +9,12 @@ from sklearn.metrics import plot_confusion_matrix
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 #nltk.download('wordnet')
 import json
+import joblib 
+
+
 
 class DataPreprocessor:
+
     def __init__(self, trainingPercentage=0.7, ngram = (1,2),
         lowerCase = True,stripAccents=None,stopWords=None, 
         numberToWordMapping = None, outputFolder="../auswertungen"):
@@ -25,6 +29,10 @@ class DataPreprocessor:
         self.categories = None
         self.folderName = "../documents"
         self.outputFolder = outputFolder
+        self.Vecotrizer = None
+
+    def setVectorizer (self, vectorizer):
+        self.Vecotrizer = vectorizer
 
     # This method opens a file and returns all the documents
     def openFile(self, filename):
@@ -73,13 +81,8 @@ class DataPreprocessor:
     #it returns the training data normalized to tfidf and the vectorized test data
     def createFeatureVectors(self, X_train_documents, X_test_documents):
         #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        
-        vectorizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=self.stripAccents, ngram_range=self.ngram,
-                stop_words=self.stopWords,
-                min_df=2)
-        X_train_vectorized = vectorizer.fit_transform(X_train_documents)               #vectorisation
-        X_test_vectorized = vectorizer.transform(X_test_documents)
+        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)    
+        X_test_vectorized = self.Vecotrizer.transform(X_test_documents) #vectorisation
         return X_train_vectorized, X_test_vectorized
     
 
