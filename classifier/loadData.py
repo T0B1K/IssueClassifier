@@ -168,7 +168,7 @@ class DataPreprocessor:
     def saveWrongClassifiedToFile(self, filename, data):
         path = self.outputFolder+"/"+filename
         print(">\tsaving Wrong Classified Texts in {}".format(path))
-        f = open(path, "w",encoding='utf-8', errors='ignore')
+        f = open(path, "w", encoding='utf-8', errors='ignore')
         jsonData = []
         for classified, document in data:
             jsonData.append({

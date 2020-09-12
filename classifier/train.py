@@ -19,7 +19,7 @@ from sklearn.svm import SVC
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 # nltk.download('wordnet')
 
-import loadData
+import classifier.loadData as loadData
 
 
 labelClasses = ["api", "doku"]#,"enhancement" "doku", "api", ]
@@ -28,7 +28,6 @@ estimators=[('MultinomialNB', MultinomialNB()), \
     ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
     ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
     ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
-    #('BernoulliNB', BernoulliNB()),#the worst one
     ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
 
 trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
@@ -69,8 +68,8 @@ for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData(labelClass
     
     if newClassifier:
         ensemble = VotingClassifier(estimators, voting='hard')
-        ensemble.fit(X_train, y_train)#test our model on the test data
-        _ = joblib.dump(ensemble, tmpName, compress=9)
+        ensemble.fit(X_train, y_train) # test our model on the test data
+        joblib.dump(ensemble, tmpName, compress=9)
         plot_confusion_matrix(ensemble, X_test, y_test, normalize="all",display_labels=[categories[catIDX][0],categories[catIDX][1]])
     else:
         ensemble = joblib.load(tmpName)
