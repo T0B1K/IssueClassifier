@@ -15,12 +15,10 @@ import joblib
 
 class DataPreprocessor:
 
-    def __init__(self, trainingPercentage=0.7, ngram = (1,2),
-        lowerCase = True,stripAccents=None,stopWords=None, 
+    def __init__(self, trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
         numberToWordMapping = None, outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
         self.ngram = ngram
-        self.lowerCase = lowerCase
         self.stripAccents = stripAccents
         self.stopWords = stopWords
         self.numberToWordMapping = numberToWordMapping
@@ -36,11 +34,11 @@ class DataPreprocessor:
 
     # This method opens a file and returns all the documents
     def openFile(self, filename):
-        with open(filename, "r",encoding='utf-8', errors='ignore') as file:
+        with open(filename, "r") as file:
             data=file.read()
         #we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents[:10])
+        return np.array(documents[:3000])
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -93,8 +91,8 @@ class DataPreprocessor:
         X_unvectorized_train = X[rnd_idx[:threshold]]           #just normal array slices
         X_unvectorized_test = X[rnd_idx[threshold:]]
 
-        print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
-        print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
+        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
+        #print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
         self.reverseData.append(rnd_idx)                        # rnd_idx = reverseData[i][1]
 
         y_train = y[rnd_idx[:threshold]]
@@ -168,7 +166,7 @@ class DataPreprocessor:
         for classified, document in data:
             jsonData.append({
                 "classified_as": classified,
-                "text": document.lower()
+                "text": document
             })
             # convert into JSON:
         f.write(json.dumps(jsonData))
