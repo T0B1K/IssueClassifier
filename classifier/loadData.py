@@ -9,22 +9,26 @@ from sklearn.metrics import plot_confusion_matrix
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 # nltk.download('wordnet')
 import json
+import joblib 
+
 
 
 class DataPreprocessor:
-    def __init__(self, trainingPercentage=0.7, ngram=(1, 2),
-                 lowerCase=True, stripAccents=None, stopWords=None,
-                 numberToWordMapping=None, outputFolder="../auswertungen"):
+
+    def __init__(self,labelClasses, categories ,trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
+        numberToWordMapping = None, outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
         self.ngram = ngram
         self.stripAccents = stripAccents
         self.stopWords = stopWords
         self.numberToWordMapping = numberToWordMapping
         self.reverseData = []
-        self.labelClasses = None
-        self.categories = None
+        self.labelClasses = labelClasses
+        self.categories = categories
         self.folderName = "../documents"
         self.outputFolder = outputFolder
+        self.Vecotrizer = self.prepareVectorizer()
+        
 
     # This method opens a file and returns all the documents
     def openFile(self, filename):
@@ -73,12 +77,8 @@ class DataPreprocessor:
     # It returns the training data normalized to tfidf and the vectorized test data
     def createFeatureVectors(self, X_train_documents, X_test_documents):
         #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        vectorizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=self.stripAccents, ngram_range=self.ngram,
-                stop_words=self.stopWords,
-                min_df=2, lowercase=None)
-        X_train_vectorized = vectorizer.fit_transform(X_train_documents)               #vectorisation
-        X_test_vectorized = vectorizer.transform(X_test_documents)
+        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)    
+        X_test_vectorized = self.Vecotrizer.transform(X_test_documents) #vectorisation
         return X_train_vectorized, X_test_vectorized
 
     def train_test_split(self, X, y):
@@ -185,3 +185,28 @@ class DataPreprocessor:
         f = open(path, "w", encoding='utf-8')
         f.write(data)
         f.close()
+    
+    def prepareVectorizer(self):
+        Vecotrizer = None
+        try:
+            Vecotrizer = joblib.load('../vectorizer.vz', )
+            return Vecotrizer
+        except :
+            train_Data = self.getAllDocs()
+            Vecotrizer = TfidfVectorizer(tokenizer=None,\
+                strip_accents=self.stripAccents,lowercase = None ,ngram_range=self.ngram,
+                stop_words=self.stopWords,
+                min_df=2)
+            Vecotrizer.fit_transform(train_Data)
+            joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
+            return Vecotrizer
+    
+    def getAllDocs(self):
+        listOfDocuments = np.empty()
+        for lblClass in self.labelClasses:
+            path = "{}/{}.json".format(self.folderName, lblClass)
+            tmp = self.openFile(path)
+            listOfDocuments = np.append(listOfDocuments,tmp)
+        print(listOfDocuments.shape)
+        return listOfDocuments
+

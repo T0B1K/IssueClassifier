@@ -21,8 +21,9 @@ from nltk.stem import WordNetLemmatizer, PorterStemmer
 
 import loadData
 
-labelClasses = ["bug", "doku"] #"enhancement", "api", ]
-categories = [("doku", "bug")] #,("api", "bug") , ("bug", "enhancement")]]
+
+labelClasses = ["api", "doku"]#,"enhancement" "doku", "api", ]
+categories = [("doku", "api")]#("bug", "enhancement"), ("doku", "bug"), ("api", "bug") , ]]
 estimators=[('MultinomialNB', MultinomialNB()), \
     ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
     ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
@@ -50,8 +51,8 @@ def trainClassifiers(X_train_featureVector, X_test_featureVector, y_train, y_tes
     return predictions
 
 #---------------------
+hue = loadData.DataPreprocessor(labelClasses,categories)
 
-hue = loadData.DataPreprocessor()
 
 folder = '../trainedClassifier/'
 newClassifier = True
