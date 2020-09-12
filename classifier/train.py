@@ -55,21 +55,21 @@ def prepareVectorizer(processor):
         Vectorizer = None
         try:
             Vecotrizer = joblib.load('../vectorizer.vz', )
+            return Vecotrizer
         except :
-            train_Data = processor.loadDataFromClasses()
+            train_Data = np.array(processor.loadDataFromClasses()[0])
             Vecotrizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=processor.stripAccents, ngram_range=processor.ngram,
+                strip_accents=processor.stripAccents,lowercase = None ,ngram_range=processor.ngram,
                 stop_words=processor.stopWords,
                 min_df=2)
             Vecotrizer.fit_transform(train_Data)
             joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
-        processor.setVectorizer(Vectorizer)
+            return Vecotrizer
 #---------------------
 hue = loadData.DataPreprocessor()
 hue.labelClasses = labelClasses
 
-prepareVectorizer(hue)
-
+hue.setVectorizer(prepareVectorizer(hue))
 folder = '../trainedClassifier/'
 newClassifier = True
 catIDX = 0
