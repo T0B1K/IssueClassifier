@@ -22,8 +22,8 @@ import pandas as pd
 import loadData
 import joblib
 
-labelClasses = ["bug", "doku"] #"enhancement", "api", ]
-categories = [("doku", "bug")] #,("api", "bug") , ("bug", "enhancement")]]
+labelClasses = ["bug", "doku"]#,"enhancement" "doku", "api", ]
+categories = [("doku", "bug")]#("bug", "enhancement"), ("doku", "bug"), ("api", "bug") , ]]
 estimators=[('MultinomialNB', MultinomialNB()), \
     ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
     ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
