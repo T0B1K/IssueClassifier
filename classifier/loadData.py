@@ -15,7 +15,7 @@ import joblib
 
 class DataPreprocessor:
 
-    def __init__(self, trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
+    def __init__(self,labelClasses, categories ,trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
         numberToWordMapping = None, outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
         self.ngram = ngram
@@ -23,14 +23,12 @@ class DataPreprocessor:
         self.stopWords = stopWords
         self.numberToWordMapping = numberToWordMapping
         self.reverseData = []
-        self.labelClasses = None
-        self.categories = None
+        self.labelClasses = labelClasses
+        self.categories = categories
         self.folderName = "../documents"
         self.outputFolder = outputFolder
-        self.Vecotrizer = None
-
-    def setVectorizer (self, vectorizer):
-        self.Vecotrizer = vectorizer
+        self.Vecotrizer = self.prepareVectorizer()
+        
 
     # This method opens a file and returns all the documents
     def openFile(self, filename):
@@ -178,3 +176,29 @@ class DataPreprocessor:
         f = open(path, "w",encoding='utf-8', errors='ignore')
         f.write(data)
         f.close()
+    
+    def prepareVectorizer(self):
+        Vecotrizer = None
+        try:
+            Vecotrizer = joblib.load('../vectorizer.vz', )
+            return Vecotrizer
+        except :
+            train_Data = self.getAllDocs()
+            Vecotrizer = TfidfVectorizer(tokenizer=None,\
+                strip_accents=self.stripAccents,lowercase = None ,ngram_range=self.ngram,
+                stop_words=self.stopWords,
+                min_df=2)
+            Vecotrizer.fit_transform(train_Data)
+            joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
+            return Vecotrizer
+    
+    def getAllDocs(self):
+        listOfDocuments = []
+        for lblClass in self.labelClasses:
+            path = "{}/{}.json".format(self.folderName, lblClass)
+            tmp = self.openFile(path)
+            listOfDocuments = listOfDocuments + tmp
+        nld = np.array(listOfDocuments)
+        print( "!!!!!!!!!!!!!!!!!! "+ " "+ nld.shape)
+        return listOfDocuments
+

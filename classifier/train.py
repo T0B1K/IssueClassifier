@@ -22,8 +22,8 @@ import pandas as pd
 import loadData
 import joblib
 
-labelClasses = ["bug", "doku"]#,"enhancement" "doku", "api", ]
-categories = [("doku", "bug")]#("bug", "enhancement"), ("doku", "bug"), ("api", "bug") , ]]
+labelClasses = ["api", "doku"]#,"enhancement" "doku", "api", ]
+categories = [("doku", "api")]#("bug", "enhancement"), ("doku", "bug"), ("api", "bug") , ]]
 estimators=[('MultinomialNB', MultinomialNB()), \
     ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
     ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
@@ -51,25 +51,10 @@ def trainClassifiers(X_train_featureVector, X_test_featureVector, y_train, y_tes
     return predictions
     
 
-def prepareVectorizer(processor):
-        Vectorizer = None
-        try:
-            Vecotrizer = joblib.load('../vectorizer.vz', )
-            return Vecotrizer
-        except :
-            train_Data = np.array(processor.loadDataFromClasses()[0])
-            Vecotrizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=processor.stripAccents,lowercase = None ,ngram_range=processor.ngram,
-                stop_words=processor.stopWords,
-                min_df=2)
-            Vecotrizer.fit_transform(train_Data)
-            joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
-            return Vecotrizer
 #---------------------
-hue = loadData.DataPreprocessor()
-hue.labelClasses = labelClasses
+hue = loadData.DataPreprocessor(labelClasses,categories)
 
-hue.setVectorizer(prepareVectorizer(hue))
+
 folder = '../trainedClassifier/'
 newClassifier = True
 catIDX = 0
