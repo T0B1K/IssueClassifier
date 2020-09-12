@@ -22,6 +22,7 @@ import pandas as pd
 import loadData
 import joblib
 
+
 labelClasses = ["api", "doku"]#,"enhancement" "doku", "api", ]
 categories = [("doku", "api")]#("bug", "enhancement"), ("doku", "bug"), ("api", "bug") , ]]
 estimators=[('MultinomialNB', MultinomialNB()), \

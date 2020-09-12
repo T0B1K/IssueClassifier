@@ -193,12 +193,11 @@ class DataPreprocessor:
             return Vecotrizer
     
     def getAllDocs(self):
-        listOfDocuments = []
+        listOfDocuments = np.empty()
         for lblClass in self.labelClasses:
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)
-            listOfDocuments = listOfDocuments + tmp
-        nld = np.array(listOfDocuments)
-        print( "!!!!!!!!!!!!!!!!!! "+ " "+ nld.shape)
+            listOfDocuments = np.append(listOfDocuments,tmp)
+        print(listOfDocuments.shape)
         return listOfDocuments
 
