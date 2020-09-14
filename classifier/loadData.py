@@ -15,7 +15,7 @@ import joblib
 
 class DataPreprocessor:
 
-    def __init__(self,labelClasses, categories ,trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
+    def __init__(self,labelClasses, categories, loadVec = True ,saveVec = False ,trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
         numberToWordMapping = None, outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
         self.ngram = ngram
@@ -27,7 +27,7 @@ class DataPreprocessor:
         self.categories = categories
         self.folderName = "../documents"
         self.outputFolder = outputFolder
-        self.Vecotrizer = self.prepareVectorizer()
+        self.Vecotrizer = self.prepareVectorizer(loadVec, saveVec)
         
 
     # This method opens a file and returns all the documents
@@ -186,23 +186,29 @@ class DataPreprocessor:
         f.write(data)
         f.close()
     
-    def prepareVectorizer(self):
+    def prepareVectorizer(self, loadVec,saveVec):
         Vecotrizer = None
-        try:
-            Vecotrizer = joblib.load('../vectorizer.vz', )
-            return Vecotrizer
-        except :
+        if loadVec == True:
+            try:
+                Vecotrizer = joblib.load('../vectorizer.vz', )
+                return Vecotrizer
+            except:
+                print("Vec could not be loaded")
+                raise
+                #prepareVectorizer(False,False)
+        else:
             train_Data = self.getAllDocs()
             Vecotrizer = TfidfVectorizer(tokenizer=None,\
                 strip_accents=self.stripAccents,lowercase = None ,ngram_range=self.ngram,
                 stop_words=self.stopWords,
                 min_df=2)
             Vecotrizer.fit_transform(train_Data)
-            joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
+            if saveVec == True:
+                joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
             return Vecotrizer
     
     def getAllDocs(self):
-        listOfDocuments = np.empty()
+        listOfDocuments = np.empty(0)
         for lblClass in self.labelClasses:
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)

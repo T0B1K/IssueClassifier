@@ -19,7 +19,7 @@ from sklearn.svm import SVC
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 # nltk.download('wordnet')
 
-import classifier.loadData as loadData
+import loadData
 
 
 labelClasses = ["api", "doku"]#,"enhancement" "doku", "api", ]
