@@ -1,29 +1,42 @@
 from hashlib import sha1
-from fastapi import FastAPI, BackgroundTasks, status
-from resources.models import Issue, HashedIssue
 from typing import List
-import uvicorn  # Only needed for debugging. Remove during deployment.
+
+from fastapi import BackgroundTasks, FastAPI, Header, status
+import uvicorn
+
+# Only needed for debugging. Remove during deployment.
+from resources.models import ClassifiedIssue, HashedIssue, Issue
+from server_celery.celery_app import app as server_celery_app
 
 app = FastAPI()
 
+'''
+BUG Callback not supported while RabbitMQ is set as celery
+result backend https://github.com/celery/celery/issues/3625
+'''
+def print_classify_response(classified_issue: dict):
+    print("Labels of issue with hash " + classified_issue["result"]["digest"] +
+          ": " + str(classified_issue["labels"]))
 
-def publish_to_broker(issue: HashedIssue):
-    '''
-    TODO implement publish functionality from server to MQTT topic
-    INFO Will most likely be implemented in a separate module for readability and cleaner code
-    Furhtermore, may not 
-    '''
-    print("Published issue with hash: " + issue.digest)
+
+async def send_issue_to_celery(hashed_issue: HashedIssue):
+    task_name = "tasks.classify"
+    task = server_celery_app.send_task(task_name, args=[hashed_issue.dict()])
+    print("Sent issue with hash " + hashed_issue.digest + " for classification.")
+    result = task.get(timeout=5)
+    print("Labels of issue with hash " + result["digest"] +
+          ": " + str(result["labels"]))
 
 
+
+# TODO properly handle errors (e.g. during validation check)
 @app.post("/classification/classify", response_model=List[HashedIssue], status_code=status.HTTP_202_ACCEPTED)
-async def receive_issues(issues: List[Issue], background_tasks: BackgroundTasks):
-    # TODO properly handle errors (e.g. during validation check)
+async def receive_issues(issues: List[Issue], background_tasks: BackgroundTasks, content_type: str = Header("application/json")):
     response: List[HashedIssue] = []
     for issue in issues:
         issue_hash = sha1((issue.body).encode('utf-8')).hexdigest()[:10]
         hashed_issue = HashedIssue(**issue.dict(), digest=issue_hash)
-        background_tasks.add_task(publish_to_broker, hashed_issue)
+        background_tasks.add_task(send_issue_to_celery, hashed_issue)
         response.append(hashed_issue)
     return response
 
