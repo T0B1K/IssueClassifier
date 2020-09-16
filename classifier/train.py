@@ -27,6 +27,20 @@ trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test
 
 pretrained = None #joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl') 
 
+"""
+                                 ╔══ ► Classifier 1  ═╗
+                                 ║                    ║
+[Queue] Daten ► Vectorizer  ═════╬══ ► Classifier 2  ═╬═ ► TODO Prediction bassierend auf den anderen [array prediction] ► [Queue]
+             [Vorverarbeitung]   ║                    ║
+                                 ╚══ ►    ...        ═╝
+[Nach der Vorverarbeitung können wir *später* eine Exchange Queue bauen]
+TODO: Queue Daten [überschreiben] das X_test, rufen die Funktion .predct(X_test) eines (pretrained) klassifiers auf
+        das von der Methode returnte wird wieder in eine queue geschrieben
+
+WORK in progress: Neue predict funktion, die automatisch alle labels bei predicted zurückgibt (also predict für eine TODO Überklasse)
+"""
+
+
 hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=False)
 hue2 = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained)
 
