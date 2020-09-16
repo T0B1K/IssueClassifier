@@ -4,29 +4,10 @@ from typing import List
 from fastapi import BackgroundTasks, FastAPI, Header, status
 import uvicorn
 
-# Only needed for debugging. Remove during deployment.
-from resources.models import ClassifiedIssue, HashedIssue, Issue
-from server_celery.celery_app import app as server_celery_app
+from web_server.models import HashedIssue, Issue
+from web_server.server_methods import send_issue_to_celery
 
 app = FastAPI()
-
-'''
-BUG Callback not supported while RabbitMQ is set as celery
-result backend https://github.com/celery/celery/issues/3625
-'''
-def print_classify_response(classified_issue: dict):
-    print("Labels of issue with hash " + classified_issue["result"]["digest"] +
-          ": " + str(classified_issue["labels"]))
-
-
-async def send_issue_to_celery(hashed_issue: HashedIssue):
-    task_name = "tasks.classify"
-    task = server_celery_app.send_task(task_name, args=[hashed_issue.dict()])
-    print("Sent issue with hash " + hashed_issue.digest + " for classification.")
-    result = task.get(timeout=5)
-    print("Labels of issue with hash " + result["digest"] +
-          ": " + str(result["labels"]))
-
 
 
 # TODO properly handle errors (e.g. during validation check)
