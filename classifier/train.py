@@ -2,20 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sn
-import nltk
 import joblib
-
-from sklearn import metrics
-from sklearn.metrics import confusion_matrix, precision_recall_fscore_support
-from sklearn.ensemble import RandomForestClassifier, VotingClassifier, BaggingClassifier
-from sklearn.naive_bayes import *
-from sklearn.linear_model import SGDClassifier, LogisticRegression
-from sklearn.model_selection import GridSearchCV
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import plot_confusion_matrix
-from sklearn.svm import SVC
-
 
 import loadData
 import LabelClassifier
