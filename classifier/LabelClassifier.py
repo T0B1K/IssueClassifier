@@ -38,8 +38,10 @@ class LabelClassifier:
     def generateFilename(self, folder = '../trainedClassifier/'):
         return "{}ensembleClassifier_{}-{}.joblib.pkl".format(folder, self.category[0], self.category[1])
 
-    def accuracy(self, X_test, y_test):
+    def accuracy(self, X_test, y_test, predicted):
         if self.trainedEstimator == None:
             raise AssertionError("Classifier has not been trained yet")
+        print("\n» ensemble-score:{}\n".format(np.mean(predicted == y_test)))
         plot_confusion_matrix(self.trainedEstimator, X_test, y_test, normalize="all",display_labels=[self.category[0],self.category[1]])
         plt.show()
+        
