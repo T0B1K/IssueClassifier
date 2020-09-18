@@ -7,6 +7,9 @@ import joblib
 import loadData
 import LabelClassifier
 
+from sklearn.decomposition import PCA
+from sklearn.decomposition import TruncatedSVD
+
 
 labelClasses = ["enhancement", "bug", "doku", "api", ]
 categories = [("enhancement", "bug"), ("doku", "bug"), ("api", "bug")]
@@ -24,7 +27,7 @@ TODO: Queue Daten [überschreiben] das X_test, rufen die Funktion .predct(X_test
 
 WORK in progress: Neue predict funktion, die automatisch alle labels bei predicted zurückgibt (also predict für eine TODO Überklasse)
 """
-"""
+
 pretrained = None #joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl') 
 
 hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=False)
@@ -34,9 +37,7 @@ X_train, X_test, y_train, y_test = next(hue.getTrainingAndTestingData(labelClass
 
 #hue2.trainClassifier(X_train, y_train)
 #hue2.accuracy(X_test, y_test)
-prediction = hue2.predict(X_test)
-"""
-
+#prediction = hue2.predict(X_test)
 
 def initEverything():
     catIDX = 0
