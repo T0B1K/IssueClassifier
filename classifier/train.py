@@ -11,8 +11,8 @@ from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 
 
-labelClasses = ["enhancement", "bug"]#, "doku", "api", ]
-categories = [["enhancement", "bug"], ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
+labelClasses = ["enhancement", "bug", "doku", "api", ]
+categories = [["enhancement", "bug"], ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
 
 """
@@ -41,7 +41,7 @@ WORK in progress: Neue predict funktion, die automatisch alle labels bei predict
 
 def initEverything():
     catIDX = 0
-    hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=False)
+    hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=True)
     for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData2():#labelClasses, categories):
         cat = categories[catIDX]
         print("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
@@ -54,21 +54,21 @@ def initEverything():
         catIDX += 1
 
 def predict(X_test):
-    pretrained = joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl') 
+    hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=True)
+    X = hue.Vecotrizer.transform(X_test)
+    pretrained = joblib.load('../trainedClassifier/ensembleClassifier_doku-bug.joblib.pkl') 
     dataProc = loadData.DataPreprocessor(labelClasses, categories, loadVec=True)
-    classifier = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained)
-    prediction = classifier.predict(X_test)
-    labels = map ( lambda element : "doku" if element == 0 else "api",prediction)
+    classifier = LabelClassifier.LabelClassifier(("doku", "bug"), pretrained=pretrained)
+    prediction = classifier.predict(X)
+    labels = np.array(list(map ( lambda element : "doku" if element == 0 else "bug",prediction)))
 
-    pretrained2 = joblib.load('../trainedClassifier/ensembleClassifier.joblib.pkl_doku-bug')
+    pretrained2 = joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl')
     classifier2 = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained2)
-    prediction2 = classifier2.predict(X_test)
-    labels2 = map ( lambda element : "doku" if element == 0 else "bug",prediction2)
-
-    all_labels = np.concatenate((labels,labels2), axis=0)
-    return np.concatenate((X_test,all_labels), axis=0)
+    prediction2 = classifier2.predict(X)
+    labels2 = np.array(list(map ( lambda element : "doku" if element == 0 else "api",prediction2)))
 
     
+    return list(zip(labels, labels2))
 
     #dummy für Aly
     #TODO lade alle classifier
@@ -77,4 +77,7 @@ def predict(X_test):
     #falls nicht doku, vergleiche restliche dinge vs api
     return None
 
-initEverything()
+#initEverything()
+
+tmp = predict(np.array(["hue1", "hue"]))
+print(tmp)

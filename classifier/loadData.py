@@ -27,7 +27,7 @@ class DataPreprocessor:
 
     # This method opens a file and returns all the documents
 
-    def openFile(self, filename, elementcount=5000):
+    def openFile(self, filename, elementcount=50):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
