@@ -68,7 +68,7 @@ def predict(X_test):
     labels2 = np.array(list(map ( lambda element : "doku" if element == 0 else "api",prediction2)))
 
     
-    return list(zip(labels, labels2))
+    return list(zip(X_test, labels, labels2))
 
     #dummy für Aly
     #TODO lade alle classifier
@@ -79,5 +79,5 @@ def predict(X_test):
 
 #initEverything()
 
-tmp = predict(np.array(["hue1", "hue"]))
+tmp = predict(np.array(["bug, hilf mir", "hue, resolved doku"]))
 print(tmp)
