@@ -72,16 +72,6 @@ class DataPreprocessor:
     def lemmatizer(self, text):
         return [WordNetLemmatizer().lemmatize(token) for token in text]
 
-    # This method is used to convert the documents to actual numbers
-    # TODO maybe store
-    # It returns the training data normalized to tfidf and the vectorized test data
-    def createFeatureVectors(self, X_train_documents, X_test_documents):
-        # the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)
-        X_test_vectorized = self.Vecotrizer.transform(
-            X_test_documents)  # vectorisation
-        return X_train_vectorized, X_test_vectorized
-
     def train_test_split(self, X, y):
         np.random.seed(2020)
         # 70% for training, 30% for testing - no cross validation yet
@@ -89,8 +79,11 @@ class DataPreprocessor:
         # this is a random permutation
         rnd_idx = np.random.permutation(X.shape[0])
         # just normal array slices
-        X_unvectorized_train = X[rnd_idx[:threshold]]
-        X_unvectorized_test = X[rnd_idx[threshold:]]
+
+        X_vectorrized = self.Vecotrizer.transform(X)
+        print("vectorrized size: {} Byte".format(X_vectorrized.itemsize))
+        X_train = X_vectorrized[rnd_idx[:threshold]]
+        X_test = X_vectorrized[rnd_idx[threshold:]]
 
         print("training on: {}% == {} documents\ntesting on: {} documents".format(
             self.trainingPercentage, threshold, X.shape[0]-threshold))
@@ -102,8 +95,6 @@ class DataPreprocessor:
         y_train = y[rnd_idx[:threshold]]
         y_test = y[rnd_idx[threshold:]]
         # create feature vectors TODO maby store the create vector func
-        X_train, X_test = self.createFeatureVectors(
-            X_unvectorized_train, X_unvectorized_test)
         return X_train, X_test, y_train, y_test
 
     def findDocument(self, permutedIdx, category, justReturnIndex=False):
@@ -230,7 +221,7 @@ class DataPreprocessor:
         docCount = round (sampleSize / length)
         docs = np.empty(0)
         for label in self.labelClasses:
-            print(docs.itemsize)
+            print("docs size: {} Byte".format(docs.itemsize))
             docs = np.append(self.pascalFunc(label, docCount),docs)
         return docs
         
@@ -249,7 +240,7 @@ class DataPreprocessor:
         classB = np.array([])
         for category in categorieArray[1:]:
             classB = np.append(classB, self.pascalFunc(category, dataPerClassInB))
-            print(classB.itemsize)
+            print("classB size = {} Byte".format(classB.itemsize))
 
         classBsize = classB.shape[0]
         y = np.ones(classBsize)
