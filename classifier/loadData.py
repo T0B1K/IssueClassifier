@@ -27,7 +27,7 @@ class DataPreprocessor:
 
     # This method opens a file and returns all the documents
 
-    def openFile(self, filename, elementcount=50):
+    def openFile(self, filename, elementcount=5000):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
@@ -179,7 +179,7 @@ class DataPreprocessor:
                 raise
                 # prepareVectorizer(False,False)
         else:
-            train_Data = self.getRandomDocuments(10000)
+            train_Data = self.getSplitedDocs(4000)
             Vecotrizer = TfidfVectorizer(tokenizer=None,
                                          strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
                                          stop_words=stopWords,
@@ -189,20 +189,20 @@ class DataPreprocessor:
                 joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
             return Vecotrizer
 
-    def pascalFunc(self, label, elementcount):
+    def getRandomDocs(self, label, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
         data = self.openFile(path, elementcount)
         self.randPerm.append(np.random.permutation(data.shape[0]))
         print(self.randPerm[-1])
         return data[self.randPerm[-1]]
 
-    def getRandomDocuments(self,sampleSize):
+    def getSplitedDocs(self,sampleSize):
         length = len(self.labelClasses)
         docCount = round (sampleSize / length)
         docs = np.empty(0)
         for label in self.labelClasses:
             print("docs size: {} Byte".format(docs.itemsize))
-            docs = np.append(self.pascalFunc(label, docCount),docs)
+            docs = np.append(self.getRandomDocs(label, docCount),docs)
         return docs
         
     def getTrainingAndTestingData2(self):
@@ -219,7 +219,7 @@ class DataPreprocessor:
         print("dataPerClassInB: {}".format(dataPerClassInB))
         classB = np.array([])
         for category in categorieArray[1:]:
-            classB = np.append(classB, self.pascalFunc(category, dataPerClassInB))
+            classB = np.append(classB, self.getRandomDocs(category, dataPerClassInB))
             print("classB size = {} Byte".format(classB.itemsize))
 
         classBsize = classB.shape[0]
@@ -227,7 +227,7 @@ class DataPreprocessor:
         # Important, A is appended after B, means X = [(b,...,n), a]
         if (classAsize > classBsize):
             y = np.append(y, np.zeros(classBsize))
-            X = np.append(self.pascalFunc(categorieArray[0], classBsize), classB)
+            X = np.append(self.getRandomDocs(categorieArray[0], classBsize), classB)
         else:
             y = np.append(y, np.zeros(classAsize))  # A might be smaller
             X = np.append(self.openFile(path), classB)
