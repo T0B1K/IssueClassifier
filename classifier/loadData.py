@@ -9,14 +9,13 @@ from sklearn.metrics import plot_confusion_matrix
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 # nltk.download('wordnet')
 import json
-import joblib 
-
+import joblib
 
 
 class DataPreprocessor:
 
-    def __init__(self,labelClasses, categories, loadVec = True ,saveVec = False , trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
-        numberToWordMapping = None, outputFolder="../auswertungen"):
+    def __init__(self, labelClasses, categories, loadVec=True, saveVec=False, trainingPercentage=0.7, ngram=(1, 2), stripAccents=None, stopWords=None,
+                 numberToWordMapping=None, outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
         self.ngram = ngram
         self.stripAccents = stripAccents
@@ -28,9 +27,9 @@ class DataPreprocessor:
         self.folderName = "../documents"
         self.outputFolder = outputFolder
         self.Vecotrizer = self.prepareVectorizer(loadVec, saveVec)
-        
 
     # This method opens a file and returns all the documents
+
     def openFile(self, filename):
         with open(filename, "r") as file:
             data = file.read()
@@ -76,9 +75,10 @@ class DataPreprocessor:
     # TODO maybe store
     # It returns the training data normalized to tfidf and the vectorized test data
     def createFeatureVectors(self, X_train_documents, X_test_documents):
-        #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)    
-        X_test_vectorized = self.Vecotrizer.transform(X_test_documents) #vectorisation
+        # the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
+        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)
+        X_test_vectorized = self.Vecotrizer.transform(
+            X_test_documents)  # vectorisation
         return X_train_vectorized, X_test_vectorized
 
     def train_test_split(self, X, y):
@@ -91,10 +91,12 @@ class DataPreprocessor:
         X_unvectorized_train = X[rnd_idx[:threshold]]
         X_unvectorized_test = X[rnd_idx[threshold:]]
 
-        print("training on: {}% == {} documents\ntesting on: {} documents".format(self.trainingPercentage, threshold, X.shape[0]-threshold))
-        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]]) 
-        #print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]] 
-        self.reverseData.append(rnd_idx)                        # rnd_idx = reverseData[i][1]
+        print("training on: {}% == {} documents\ntesting on: {} documents".format(
+            self.trainingPercentage, threshold, X.shape[0]-threshold))
+        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]])
+        # print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]]
+        # rnd_idx = reverseData[i][1]
+        self.reverseData.append(rnd_idx)
 
         y_train = y[rnd_idx[:threshold]]
         y_test = y[rnd_idx[threshold:]]
@@ -186,8 +188,8 @@ class DataPreprocessor:
         f = open(path, "w", encoding='utf-8')
         f.write(data)
         f.close()
-    
-    def prepareVectorizer(self, loadVec,saveVec):
+
+    def prepareVectorizer(self, loadVec, saveVec):
         Vecotrizer = None
         if loadVec == True:
             try:
@@ -196,26 +198,27 @@ class DataPreprocessor:
             except:
                 print("Vec could not be loaded")
                 raise
-                #prepareVectorizer(False,False)
+                # prepareVectorizer(False,False)
         else:
             train_Data = self.getAllDocs()
-            Vecotrizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=self.stripAccents,lowercase = None ,ngram_range=self.ngram,
-                stop_words=self.stopWords,
-                min_df=2)
+            Vecotrizer = TfidfVectorizer(tokenizer=None,
+                                         strip_accents=self.stripAccents, lowercase=None, ngram_range=self.ngram,
+                                         stop_words=self.stopWords,
+                                         min_df=2)
             Vecotrizer.fit_transform(train_Data)
             if saveVec == True:
-                joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
+                joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
             return Vecotrizer
-    
+
     def getAllDocs(self):
         listOfDocuments = np.empty(0)
         for lblClass in self.labelClasses:
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)
-            listOfDocuments = np.append(listOfDocuments,tmp)
+            listOfDocuments = np.append(listOfDocuments, tmp)
         print(listOfDocuments.shape)
         return listOfDocuments
+
 
     def pascalFunc(self,lable, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
@@ -234,19 +237,29 @@ class DataPreprocessor:
         minVal = min(for tpl[0] in lenghts)
         #UNFINISHED DO NOT USE 
 
+    def getTrainingAndTestingData2(self):
+        for cat in self.categories:
+            yield self.oneCategoryFunciton(cat)
 
+    def trainingAndTestingDataFromCategory(self, categorieArray):
+        # input: [a,b,...,c] a wird gegen b,...,c getestet.
+        path = "{}/{}.json".format(self.folderName, categorieArray[0])
+        classAsize = self.openFile(path).shape[0]
+        # TODO free memory
+        dataPerClassInB = (int)(classAsize/(len(categorieArray)-1))
+        classB = np.array([])
+        for category in categorieArray[1:]:
+            np.append(classB, self.pascalFunc(category, dataPerClassInB))
 
-
-
-
-
-
-
-
-
-
-    
-    
-
-    
-
+        classBsize = classB.shape[0]
+        y = np.ones(classBsize)
+        # Important, A is appended after B, means X = [(b,...,n), a]
+        if (classAsize > classBsize):
+            np.append(y, np.zeros(classBsize))
+            np.append(classB, self.pascalFunc(categorieArray[0], classBsize))
+        else:
+            np.append(y, np.zeros(classAsize))  # A might be smaller
+            np.append(classB, self.openFile(path))
+        print("A: {}\t B: {}\t res: {}\t y: {}".format(
+            classAsize, classBsize, classB.shape[0], y.shape[0]))
+        return self.train_test_split(classB, y)
