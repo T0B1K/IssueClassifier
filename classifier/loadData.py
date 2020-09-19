@@ -216,7 +216,37 @@ class DataPreprocessor:
             listOfDocuments = np.append(listOfDocuments,tmp)
         print(listOfDocuments.shape)
         return listOfDocuments
+
+    def pascalFunc(self,lable, elementcount):
+        path = "{}/{}.json".format(self.folderName, label)
+        tmp = self.openFile(path)
+        rnd = np.random.permutation(tmp)
+        min = min(len(rnd),elementcount)
+        rnd = rnd[:min]
+        return rnd
+
+    def onORother(self, labelClass,sampleSize):
+        lenghts = np.empty()
+        for element in filteredLabelClasse:
+            path = "{}/{}.json".format(self.folderName, element)
+            tmp = self.openFile(path)
+            lenghts = lenghts.append((len(temp),element))
+        minVal = min(for tpl[0] in lenghts)
+        #UNFINISHED DO NOT USE 
+
+
+
+
+
+
+
+
+
+
+
+
     
-    def pascalFunc(lable, elementcount):
-        return 42
+    
+
+    
 
