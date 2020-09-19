@@ -35,7 +35,7 @@ class DataPreprocessor:
             data = file.read()
         # we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents[:7000])
+        return np.array(documents)
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -219,25 +219,25 @@ class DataPreprocessor:
         print(listOfDocuments.shape)
         return listOfDocuments
 
-
-    def pascalFunc(self,lable, elementcount):
+    def pascalFunc(self, label, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
         tmp = self.openFile(path)
         rnd = np.random.permutation(tmp)
-        minVal = min(len(rnd),elementcount)
+        minVal = min(len(rnd), elementcount)
         rnd = rnd[:minVal]
         return rnd
 
-    def onORother(self,sampleSize):
+    def onORother(self, sampleSize):
         lenghts = np.empty()
-        
-        #UNFINISHED DO NOT USE 
+
+        # UNFINISHED DO NOT USE
 
     def getTrainingAndTestingData2(self):
         for cat in self.categories:
-            yield self.oneCategoryFunciton(cat)
+            yield self.trainingAndTestingDataFromCategory(cat)
 
     def trainingAndTestingDataFromCategory(self, categorieArray):
+        print("hue")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
         path = "{}/{}.json".format(self.folderName, categorieArray[0])
         classAsize = self.openFile(path).shape[0]
@@ -245,17 +245,18 @@ class DataPreprocessor:
         dataPerClassInB = (int)(classAsize/(len(categorieArray)-1))
         classB = np.array([])
         for category in categorieArray[1:]:
-            np.append(classB, self.pascalFunc(category, dataPerClassInB))
+            classB = np.append(classB, self.pascalFunc(category, dataPerClassInB))
+            print(classB.size)
 
         classBsize = classB.shape[0]
         y = np.ones(classBsize)
         # Important, A is appended after B, means X = [(b,...,n), a]
         if (classAsize > classBsize):
-            np.append(y, np.zeros(classBsize))
-            np.append(classB, self.pascalFunc(categorieArray[0], classBsize))
+            y = np.append(y, np.zeros(classBsize))
+            X = np.append(self.pascalFunc(categorieArray[0], classBsize), classB)
         else:
-            np.append(y, np.zeros(classAsize))  # A might be smaller
-            np.append(classB, self.openFile(path))
+            y = np.append(y, np.zeros(classAsize))  # A might be smaller
+            X = np.append(self.openFile(path), classB)
         print("A: {}\t B: {}\t res: {}\t y: {}".format(
-            classAsize, classBsize, classB.shape[0], y.shape[0]))
-        return self.train_test_split(classB, y)
+            classAsize, classBsize, X.shape[0], y.shape[0]))
+        return self.train_test_split(X, y)

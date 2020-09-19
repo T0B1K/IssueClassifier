@@ -12,7 +12,7 @@ from sklearn.decomposition import TruncatedSVD
 
 
 labelClasses = ["enhancement", "bug"]#, "doku", "api", ]
-categories = [("enhancement", "bug")]#, ("doku", "bug"), ("api", "bug")]
+categories = [["enhancement", "bug"], ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
 
 """
@@ -42,15 +42,15 @@ WORK in progress: Neue predict funktion, die automatisch alle labels bei predict
 def initEverything():
     catIDX = 0
     hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=False)
-    for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData(labelClasses, categories):
+    for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData2():#labelClasses, categories):
         cat = categories[catIDX]
-        print("\n--------- ( {}, {} ) ---------".format(cat[0],cat[1]))
+        print("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
         hue2 = LabelClassifier.LabelClassifier(cat)
         hue2.trainClassifier(X_train, y_train)
         prediction = hue2.predict(X_test)
         hue2.accuracy(X_test, y_test, prediction)
 
-        hue.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
+        #hue.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
         catIDX += 1
 
 def predict(X_test):
