@@ -224,17 +224,13 @@ class DataPreprocessor:
         path = "{}/{}.json".format(self.folderName, label)
         tmp = self.openFile(path)
         rnd = np.random.permutation(tmp)
-        min = min(len(rnd),elementcount)
-        rnd = rnd[:min]
+        minVal = min(len(rnd),elementcount)
+        rnd = rnd[:minVal]
         return rnd
 
-    def onORother(self, labelClass,sampleSize):
+    def onORother(self,sampleSize):
         lenghts = np.empty()
-        for element in filteredLabelClasse:
-            path = "{}/{}.json".format(self.folderName, element)
-            tmp = self.openFile(path)
-            lenghts = lenghts.append((len(temp),element))
-        minVal = min(for tpl[0] in lenghts)
+        
         #UNFINISHED DO NOT USE 
 
     def getTrainingAndTestingData2(self):
