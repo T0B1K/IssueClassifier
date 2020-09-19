@@ -54,6 +54,22 @@ def initEverything():
         catIDX += 1
 
 def predict(X_test):
+    pretrained = joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl') 
+    dataProc = loadData.DataPreprocessor(labelClasses, categories, loadVec=True)
+    classifier = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained)
+    prediction = classifier.predict(X_test)
+    labels = map ( lambda element : "doku" if element == 0 else "api",prediction)
+
+    pretrained2 = joblib.load('../trainedClassifier/ensembleClassifier.joblib.pkl_doku-bug')
+    classifier2 = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained2)
+    prediction2 = classifier2.predict(X_test)
+    labels2 = map ( lambda element : "doku" if element == 0 else "bug",prediction2)
+
+    all_labels = np.concatenate((labels,labels2), axis=0)
+    return np.concatenate((X_test,all_labels), axis=0)
+
+    
+
     #dummy für Aly
     #TODO lade alle classifier
     #Vergleiche bug, enhancement
