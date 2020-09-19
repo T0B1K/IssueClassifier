@@ -200,7 +200,7 @@ class DataPreprocessor:
                 raise
                 # prepareVectorizer(False,False)
         else:
-            train_Data = self.getAllDocs()
+            train_Data = self.getRandomDocuments(6000)
             Vecotrizer = TfidfVectorizer(tokenizer=None,
                                          strip_accents=self.stripAccents, lowercase=None, ngram_range=self.ngram,
                                          stop_words=self.stopWords,
@@ -219,6 +219,7 @@ class DataPreprocessor:
         print(listOfDocuments.shape)
         return listOfDocuments
 
+
     def pascalFunc(self, label, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
         tmp = self.openFile(path)
@@ -227,11 +228,14 @@ class DataPreprocessor:
         rnd = rnd[:minVal]
         return rnd
 
-    def onORother(self, sampleSize):
-        lenghts = np.empty()
-
-        # UNFINISHED DO NOT USE
-
+    def getRandomDocuments(self,sampleSize):
+        length = len(self.labelClasses)
+        docCount = round (sampleSize / length)
+        docs = np.empty(0)
+        for label in self.labelClasses:
+            docs = np.append(self.pascalFunc(label, docCount),docs)
+        return docs
+        
     def getTrainingAndTestingData2(self):
         for cat in self.categories:
             yield self.trainingAndTestingDataFromCategory(cat)
