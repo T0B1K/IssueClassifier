@@ -11,8 +11,8 @@ from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 
 
-labelClasses = ["enhancement", "bug", "doku", "api", ]
-categories = [("enhancement", "bug"), ("doku", "bug"), ("api", "bug")]
+labelClasses = ["enhancement", "bug"]#, "doku", "api", ]
+categories = [("enhancement", "bug")]#, ("doku", "bug"), ("api", "bug")]
 trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
 
 """
@@ -28,12 +28,12 @@ TODO: Queue Daten [überschreiben] das X_test, rufen die Funktion .predct(X_test
 WORK in progress: Neue predict funktion, die automatisch alle labels bei predicted zurückgibt (also predict für eine TODO Überklasse)
 """
 
-pretrained = None #joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl') 
+#pretrained = None #joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl') 
 
-hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=False)
-hue2 = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained)
+#hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=False)
+#hue2 = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained)
 
-X_train, X_test, y_train, y_test = next(hue.getTrainingAndTestingData(labelClasses, categories))
+#X_train, X_test, y_train, y_test = next(hue.getTrainingAndTestingData(labelClasses, categories))
 
 #hue2.trainClassifier(X_train, y_train)
 #hue2.accuracy(X_test, y_test)
