@@ -216,4 +216,7 @@ class DataPreprocessor:
             listOfDocuments = np.append(listOfDocuments,tmp)
         print(listOfDocuments.shape)
         return listOfDocuments
+    
+    def pascalFunc(lable, elementcount):
+        return 42
 
