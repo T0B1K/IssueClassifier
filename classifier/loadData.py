@@ -30,12 +30,13 @@ class DataPreprocessor:
 
     # This method opens a file and returns all the documents
 
-    def openFile(self, filename):
+    def openFile(self, filename, elementcount=7000):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
-        documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents)
+        documents = np.array(list(map(lambda entry: entry["text"], json.loads(data))))
+        return documents[:elementcount]
+        
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -200,7 +201,7 @@ class DataPreprocessor:
                 raise
                 # prepareVectorizer(False,False)
         else:
-            train_Data = self.getRandomDocuments(6000)
+            train_Data = self.getRandomDocuments(400)
             Vecotrizer = TfidfVectorizer(tokenizer=None,
                                          strip_accents=self.stripAccents, lowercase=None, ngram_range=self.ngram,
                                          stop_words=self.stopWords,
@@ -222,17 +223,14 @@ class DataPreprocessor:
 
     def pascalFunc(self, label, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
-        tmp = self.openFile(path)
-        rnd = np.random.permutation(tmp)
-        minVal = min(len(rnd), elementcount)
-        rnd = rnd[:minVal]
-        return rnd
+        return np.random.permutation(self.openFile(path, elementcount))
 
     def getRandomDocuments(self,sampleSize):
         length = len(self.labelClasses)
         docCount = round (sampleSize / length)
         docs = np.empty(0)
         for label in self.labelClasses:
+            print(docs.itemsize)
             docs = np.append(self.pascalFunc(label, docCount),docs)
         return docs
         
@@ -241,16 +239,17 @@ class DataPreprocessor:
             yield self.trainingAndTestingDataFromCategory(cat)
 
     def trainingAndTestingDataFromCategory(self, categorieArray):
-        print("hue")
+        print("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
         path = "{}/{}.json".format(self.folderName, categorieArray[0])
         classAsize = self.openFile(path).shape[0]
         # TODO free memory
         dataPerClassInB = (int)(classAsize/(len(categorieArray)-1))
+        print("dataPerClassInB: {}".format(dataPerClassInB))
         classB = np.array([])
         for category in categorieArray[1:]:
             classB = np.append(classB, self.pascalFunc(category, dataPerClassInB))
-            print(classB.size)
+            print(classB.itemsize)
 
         classBsize = classB.shape[0]
         y = np.ones(classBsize)
