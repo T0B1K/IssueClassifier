@@ -15,29 +15,56 @@ import joblib
 class DataPreprocessor:
 
     def __init__(self, labelClasses, categories, loadVec=True, saveVec=False, trainingPercentage=0.7, ngram=(1, 2), stripAccents=None, stopWords=None,
-                 numberToWordMapping=None, outputFolder="../auswertungen"):
+                  outputFolder="../auswertungen"):
         self.trainingPercentage = trainingPercentage
-        self.ngram = ngram
-        self.stripAccents = stripAccents
-        self.stopWords = stopWords
-        self.numberToWordMapping = numberToWordMapping
         self.reverseData = []
+        self.randPerm = []
         self.labelClasses = labelClasses
         self.categories = categories
         self.folderName = "../documents"
         self.outputFolder = outputFolder
-        self.Vecotrizer = self.prepareVectorizer(loadVec, saveVec)
+        self.Vecotrizer = self.prepareVectorizer(loadVec, saveVec, stripAccents, ngram, stopWords)
 
     # This method opens a file and returns all the documents
 
-    def openFile(self, filename, elementcount=7000):
+    def openFile(self, filename, elementcount=50):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
         documents = np.array(list(map(lambda entry: entry["text"], json.loads(data))))
         return documents[:elementcount]
-        
 
+    # this is a stemmer
+    def stemmer(self, text):
+        return [PorterStemmer().stem(token) for token in text]
+
+    # this is a lemmatizer
+    def lemmatizer(self, text):
+        return [WordNetLemmatizer().lemmatize(token) for token in text]
+
+    def train_test_split(self, X, y):
+        np.random.seed(2020)
+        # 70% for training, 30% for testing - no cross validation yet
+        threshold = int(self.trainingPercentage*X.shape[0])
+        # this is a random permutation
+        rnd_idx = np.random.permutation(X.shape[0])
+        # just normal array slices
+
+        X_vectorrized = self.Vecotrizer.transform(X)
+        X_train = X_vectorrized[rnd_idx[:threshold]]
+        X_test = X_vectorrized[rnd_idx[threshold:]]
+        print("training on: {}% == {} documents\ntesting on: {} documents".format(
+            self.trainingPercentage, threshold, X.shape[0]-threshold))
+        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]])
+        # print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]]
+        # rnd_idx = reverseData[i][1]
+        self.reverseData.append(rnd_idx)
+
+        y_train = y[rnd_idx[:threshold]]
+        y_test = y[rnd_idx[threshold:]]
+        # create feature vectors TODO maby store the create vector func
+        return X_train, X_test, y_train, y_test
+    """
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
         listOfDocuments = []
@@ -63,40 +90,8 @@ class DataPreprocessor:
             X = np.append(X1[:minLen], X2[:minLen])
             y = np.append(np.zeros(minLen), np.ones(minLen))
             yield (name1, name2), (X, y)
-
-    # this is a stemmer
-    def stemmer(self, text):
-        return [PorterStemmer().stem(token) for token in text]
-
-    # this is a lemmatizer
-    def lemmatizer(self, text):
-        return [WordNetLemmatizer().lemmatize(token) for token in text]
-
-    def train_test_split(self, X, y):
-        np.random.seed(2020)
-        # 70% for training, 30% for testing - no cross validation yet
-        threshold = int(self.trainingPercentage*X.shape[0])
-        # this is a random permutation
-        rnd_idx = np.random.permutation(X.shape[0])
-        # just normal array slices
-
-        X_vectorrized = self.Vecotrizer.transform(X)
-        print("vectorrized size: {} Byte".format(X_vectorrized.itemsize))
-        X_train = X_vectorrized[rnd_idx[:threshold]]
-        X_test = X_vectorrized[rnd_idx[threshold:]]
-
-        print("training on: {}% == {} documents\ntesting on: {} documents".format(
-            self.trainingPercentage, threshold, X.shape[0]-threshold))
-        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]])
-        # print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]]
-        # rnd_idx = reverseData[i][1]
-        self.reverseData.append(rnd_idx)
-
-        y_train = y[rnd_idx[:threshold]]
-        y_test = y[rnd_idx[threshold:]]
-        # create feature vectors TODO maby store the create vector func
-        return X_train, X_test, y_train, y_test
-
+    
+    #TODO adapt to new changes
     def findDocument(self, permutedIdx, category, justReturnIndex=False):
         docs = self.loadDataFromClasses(consoleOutput=False)
         X, y = next(self.dataCategorie(docs, output=False))[1]
@@ -106,14 +101,6 @@ class DataPreprocessor:
         if not justReturnIndex:
             returnvalue = [X[idx] for idx in returnvalue]
         return returnvalue
-
-    def getTrainingAndTestingData(self, labelClasses, categories):
-        self.labelClasses = labelClasses
-        self.categories = categories
-        docs = self.loadDataFromClasses()
-        for i, j in self.dataCategorie(docs):
-            print(i)
-            yield self.train_test_split(j[0], j[1])
 
     def createAntMapAndDocumentView(self, Xpredicted, yTest, Xtrain, category):
         # idee: erst alles auf trainingsdata also "."; danach predicted len auf "-" und dann die fehler auf "X"
@@ -180,8 +167,8 @@ class DataPreprocessor:
         f = open(path, "w", encoding='utf-8')
         f.write(data)
         f.close()
-
-    def prepareVectorizer(self, loadVec, saveVec):
+    """
+    def prepareVectorizer(self, loadVec, saveVec, stripAccents, ngram, stopWords):
         Vecotrizer = None
         if loadVec == True:
             try:
@@ -192,29 +179,22 @@ class DataPreprocessor:
                 raise
                 # prepareVectorizer(False,False)
         else:
-            train_Data = self.getRandomDocuments(400)
+            train_Data = self.getRandomDocuments(10000)
             Vecotrizer = TfidfVectorizer(tokenizer=None,
-                                         strip_accents=self.stripAccents, lowercase=None, ngram_range=self.ngram,
-                                         stop_words=self.stopWords,
+                                         strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
+                                         stop_words=stopWords,
                                          min_df=2)
             Vecotrizer.fit_transform(train_Data)
             if saveVec == True:
                 joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
             return Vecotrizer
 
-    def getAllDocs(self):
-        listOfDocuments = np.empty(0)
-        for lblClass in self.labelClasses:
-            path = "{}/{}.json".format(self.folderName, lblClass)
-            tmp = self.openFile(path)
-            listOfDocuments = np.append(listOfDocuments, tmp)
-        print(listOfDocuments.shape)
-        return listOfDocuments
-
-
     def pascalFunc(self, label, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
-        return np.random.permutation(self.openFile(path, elementcount))
+        data = self.openFile(path, elementcount)
+        self.randPerm.append(np.random.permutation(data.shape[0]))
+        print(self.randPerm[-1])
+        return data[self.randPerm[-1]]
 
     def getRandomDocuments(self,sampleSize):
         length = len(self.labelClasses)
@@ -251,6 +231,4 @@ class DataPreprocessor:
         else:
             y = np.append(y, np.zeros(classAsize))  # A might be smaller
             X = np.append(self.openFile(path), classB)
-        print("A: {}\t B: {}\t res: {}\t y: {}".format(
-            classAsize, classBsize, X.shape[0], y.shape[0]))
         return self.train_test_split(X, y)
