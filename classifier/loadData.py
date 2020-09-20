@@ -27,7 +27,7 @@ class DataPreprocessor:
 
     # This method opens a file and returns all the documents
 
-    def openFile(self, filename, elementcount=50):
+    def openFile(self, filename, elementcount=4000):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
@@ -64,6 +64,7 @@ class DataPreprocessor:
         y_test = y[rnd_idx[threshold:]]
         # create feature vectors TODO maby store the create vector func
         return X_train, X_test, y_train, y_test
+    
     """
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -192,9 +193,8 @@ class DataPreprocessor:
     def getRandomDocs(self, label, elementcount):
         path = "{}/{}.json".format(self.folderName, label)
         data = self.openFile(path, elementcount)
-        self.randPerm.append(np.random.permutation(data.shape[0]))
-        print(self.randPerm[-1])
-        return data[self.randPerm[-1]]
+        perm = np.random.permutation(data.shape[0]) 
+        return data[perm]
 
     def getSplitedDocs(self,sampleSize):
         length = len(self.labelClasses)

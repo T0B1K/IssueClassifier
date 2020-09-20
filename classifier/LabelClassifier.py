@@ -12,6 +12,7 @@ from sklearn.linear_model import SGDClassifier, LogisticRegression
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.svm import SVC
+from sklearn.kernel_approximation import RBFSampler
 
 class LabelClassifier:
     def __init__(self, categoryToClassify, pretrained = None, folder2Save = '../trainedClassifier/'):
@@ -23,13 +24,17 @@ class LabelClassifier:
         ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
         self.fileLocation = self.generateFilename(folder2Save)
+        self.stackingEstimator = None
+        self.rbfKernel = None
     
     def trainClassifier(self, X_train, y_train, saveToFile = True):
         print("> triaining classifier")
         self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
-        self.trainedEstimator.fit(X_train, y_train) # test our model on the test data
+        voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
         joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
         print("> dumped Classifier: {}".format(self.fileLocation))
+
+        self.trainKernelApproxSvgOnVoting(voting, y_train)
 
     def predict(self, X_test):
         print("> predicting")
@@ -44,4 +49,16 @@ class LabelClassifier:
         print("\n► ensemble-score:{}\n".format(np.mean(predicted == y_test)))
         plot_confusion_matrix(self.trainedEstimator, X_test, y_test, normalize="all",display_labels=[self.category[0],self.category[1]])
         plt.show()
-        
+    
+    def trainKernelApproxSvgOnVoting(self, X_predicted, y):
+        print("training stacking classifier")
+        self.rbfKernel = RBFSampler(gamma=1, random_state=1)
+        X_features = self.rbfKernel.fit_transform(X_predicted)
+        self.stackingEstimator = SGDClassifier(max_iter=1000)
+        self.stackingEstimator.fit(X_features, y)
+        print("stacking-classifier: " + str(self.stackingEstimator.score(X_features, y)))
+    
+    def stackingPrediction(self, X_test):
+        voting = self.trainedEstimator.transform(X_test)
+        influencedVoting = self.rbfKernel.transform(voting)
+        return self.stackingEstimator.predict(influencedVoting)

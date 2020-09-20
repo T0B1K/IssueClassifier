@@ -12,7 +12,7 @@ from sklearn.decomposition import TruncatedSVD
 
 
 labelClasses = ["enhancement", "bug", "doku", "api", ]
-categories = [["enhancement", "bug"], ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
+categories = [["enhancement", "bug"]]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
 
 """
@@ -50,6 +50,8 @@ def initEverything():
         prediction = hue2.predict(X_test)
         hue2.accuracy(X_test, y_test, prediction)
 
+        prediction2 = hue2.stackingPrediction(X_test)
+        print("► ensemble-score:{}\n".format(np.mean(prediction2 == y_test)))
         #hue.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
         catIDX += 1
 
@@ -82,6 +84,6 @@ def predict(X_test):
 
 initEverything()
 
-tmp = predict(np.array(["bug, hilf mir", "hue, resolved doku"]))
-for i in tmp:
-    print(i)
+#tmp = predict(np.array(["bug, hilf mir", "hue, resolved doku"]))
+#for i in tmp:
+#    print(i)
