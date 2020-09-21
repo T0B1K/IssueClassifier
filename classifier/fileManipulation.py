@@ -20,3 +20,24 @@ class FileManipulation:
         # we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))[:elementcount]
         return np.array(documents)
+    
+    def saveAntmapToFile(self, filename, data):
+        path = self.outputFolder+"/"+filename
+        print(">\tsaving antmap in {}".format(path))
+        f = open(path, "w",encoding='utf-8', errors='ignore')
+        f.write(data)
+        f.close()
+    
+    def saveWrongClassifiedToFile(self, filename, data):
+        path = self.outputFolder+"/"+filename
+        print(">\tsaving Wrong Classified Texts in {}".format(path))
+        f = open(path, "w",encoding='utf-8', errors='ignore')
+        jsonData = []
+        for classified, document in data:
+            jsonData.append({
+                "classified_as": classified,
+                "text": document
+            })
+            # convert into JSON:
+        f.write(json.dumps(jsonData))
+        f.close()
