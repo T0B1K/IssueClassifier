@@ -27,13 +27,21 @@ class LabelClassifier:
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainClassifier(self, X_train, y_train, saveToFile = True):
+    def trainClassifier(self, X_train, y_train,loadClassifier = True, saveToFile = True):
         print("> training classifier")
-        self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
-        voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
-        joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
-        print("> dumped Classifier: {}".format(self.fileLocation))
-
+        if loadClassifier == True:
+            try:
+                self.trainedEstimator = joblib.load(self.fileLocation)
+            except:
+                print("Classifier could not be loaded")
+                raise
+                
+        else:
+            self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
+            voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
+            if saveToFile == True:
+                joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
+            print("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
     def predict(self, X_test):
