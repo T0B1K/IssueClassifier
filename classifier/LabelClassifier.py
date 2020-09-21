@@ -28,7 +28,7 @@ class LabelClassifier:
         self.rbfKernel = None
     
     def trainClassifier(self, X_train, y_train, saveToFile = True):
-        print("> triaining classifier")
+        print("> training classifier")
         self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
         voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
         joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)

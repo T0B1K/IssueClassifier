@@ -11,32 +11,16 @@ from nltk.stem import WordNetLemmatizer, PorterStemmer
 import json
 import joblib 
 
+import vectorizer
 
 
-class DataPreprocessor:
-
-    def __init__(self,labelClasses, categories ,trainingPercentage=0.7, ngram = (1,2), stripAccents=None,stopWords=None, 
-        numberToWordMapping = None, outputFolder="../auswertungen"):
-        self.trainingPercentage = trainingPercentage
-        self.ngram = ngram
-        self.stripAccents = stripAccents
-        self.stopWords = stopWords
-        self.numberToWordMapping = numberToWordMapping
+class AntMapPreprozessor(vectorizer.Vectorrizer):
+    def __init__(self,labelClasses, categories):
+        super().__init__()
         self.reverseData = []
         self.labelClasses = labelClasses
         self.categories = categories
-        self.folderName = "../documents"
-        self.outputFolder = outputFolder
-        self.Vecotrizer = self.prepareVectorizer()
-        
-
-    # This method opens a file and returns all the documents
-    def openFile(self, filename):
-        with open(filename, "r") as file:
-            data=file.read()
-        #we just take all the "text" from the JSON
-        documents = list(map(lambda entry: entry["text"], json.loads(data)))
-        return np.array(documents[:3000])
+        self.trainingPercentage = 0.7
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -63,24 +47,6 @@ class DataPreprocessor:
             X = np.append(X1[:minLen], X2[:minLen])
             y = np.append(np.zeros(minLen), np.ones(minLen))
             yield (name1, name2), (X, y)
-
-    #this is a stemmer
-    def stemmer(self, text):
-        return [PorterStemmer().stem(token) for token in text]
-
-    #this is a lemmatizer
-    def lemmatizer(self, text):
-        return [WordNetLemmatizer().lemmatize(token) for token in text]
-
-    #This method is used to convert the documents to actual numbers
-    #TODO maybe store
-    #it returns the training data normalized to tfidf and the vectorized test data
-    def createFeatureVectors(self, X_train_documents, X_test_documents):
-        #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)    
-        X_test_vectorized = self.Vecotrizer.transform(X_test_documents) #vectorisation
-        return X_train_vectorized, X_test_vectorized
-    
 
     def train_test_split(self, X, y):
         np.random.seed(2020)
@@ -176,22 +142,7 @@ class DataPreprocessor:
         f = open(path, "w",encoding='utf-8', errors='ignore')
         f.write(data)
         f.close()
-    
-    def prepareVectorizer(self):
-        Vecotrizer = None
-        try:
-            Vecotrizer = joblib.load('../vectorizer.vz', )
-            return Vecotrizer
-        except :
-            train_Data = self.getAllDocs()
-            Vecotrizer = TfidfVectorizer(tokenizer=None,\
-                strip_accents=self.stripAccents,lowercase = None ,ngram_range=self.ngram,
-                stop_words=self.stopWords,
-                min_df=2)
-            Vecotrizer.fit_transform(train_Data)
-            joblib.dump(Vecotrizer, '../vectorizer.vz' ,compress = 9)
-            return Vecotrizer
-    
+
     def getAllDocs(self):
         listOfDocuments = np.empty()
         for lblClass in self.labelClasses:

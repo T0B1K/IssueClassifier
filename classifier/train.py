@@ -10,9 +10,11 @@ import LabelClassifier
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 
+import loadDataAntmap
 
-labelClasses = ["enhancement", "bug", "doku", "api", ]
-categories = [["enhancement", "bug"]]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
+
+labelClasses = ["enhancement", "bug"]#, "doku", "api", ]
+categories = [("enhancement", "bug")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
 
 """
@@ -38,6 +40,18 @@ WORK in progress: Neue predict funktion, die automatisch alle labels bei predict
 #hue2.trainClassifier(X_train, y_train)
 #hue2.accuracy(X_test, y_test)
 #prediction = hue2.predict(X_test)
+
+amp = loadDataAntmap.AntMapPreprozessor(labelClasses, categories)
+catIDX = 0
+
+for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData(labelClasses, categories):
+    cat = categories[catIDX]
+    hue2 = LabelClassifier.LabelClassifier(cat)
+    hue2.trainClassifier(X_train, y_train)
+    prediction = hue2.predict(X_test)
+    amp.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
+    catIDX += 1
+
 
 def initEverything():
     catIDX = 0
@@ -82,7 +96,7 @@ def predict(X_test):
     #falls nicht doku, vergleiche restliche dinge vs api
 
 
-initEverything()
+#initEverything()
 
 #tmp = predict(np.array(["bug, hilf mir", "hue, resolved doku"]))
 #for i in tmp:
