@@ -18,22 +18,33 @@ class LabelClassifier:
     def __init__(self, categoryToClassify, pretrained = None, folder2Save = '../trainedClassifier/'):
         self.category = categoryToClassify
         self.estimators = estimators=[('MultinomialNB', MultinomialNB()), \
-            ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
-            ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
-            ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
-            ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
+        ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
+        ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
+        ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
+        ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
         self.fileLocation = self.generateFilename(folder2Save)
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainClassifier(self, X_train, y_train, saveToFile = True):
+    def trainClassifier(self, X_train, y_train,loadClassifier = True, saveToFile = True):
         print("> training classifier")
-        self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
-        voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
-        joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
-        print("> dumped Classifier: {}".format(self.fileLocation))
-
+        voting = None
+        if loadClassifier == True:
+            try:
+                self.trainedEstimator = joblib.load(self.fileLocation)
+                voting = joblib.load('../trainedClassifier/VotingClassifier')
+            except:
+                print("Classifier could not be loaded")
+                raise
+                
+        else:
+            self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
+            voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
+            if saveToFile == True:
+                joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
+                joblib.dump(voting, '../trainedClassifier/VotingClassifier', compress=9)
+            print("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
     def predict(self, X_test):
