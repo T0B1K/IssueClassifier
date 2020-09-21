@@ -48,6 +48,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             y = np.append(np.zeros(minLen), np.ones(minLen))
             yield (name1, name2), (X, y)
 
+    #TODO fix this code duplicate from other class
     def train_test_split(self, X, y):
         np.random.seed(2020)
         threshold = int(self.trainingPercentage*X.shape[0])     #70% for training, 30% for testing - no cross validation yet
@@ -121,27 +122,6 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         for x in classified:
             antmap[x] = "✓"
         return antmap
-
-    def saveWrongClassifiedToFile(self, filename, data):
-        path = self.outputFolder+"/"+filename
-        print(">\tsaving Wrong Classified Texts in {}".format(path))
-        f = open(path, "w",encoding='utf-8', errors='ignore')
-        jsonData = []
-        for classified, document in data:
-            jsonData.append({
-                "classified_as": classified,
-                "text": document
-            })
-            # convert into JSON:
-        f.write(json.dumps(jsonData))
-        f.close()
-    
-    def saveAntmapToFile(self, filename, data):
-        path = self.outputFolder+"/"+filename
-        print(">\tsaving antmap in {}".format(path))
-        f = open(path, "w",encoding='utf-8', errors='ignore')
-        f.write(data)
-        f.close()
 
     def getAllDocs(self):
         listOfDocuments = np.empty()

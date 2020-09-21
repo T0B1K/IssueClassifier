@@ -18,10 +18,10 @@ class LabelClassifier:
     def __init__(self, categoryToClassify, pretrained = None, folder2Save = '../trainedClassifier/'):
         self.category = categoryToClassify
         self.estimators = estimators=[('MultinomialNB', MultinomialNB()), \
-        ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
-        ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
-        ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
-        ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
+            ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
+            ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
+            ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
+            ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
         self.fileLocation = self.generateFilename(folder2Save)
         self.stackingEstimator = None
