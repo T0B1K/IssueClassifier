@@ -33,7 +33,7 @@ class LabelClassifier:
         if loadClassifier == True:
             try:
                 self.trainedEstimator = joblib.load(self.fileLocation)
-                voting = joblib.load('../classifier/VotingClassifier')
+                voting = joblib.load('../trainedClassifier/VotingClassifier')
             except:
                 print("Classifier could not be loaded")
                 raise
@@ -43,7 +43,7 @@ class LabelClassifier:
             voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
             if saveToFile == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
-                joblib.dump(voting, '../classifier/VotingClassifier', compress=9)
+                joblib.dump(voting, '../trainedClassifier/VotingClassifier', compress=9)
             print("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
