@@ -30,14 +30,6 @@
                 }
                 if(bool === false) {
                     result.push('{"text":' + json[i].substring(0, (json[i].lastIndexOf('}')) + 1));
-                    
-                    /* if(json[i].charAt(json[i].length-2) !== '}'){
-                        result.push('{"text":' + json[i].substring(0, json[i].length-2));
-                    }else if(json[i].charAt(json[i].length-2) !== ',') {
-                        result.push('{"text":' + json[i].substring(0, json[i].length-3));
-                    } else {
-                        result.push('{"text":' + json[i].substring(0, json[i].length-1));
-                    }*/
                 }
             }
 
