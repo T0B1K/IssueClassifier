@@ -62,7 +62,7 @@
 - xtermjs / xterm.js,
 - zmb3 / spotify,
 - zulip / zulip,
-- **TODO ADD** phpmyadmin / phpmyadmin,
+- **TODO ADD**  wagtail / wagtail,
 - Perl / perl5,
 - directus /api,
 - disease-sh /API,
@@ -75,3 +75,6 @@
 - polkadot-js / api,
 - spree /spree,
 - tensorflow / tensorflow
+- pytorch / pytorch
+- moby / moby
+- cli / cli
