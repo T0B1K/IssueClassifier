@@ -1,0 +1,406 @@
+class: feature   predicted: feature     score: 0.998279153726242
+<!--
+If you want to propose a new algorithm, please refer first to the scikit-learn
+inclusion criterion:
+https://scikit-learn.org/stable/faq.html#what-are-the-inclusion-criteria-for-new-algorithms
+-->
+
+#### Describe the workflow you want to enable
+
+#### Describe your proposed solution
+
+#### Describe alternatives you've considered, if relevant
+
+#### Additional context
+
+class: feature   predicted: feature     score: 0.9977577863683282
+Dealing with breakpoints and re-positioning elements, we always face problems with spacing. In one of my projects ( https://github.com/vinpac/base-kit ) I've created a margin-framework that work with breakpoints to solve this and it's been great. So I'm here to suggest this feature.
+
+Example:
+
+```
+<div className="col-lg mg-md-bottom-1 col-fill">
+  <div className="pull-xs-left pull-lg-none mg-lg-bottom-1">
+    <a  href="" className="text-weight-semibold text-accent">
+      <i className="fa fa-location-arrow mg-xs-right-2" />
+      United States
+    </a>
+  </div>
+  <div className="pull-xs-left pull-lg-none mg-xs-left-3 mg-lg-left-none">
+    <a href="" className="text-weight-semibold text-accent">
+      <i className="fa fa-comment mg-xs-right-2" />
+      English
+    </a>
+  </div>
+</div>
+```
+
+---
+
+_variables.scss
+
+```
+$margin-horizontal: .5rem .8rem 1.25rem !default;
+$margin-vertical: 1rem 2rem 2.5rem !default;
+```
+
+_margin-framework.scss
+
+```
+@mixin make-margins($position, $margin-list, $breakpoints: $grid-breakpoints) {
+  @each $breakpoint in map-keys($breakpoints) {
+    @include media-breakpoint-up($breakpoint, $breakpoints) {
+      .mg-#{$breakpoint}-#{$position}-none {
+        margin-#{$position}: 0 !important;
+      }
+
+      @for $i from 1 through length($margin-list) {
+        .mg-#{$breakpoint}-#{$position}-#{$i} {
+          margin-#{$position}: nth($margin-list, $i);
+        }
+      }
+    }
+  }
+}
+```
+
+_margin.scss
+
+```
+@include make-margins(left, $margin-horizontal);
+@include make-margins(right, $margin-horizontal);
+@include make-margins(top, $margin-vertical);
+@include make-margins(bottom, $margin-vertical);
+
+.no-margin {
+  margin: 0 !important;
+}
+```
+
+class: feature   predicted: feature     score: 0.9972221606837558
+<!--
+If you want to propose a new algorithm, please refer first to the scikit-learn
+inclusion criterion:
+https://scikit-learn.org/stable/faq.html#what-are-the-inclusion-criteria-for-new-algorithms
+-->
+
+#### Describe the workflow you want to enable / Describe your proposed solution
+add an `base_estimator` argument to GradientBoostingRegressor/Classifier and HistGradientBoostingRegressor/Classifier, allowing them to do gradient boosting on any sklearn base estimator that 
+supports weights, while also supporting GradientBoostingRegressor like early stopping, custom objective functions, and early stopping.
+
+#### Describe alternatives you've considered, if relevant
+[sklearn.ensemble.AdaBoostClassifier](https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html) supports specifying an arbitrary base_estimator It'd be pretty cool to have that for GradientBoostingRegressor/Classifier and HistGradientBoostingRegressor/Classifier
+
+#### Additional context
+
+class: feature   predicted: feature     score: 0.9971786436725792
+<!--
+If you want to propose a new algorithm, please refer first to the scikit-learn
+inclusion criterion:
+https://scikit-learn.org/stable/faq.html#what-are-the-inclusion-criteria-for-new-algorithms
+-->
+
+#### Describe the workflow you want to enable
+
+[Heart Disease Dataset](http://archive.ics.uci.edu/ml/datasets/Heart+Disease)
+This dataset contains 13 attributes and labels of heart disease from 303 participants from Cleveland.
+
+This dataset featured in many ML and DS tutorials, one of them, [StatQuest with Josh Starmer](https://www.youtube.com/watch?v=q90UDEgYqeI&t=460s) (a famous machine learning youtube channel). It would be great for the community to have this dataset in scikit-learn.
+
+#### Describe your proposed solution
+Add `load_heart_disease()` in [sklearn/datasets](https://github.com/scikit-learn/scikit-learn/blob/master/sklearn/datasets/_base.py)
+
+#### Additional context
+Useful for playing with `Decision tree`, `Random Forest`, etc. and occupy less memory **(20kb)**
+
+If it's a good idea then please let me know so, I can make PR.
+class: feature   predicted: feature     score: 0.9965064107343057
+<!--
+If you want to propose a new algorithm, please refer first to the scikit-learn
+inclusion criterion:
+https://scikit-learn.org/stable/faq.html#what-are-the-inclusion-criteria-for-new-algorithms
+-->
+
+#### Describe the workflow you want to enable
+
+Calculating the ERR metric - http://olivier.chapelle.cc/pub/err.pdf (2009. currently 706 citations). Compared to nDCG at https://opensourceconnections.com/blog/2019/12/09/demystifying-ndcg-and-err/
+
+#### Describe your proposed solution
+
+Add this algorithm with the same API as [sklearn.metrics.ncdg_score](https://scikit-learn.org/stable/modules/generated/sklearn.metrics.ndcg_score.html#sklearn.metrics.ndcg_score)
+
+#### Describe alternatives you've considered, if relevant
+
+Implement it myself, include another library such as http://rankeval.isti.cnr.it/docs/rankeval.metrics.html.
+- other libraries use different APIs
+- other libraries may have questionable support or quality control
+
+#### Additional context
+
+
+
+class: feature   predicted: feature     score: 0.9947007519806921
+<!--
+If you want to propose a new algorithm, please refer first to the scikit-learn
+inclusion criterion:
+https://scikit-learn.org/stable/faq.html#what-are-the-inclusion-criteria-for-new-algorithms
+-->
+
+#### * Workflow:
+1- Consider `make_scorer()` below for a **clustering** metric:
+```
+from sklearn.metrics import homogeneity_score, make_scorer
+
+def score_func(y_true, y_pred, **kwargs):
+    return homogeneity_score(y_true, y_pred)
+scorer = make_scorer(score_func)
+```
+2- Consider the simple method **optics()**:
+```
+# "optics" algorithm for clustering
+# ---
+def optics(data, labels):
+    # data: A dataframe with two columns (x, y)
+    preds = None
+    base_opt = OPTICS()
+    grid_search_params = {"min_samples":np.arange(10),
+                          "metric":["cityblock", "cosine", "euclidean", "l1", "l2", "manhattan"],
+                          "cluster_method":["xi", "dbscan"],
+                          "algorithm":["auto", "ball_tree", "kd_tree", "brute"]}
+
+    grid_search_cv = GridSearchCV(estimator=base_opt,
+                                  param_grid=grid_search_params,
+                                  scoring=scorer)
+
+    grid_search_cv.fit(data)
+    opt = grid_search_cv.best_estimator_
+    opt.fit(data)
+    preds = opt.labels_
+
+    # return clusters corresponding to (x, y) pairs according to "optics" algorithm
+    return preds
+```
+Running the `optics()` led to this error:
+**`TypeError: _score() missing 1 required positional argument: 'y_true'`**
+
+Even by using `grid_search_cv.fit(data, labels)` instead of `grid_search_cv.fit(data)`, another exception rised:
+**`AttributeError: 'OPTICS' object has no attribute 'predict'`**
+
+---
+
+**_I thinks we cannot use `make_scorer()` with a `GridSearchCV` for a clustering task._**
+
+---
+#### * Proposed solution:
+The `fit()` method of `GridSearchCV` automatically handles the type of the estimator which passed to its constructor, for example, for a clustering estimator it considers `labels_` instead of 
+`predict()` for scoring.
+
+class: feature   predicted: feature     score: 0.9942314834655782
+<!--
+If you want to propose a new algorithm, please refer first to the scikit-learn
+inclusion criterion:
+https://scikit-learn.org/stable/faq.html#what-are-the-inclusion-criteria-for-new-algorithms
+-->
+
+#### Would like to add feature scaling in support vector regression model
+
+#### We need to add the code of feature scaling to standardize the data for faster processing.
+
+#### Describe alternatives you've considered, if relevant
+
+#### Additional context
+
+class: feature   predicted: feature     score: 0.9939627374701911
+I really need to have a pulldown panel. And I can't imagine I'm the only one, so this is a feature request.
+
+Bootstrap currently only supports a pulldown **menu**, but if you want to put other HTML 'things' in there, like a table or panel the layout is completely off. You can do some things with little forms in the navbar, but that is also not what I want.
+
+I did some small experiments with using a popover too, but it really doesn't seem to work. I found some external libraries, but the funny thing is that the one that came closest to what I want, actually crashes hard with Bootstrap (3)'s styling. So I'm trying to fix that now
+https://github.com/claviska/jquery-dropdown
+
+Perhaps you have another suggestion, or can give usability reasons why I actually wouldn't want to do this. Otherwise I hope you would seriously consider this!
+
+class: feature   predicted: feature     score: 0.9939070407796488
+Creating off page navigation and off page panels has required me to use negative positioning. 
+
+Looks like these mixins spit out classes (only?) to enable me to use `@extend .push-md-2` for example.
+
+```
+@mixin make-col-offset($size, $columns: $grid-columns) {
+  margin-left: percentage($size / $columns);
+}
+
+@mixin make-col-push($size, $columns: $grid-columns) {
+  left: if($size > 0, percentage($size / $columns), auto);
+}
+
+@mixin make-col-pull($size, $columns: $grid-columns) {
+  right: if($size > 0, percentage($size / $columns), auto);
+}
+```
+I can use `@include make-col-push(2)` directly, but I'd like to specify here `@include make-col-push(sm, 2)` but that doesn't work. [Feature request for that]
+
+Continuing on, I want to be able to use negative positioning, so in the same vein use `@include make-col-push(sm, -2)` (minus symbol), but the mixin looks at only calculating the position if it's greater than 0, otherwise making it default to 'auto'.
+
+Now, I am able to do this using the `make-col-offset` mixin and multiplying by a negative `grid-columns` number gives me the abilty to minus things by 12/17/Whatever/48/etc columns. Mucho useful. For example:
+
+```
+.off-canvas {
+  @include make-col-offset(-3);
+}
+```
+Outputs:
+```
+.off-canvas {
+  margin-left: -25%;
+}
+```
+
+Now, the only drawback to this again is when designing for responsive views that have different column widths at different viewport sizes, so going back to that $size parameter. It would be great to be able to do the following:
+```
+.off-canvas {
+  @include make-col-offset(sm, -3);
+  @include make-col-offset(md, -4);
+  @include make-col-offset(lg, -5);
+}
+```
+
+Right now, I'm doing the following as a workaround:
+```
+    @include media-breakpoint-up(xs) {
+      &.secondary {
+        @include make-col-offset(-8);
+      }
+    }
+    @include media-breakpoint-up(sm) {
+      &.secondary {
+        @include make-col-offset(-4);
+      }
+    }
+    @include media-breakpoint-up(md) {
+      &.secondary {
+        @include make-col-offset(-3);
+      }
+    }
+```
+
+Thoughts welcomed,
+D
+class: feature   predicted: feature     score: 0.9931547968843613
+Hi,
+
+regarding to http://getbootstrap.com/css/#forms-control-validation, on "With optional icons".
+
+I know you recommend to adapt the css "top" value when the input group doesn't contains a label.
+
+But I was wondering if that could not be easily included to the BS core by having a label with "sr-only" or "hidden" class, then you could do something like:
+
+/**_BEGIN**_/
+/\* SASS _/
+.has-feedback .control-label{
+    &.sr-only,
+    &.hidden, // This should include .hidden-lg, .hidden-sm, etc
+    &.hide{
+        ~ .form-control-feedback{
+            top: 0;
+        }
+    }
+}
+/_***_END**_**/
+
+I solved this issue by adding that code to my projects. Just that. A little suggestion for a general solution for everyone.
+
+PS: Nice work with BS. Really appreciated.
+
+Regards
+
+-------------------------------
+5       additional
+6       algorithm
+6       algorithms
+4       alternatives
+4       considered
+5       context
+6       criteria
+6       criterion
+5       enable
+6       faq
+7       html
+8       https
+6       inclusion
+6       learn
+6       new
+6       org
+6       propose
+5       proposed
+6       refer
+4       relevant
+6       scikit
+6       solution
+6       stable
+5       ve
+8       want
+5       workflow
+2       base
+2       breakpoint
+2       col
+5       com
+2       default
+3       example
+4       feature
+3       github
+3       great
+2       grid
+4       include
+2       left
+3       lg
+3       make
+2       margin
+2       md
+2       media
+2       mixin
+2       position
+2       positioning
+2       projects
+2       pull
+2       right
+4       work
+2       xs
+4       add
+2       argument
+2       estimator
+2       generated
+5       like
+2       modules
+4       sklearn
+2       supports
+2       contains
+3       http
+2       know
+2       labels
+2       useful
+2       12
+2       control
+2       currently
+2       different
+2       libraries
+2       metric
+2       metrics
+2       support
+3       use
+2       auto
+2       columns
+2       consider
+2       data
+2       required
+3       using
+2       code
+2       need
+3       doesn
+2       forms
+2       little
+2       really
+2       request
+2       suggestion
+2       things
+2       sm

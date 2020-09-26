@@ -1,0 +1,412 @@
+5       android
+5       browser
+5       card
+5       chrome
+4       com
+5       description
+4       dev
+5       device
+5       explorer
+5       firefox
+3       github
+5       graphics
+5       hardware
+5       https
+5       internet
+5       ios
+10      js
+7       linux
+6       macos
+5       os
+9       problem
+5       requirements
+3       src
+10      version
+5       vr
+10      windows
+4       11
+3       string
+5       32
+5       64
+5       affected
+5       bit
+6       bug
+5       code
+4       comment
+5       core
+4       demonstrates
+5       dependencies
+5       details
+4       external
+3       failed
+4       free
+4       keeping
+5       known
+5       module
+5       node
+5       output
+5       platform
+5       possible
+5       provide
+5       reporting
+5       simple
+5       specify
+5       subsystem
+5       template
+5       thank
+5       uname
+5       unix
+3       x86_64
+3       cc
+
+
+
+
+------------------------------------------------------------------------------------------------------
+
+
+
+
+class: bug       predicted: bug score: 0.9996083996300325
+##### Description of the problem
+
+[`Scene.d.ts`](https://github.com/mrdoob/three.js/blob/dev/src/scenes/Scene.d.ts) missing type of [`dispose`](https://threejs.org/docs/#api/en/scenes/Scene.dispose) method.
+
+##### Three.js version
+
+- [ ] Dev
+- [x] r104
+- [ ] ...
+
+##### Browser
+
+- [x] All of them
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Internet Explorer
+
+##### OS
+
+- [x] All of them
+- [ ] Windows
+- [ ] macOS
+- [ ] Linux
+- [ ] Android
+- [ ] iOS
+
+##### Hardware Requirements (graphics card, VR Device, ...)
+N/A
+class: bug       predicted: bug score: 0.9995116014801295
+<!--
+Thank you for reporting a possible bug in Node.js.
+
+Please fill in as much of the template below as you can.
+
+Version: output of `node -v`
+Platform: output of `uname -a` (UNIX), or version and 32 or 64-bit (Windows)
+Subsystem: if known, please specify the affected core module name
+
+If possible, please provide code that demonstrates the problem, keeping it as
+simple and free of external dependencies as you can.
+-->
+
+* **Version**: `v12.13.0`
+* **Subsystem**: `global`
+
+
+* **Platform**: `Linux rankong-wacai-env 4.9.125-linuxkit #1 SMP Fri Sep 7 08:20:28 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux`
+
+<!-- Please provide more details below this comment. -->
+
+![image](https://user-images.githubusercontent.com/3054411/67365445-3d18fc00-f5a4-11e9-8a2f-35e580c172d7.png)
+
+* **Platform**: `Darwin RanWithMeow-RMPB 18.7.0 Darwin Kernel Version 18.7.0: Tue Aug 20 16:57:14 PDT 2019; root:xnu-4903.271.2~2/RELEASE_X86_64 x86_64`
+
+![image](https://user-images.githubusercontent.com/3054411/67365552-6b96d700-f5a4-11e9-94be-751376f48c28.png)
+
+
+class: bug       predicted: bug score: 0.9993374435128637
+##### Description of the problem
+
+I see RENDER WARNING in the two examples on my Windows + Chrome.
+
+    [.Offscreen-For-WebGL-000002652FEC91C0]RENDER WARNING: Render count or primcount is 0.
+
+https://threejs.org/examples/webgl_octree.html
+https://threejs.org/examples/webgl_materials_cubemap_dynamic.html
+
+But I don't see on FireFox nightly. It could be (Windows) Chrome specific issue?
+
+##### Three.js version
+
+- [x] Dev
+- [x] r95
+- [ ] ...
+
+##### Browser
+
+- [ ] All of them
+- [x] Chrome
+- [ ] Firefox
+- [ ] Internet Explorer
+
+##### OS
+
+- [ ] All of them
+- [x] Windows
+- [ ] macOS
+- [ ] Linux
+- [ ] Android
+- [ ] iOS
+
+##### Hardware Requirements (graphics card, VR Device, ...)
+
+class: bug       predicted: bug score: 0.9992014236998377
+##### Description of the problem 
+
+If Sprites are in the scene, the clear color cannot be changed back to black
+
+http://jsfiddle.net/ak35o645/7/
+
+uncomment out the //scene.add( sprite ); to see bug
+
+##### Three.js version
+
+- [ X ] Dev
+- [ X ] r84
+
+##### Browser
+
+- [x] All of them
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Internet Explorer
+
+##### OS
+
+- [x] All of them
+- [ ] Windows
+- [ ] macOS
+- [ ] Linux
+- [ ] Android
+- [ ] iOS
+
+##### Hardware Requirements (graphics card, VR Device, ...)
+
+
+
+class: bug       predicted: bug score: 0.9991961108261805
+##### Description of the problem
+There is a typo in the VRMLoader line 44:
+
+`this.glTFLoader.setDRACOLoader( dracoLoader );`
+
+It should be: `this.gltfLoader.setDRACOLoader( dracoLoader );`
+
+
+##### Three.js version
+
+- 0.116.1
+
+
+##### Browser
+
+- [x] All of them
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Internet Explorer
+
+##### OS
+
+- [x] All of them
+- [ ] Windows
+- [ ] macOS
+- [ ] Linux
+- [ ] Android
+- [ ] iOS
+
+##### Hardware Requirements (graphics card, VR Device, ...)
+
+class: bug       predicted: bug score: 0.9991783692074112
+This example contains a mesh, and that mesh is instantiated multiple times in the scene. Different instantiations assign a different skeleton/bones, so it should be treated as multiple SkinnedMesh instances sharing a single geometry:
+
+![Screen Shot 2019-05-17 at 9 56 52 AM](https://user-images.githubusercontent.com/1848368/57943951-4500a180-788a-11e9-9291-070ace0a3d3e.png)
+
+[InfiniteSkinnedTentacle.glb.zip](https://github.com/mrdoob/three.js/files/3192382/InfiniteSkinnedTentacle.glb.zip)
+
+Currently loading runs without errors, but nothing is rendered. Reported by @vpenades in https://github.com/donmccurdy/three-gltf-viewer/issues/147.
+
+##### Three.js version
+
+- [ ] Dev
+- [x] r104
+- [ ] ...
+
+##### Browser
+
+- [x] All of them
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Internet Explorer
+
+##### OS
+
+- [x] All of them
+- [ ] Windows
+- [ ] macOS
+- [ ] Linux
+- [ ] Android
+- [ ] iOS
+
+##### Hardware Requirements (graphics card, VR Device, ...)
+
+class: bug       predicted: bug score: 0.9990882273543357
+##### Description of the problem
+
+If you import the following `OBJ` file into the editor, it looks like so:
+
+[house.obj.zip](https://github.com/mrdoob/three.js/files/3084700/house.obj.zip)
+
+![image](https://user-images.githubusercontent.com/12612165/56206035-a0e9c780-604b-11e9-9bd4-b19a5b16df8a.png)
+
+If you now export to `glTF` and load it into a [glTF viewer](https://gltf-viewer.donmccurdy.com/), it seems certain parts of the model are missing:
+
+![image](https://user-images.githubusercontent.com/12612165/56206468-c88d5f80-604c-11e9-96cc-496ef9003772.png)
+
+The house model is a multi-material asset. It seems the exporter only respect the parts with the first material applied.
+
+Original issue: https://discourse.threejs.org/t/scene-quality-doesnt-match-when-exported-compared-to-first-time-load-scene/7099
+
+##### Three.js version
+
+- [x] Dev
+- [x] r103
+- [ ] ...
+
+##### Browser
+
+- [x] All of them
+- [ ] Chrome
+- [ ] Firefox
+- [ ] Internet Explorer
+
+##### OS
+
+- [x] All of them
+- [ ] Windows
+- [ ] macOS
+- [ ] Linux
+- [ ] Android
+- [ ] iOS
+
+##### Hardware Requirements (graphics card, VR Device, ...)
+
+class: bug       predicted: bug score: 0.9989779842982068
+<!--
+Thank you for reporting a possible bug in Node.js.
+
+Please fill in as much of the template below as you can.
+
+Version: output of `node -v`
+Platform: output of `uname -a` (UNIX), or version and 32 or 64-bit (Windows)
+Subsystem: if known, please specify the affected core module name
+
+If possible, please provide code that demonstrates the problem, keeping it as
+simple and free of external dependencies as you can.
+-->
+
+* **Version**: v10.16.1
+* **Platform**: 18.7.0 Darwin Kernel Version 18.7.0: Thu Jun 20 18:42:21 PDT 2019; root:xnu-4903.270.47~4/RELEASE_X86_64 x86_64
+* **Subsystem**: `process`
+
+<!-- Please provide more details below this comment. -->
+Hello
+
+In `v10.16.1`
+```js
+process.title = "test";
+```
+stops changing process name
+
+In `v10.15.3`
+All works as expected
+class: bug       predicted: bug score: 0.9988934847488196
+<!--
+Thank you for reporting a possible bug in Node.js.
+
+Please fill in as much of the template below as you can.
+
+Version: output of `node -v`
+Platform: output of `uname -a` (UNIX), or version and 32 or 64-bit (Windows)
+Subsystem: if known, please specify the affected core module name
+
+If possible, please provide code that demonstrates the problem, keeping it as
+simple and free of external dependencies as you can.
+-->
+
+* **Version**: v8.11.4
+* **Platform**: Linux xyz 4.17.5-200.fc28.x86_64 #1 SMP Tue Jul 10 13:39:04 UTC 2018 x86_64 x86_64 x86_64 GNU/Linux
+* **Subsystem**:
+
+<!-- Please provide more details below this comment. -->
+
+Decoding a latin1 buffer larger than about 1MB to a string and encoding that string into utf-8 gives a buffer with the same number of bytes as the latin1 input even though more are required for characters that use more space in utf-8.
+
+This seems to work properly on v10.x but not v8.x or v9.x.
+
+Code that demonstrates the problem:
+```js
+const fs = require('fs');
+const s = 'RÃ¤ksmÃ¶rgÃ¥s';
+let ss = '';
+
+const SIZE = (1024 * 1024);
+// works:
+//const SIZE = (1024 * 512);
+
+while (ss.length < SIZE) {
+    ss = ss + ss.length + ' ' + s + '\n';
+}
+
+// create latin1 buffer we can decode
+let l1Buffer = Buffer.from(ss, 'latin1');
+let l1String = l1Buffer.toString('latin1')
+// also fixes it:
+// l1String = ('x' + l1String).substring(1, l1String.length + 1);
+// create utf8 buffer from decoded latin1 string
+let u8Buffer = Buffer.from(l1String, 'utf8')
+
+console.log(l1Buffer.length);
+console.log(u8Buffer.length);
+
+if (l1Buffer.length === u8Buffer.length) {
+    console.log('failed, should be different size');
+} else {
+    console.log('works');
+}
+```
+class: bug       predicted: bug score: 0.9988633297999603
+<!--
+Thank you for reporting a possible bug in Node.js.
+
+Please fill in as much of the template below as you can.
+
+Version: output of `node -v`
+Platform: output of `uname -a` (UNIX), or version and 32 or 64-bit (Windows)
+Subsystem: if known, please specify the affected core module name
+
+If possible, please provide code that demonstrates the problem, keeping it as
+simple and free of external dependencies as you can.
+-->
+
+* **Version**: 11.6.0
+* **Platform**: Ubuntu, Windows
+* **Subsystem**: crypto
+
+<!-- Please provide more details below this comment. -->
+
+Passing an empty string to any function that parses a private key causes an assertion failure:
+
+```
+> crypto.createPrivateKey({ key: '' })
+C:\WINDOWS\system32\cmd.exe - node[12104]: src\node_crypto.cc:2675: Assertion `(mem) != nullptr' failed.
