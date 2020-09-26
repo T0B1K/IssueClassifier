@@ -1,19 +1,28 @@
 FROM python:3.9-rc-buster
 
-RUN pip install pipenv
+ARG CURRENT_ENV=production
 
-ENV PROJECT_DIR=/code
+ENV POETRY_VERSION=1.0.10 \
+    PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONHASHSEED=random \
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100 \
+    CURRENT_ENV=${CURRENT_ENV} \
+    FLASK_APP="/web_server/web_server/server.py"
 
-COPY entrypoint.sh .
+RUN pip install "poetry==${POETRY_VERSION}"
 
-RUN ["chmod", "+x", "/entrypoint.sh"]
+COPY pyproject.toml poetry.lock /web_server/
 
-WORKDIR ${PROJECT_DIR}
+COPY entrypoint.sh /web_server/
 
-COPY Pipfile Pipfile.lock ${PROJECT_DIR}/
+RUN ["chmod", "+x", "/web_server/entrypoint.sh"]
 
-RUN pipenv install --system --deploy --ignore-pipfile
+RUN poetry config virtualenvs.create false && \
+    poetry install $(test "${CURRENT_ENV}" == production && echo "--no-dev") --no-interaction --no-ansi
 
-COPY src/ .
+ADD web_server /web_server/web_server
 
-ENTRYPOINT /entrypoint.sh "${PROJECT_DIR}"
+CMD ["flask" , "run"]
