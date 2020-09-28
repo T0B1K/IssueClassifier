@@ -21,7 +21,7 @@
             let json = data.split('{"text":');
             json.splice(0,1);
 
-            for(let i = 0; i < json.length; i++){
+            for(let i = 0; i < json.length-1; i++){
                 let bool = false;
                 for(let j = i+1; j < json.length; j++){
                     if(json[i] === json[j]) {
