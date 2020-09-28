@@ -12,6 +12,7 @@ import json
 import joblib 
 
 import vectorizer
+import fileManipulation
 
 
 class AntMapPreprozessor(vectorizer.Vectorrizer):
@@ -20,7 +21,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         self.reverseData = []
         self.labelClasses = labelClasses
         self.categories = categories
-        self.trainingPercentage = 0.7
+        self.trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]
 
     # load data from label categories
     def loadDataFromClasses(self, consoleOutput=True):
@@ -50,7 +51,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
 
     #TODO fix this code duplicate from other class
     def train_test_split(self, X, y):
-        np.random.seed(2020)
+        np.random.seed(fileManipulation.FileManipulation.values["randomSeed"])
         threshold = int(self.trainingPercentage*X.shape[0])     #70% for training, 30% for testing - no cross validation yet
         rnd_idx = np.random.permutation(X.shape[0])             #this is a random permutation
         X_unvectorized_train = X[rnd_idx[:threshold]]           #just normal array slices

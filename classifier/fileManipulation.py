@@ -3,6 +3,8 @@ import joblib
 import numpy as np
 
 class FileManipulation:
+    values = {"trainingPercentage":0.7, "sampleSize":4000, "randomSeed":2020, "elementcount":7000}
+
     def __init__(self, outputFolder="../auswertungen"):
         self.folderName = "../documents"
         self.outputFolder = outputFolder
@@ -14,7 +16,7 @@ class FileManipulation:
         return data[perm]
     
         # This method opens a file and returns all the documents
-    def openFile(self, filename, elementcount=7000):
+    def openFile(self, filename, elementcount=FileManipulation.values["elementcount"]):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON

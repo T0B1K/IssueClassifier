@@ -11,11 +11,12 @@ from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 
 import loadDataAntmap
+import fileManipulation
 
 
 labelClasses = ["enhancement", "bug", "doku", "api"]
 categories = [("doku", "bug"), ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
-trainingPercentage = 0.7  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
+trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
 
 """
                                  ╔══ ► Classifier 1  ═╗

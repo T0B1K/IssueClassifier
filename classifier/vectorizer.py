@@ -39,7 +39,7 @@ class Vectorrizer(fileManipulation.FileManipulation):
                 raise
                 # prepareVectorizer(False,False)
         else:
-            train_Data = self.getSplitedDocs(4000)
+            train_Data = self.getSplitedDocs(fileManipulation.FileManipulation.values["sampleSize"])
             Vecotrizer = TfidfVectorizer(tokenizer=None,
                                          strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
                                          stop_words=stopWords,

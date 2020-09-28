@@ -8,9 +8,10 @@ from sklearn.metrics import plot_confusion_matrix
 import json
 import joblib
 import vectorizer
+import fileManipulation
 
 class DataPreprocessor(vectorizer.Vectorrizer):
-    def __init__(self, labelClasses, categories, trainingPercentage=0.7, loadVec=True, saveVec=False):
+    def __init__(self, labelClasses, categories, trainingPercentage=fileManipulation.FileManipulation.values["trainingPercentage"], loadVec=True, saveVec=False):
         super().__init__()
         self.trainingPercentage = trainingPercentage
         self.labelClasses = labelClasses
@@ -19,7 +20,7 @@ class DataPreprocessor(vectorizer.Vectorrizer):
         self.randPerm = []
 
     def train_test_split(self, X, y):
-        np.random.seed(2020)
+        np.random.seed(fileManipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
         threshold = int(self.trainingPercentage*X.shape[0])
         # this is a random permutation
