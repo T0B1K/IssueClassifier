@@ -73,35 +73,6 @@ def initEverything():
         #hue.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
         catIDX += 1
 
-def predict(X_test):
-    hue = loadData.DataPreprocessor(labelClasses, categories, loadVec=True)
-    pretrained = joblib.load('../trainedClassifier/ensembleClassifier_doku-bug.joblib.pkl') 
-    pretrained2 = joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl')
-    
-    step = 400
-    for i in range(0, len(X_test),step):
-        trainigSilice = X_test[i:i+step]
-        X = hue.Vecotrizer.transform(trainigSilice)
-        classifier = LabelClassifier.LabelClassifier(("doku", "bug"), pretrained=pretrained)
-        prediction = classifier.predict(X)
-        labels = np.array(list(map ( lambda element : "doku" if element == 0 else "bug",prediction)))
-    
-        classifier2 = LabelClassifier.LabelClassifier(("doku", "api"), pretrained=pretrained2)
-        prediction2 = classifier2.predict(X)
-        labels2 = np.array(list(map ( lambda element : "doku" if element == 0 else "api",prediction2)))
-        
-        yield list(zip(trainigSilice, labels, labels2))
-
-
-    #dummy für Aly
-    #TODO lade alle classifier
-    #Vergleiche bug, enhancement
-    #Vergleiche restliche dinge vs doku
-    #falls nicht doku, vergleiche restliche dinge vs api
-
 
 initEverything()
 
-#tmp = predict(np.array(["bug, hilf mir", "hue, resolved doku"]))
-#for i in tmp:
-#    print(i)
