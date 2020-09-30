@@ -1,0 +1,11 @@
+{
+    "classifierFolder": "trainedClassifier",
+    "classifier_locations": { "doku_api" : "ensembleClassifier_doku-api.joblib.pkl",
+        "doku_bug": "ensembleClassifier_doku-bug.joblib.pkl",
+        "enhancement_bug": "ensembleClassifier_enhancement-bug.joblib.pkl"
+    },
+    "vorting":"VotingClassifier",
+      
+    "vectorizerFoler": "../",
+    "vecotrizer_locations": "vectorizer.vz"
+}
