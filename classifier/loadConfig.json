@@ -4,7 +4,7 @@
         "doku_bug": "ensembleClassifier_doku-bug.joblib.pkl",
         "enhancement_bug": "ensembleClassifier_enhancement-bug.joblib.pkl"
     },
-    "vorting":"VotingClassifier",
+    "voting":"VotingClassifier",
       
     "vectorizerFoler": "../",
     "vecotrizer_locations": "vectorizer.vz"

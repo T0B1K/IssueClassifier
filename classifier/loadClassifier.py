@@ -13,6 +13,13 @@ def getClassifier (categorie):
     classifier = joblib.load(path)
     return classifier
 
+def getVortingClassifier():
+    classifierPath = loadConfig['voting']
+    path =  path = "{}/{}".format(rootFolder,classifierPath)
+    classifier = joblib.load(path)
+    return classifier
+
+
 def getVectorizer ():
     vecpath = 'vectorizer.vz'
     vectorizer = joblib.load(vecpath)
