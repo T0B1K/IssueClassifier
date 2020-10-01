@@ -16,7 +16,7 @@ class FileManipulation:
         return data[perm]
     
         # This method opens a file and returns all the documents
-    def openFile(self, filename, elementcount=FileManipulation.values["elementcount"]):
+    def openFile(self, filename, elementcount=values["elementcount"]):
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
