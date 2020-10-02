@@ -7,9 +7,12 @@ classifier_locations = loadConfig['classifier_locations']
 rootFolder = loadConfig['classifierFolder']
 
 
-def getClassifier (categorie):
-    classifierPath = classifier_locations['{}_{}'.format(categorie[0],categorie[1])]
-    path = "{}/{}".format(rootFolder,classifierPath)
+def getClassifier (categories):
+    classifierPath = None
+    for element in classifier_locations:
+        if element['labels'] == categories:
+            classifierPath =  element['path']
+    path =  path = "{}/{}".format(rootFolder,classifierPath)
     classifier = joblib.load(path)
     return classifier
 
@@ -24,5 +27,6 @@ def getVectorizer ():
     vecpath = 'vectorizer.vz'
     vectorizer = joblib.load(vecpath)
     return vectorizer
+
 
     
