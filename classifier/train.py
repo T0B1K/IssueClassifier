@@ -4,15 +4,15 @@ import pandas as pd
 import seaborn as sn
 import joblib
 
-import loadData
-import LabelClassifier
+
 
 from sklearn.decomposition import PCA
 from sklearn.decomposition import TruncatedSVD
 
 import loadDataAntmap
 import fileManipulation
-
+import loadData
+import LabelClassifier
 
 labelClasses = ["enhancement", "bug", "doku", "api"]
 categories = [("doku", "bug"), ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
