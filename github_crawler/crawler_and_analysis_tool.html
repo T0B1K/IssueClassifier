@@ -1,0 +1,397 @@
+<html>
+
+<head>
+    <style>
+        ul {
+            list-style: none;
+        }
+
+        textarea {
+            width: 30vw;
+            height: 20vh;
+        }
+    </style>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font: 12px Arial;
+        }
+
+        /*the container must be positioned relative:*/
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+        }
+
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            /*position the autocomplete items to be the same width as the container:*/
+            top: 100%;
+            left: 0;
+            right: 0;
+            width: 12vw;
+        }
+
+        .autocomplete-items div {
+            padding: 5px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        /*when hovering an item:*/
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
+        /*when navigating through the items using the arrow keys:*/
+        .autocomplete-active {
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h3>Billo Software zum downloaden von den Dateien ohne Authentifizierung !lädt weniger als 600 issues eines
+            repos runter, </h3>
+        <div id="txfCurrentPage">-</div>
+        <div>Max requests (auto ist 6) <input id="txfMaxRequests" placeholder="6"></div>
+        <h4>entweder diese beiden Felder ausfüllen</h4>
+        <label>Username des Repo Erstellers: <input id="inputUserName" placeholder="Bob"></label></br>
+        <label>Repository name: <input id="inputRepoName" placeholder="meinRepo"></label></br>
+        <h4>oder dieses</h4>
+        <label>Username und Repo name<input id="inputUserNameAndRepo" placeholder="JabRef / jabref"></label></br>
+        <h4>Optional:</h4>
+        <ul id="labelList">
+            <li>
+                <input type="text" id="isLbl0" placeholder="ist label">
+                <div class="autocomplete"><input id="toLbl0" placeholder=" soll Label (Doku,...)"></div>
+            </li>
+            <input id="addLabel" type="button" value="+" onclick="createListElement()">
+        </ul>
+        <input type="button" onclick="clickedOnStart()" value="start">
+    </div>
+    <div>
+        <h1>sanity check</h1>
+        <input id="lblOut"><br>
+        <textarea id="txaText"></textarea><br>
+        <button onclick="nextIssue()">prev</button><span id="txfPage" style="width: 50px;">0</span><button
+            onclick="nextIssue(true)">next</button>
+    </div>
+    <div>
+        <h2>Hier File "hochladen" um Statistiken zu sehen</h2>
+        <input type="file" onchange="uploadedFile()" id="fileUploader"><br>
+        <span id="txfIssueCount"></span>
+    </div>
+    <script>
+        let $ = (x) => document.getElementById(x);  //für die, die unbedingt JQuery wollen
+        let $$ = (x) => $(x).value;
+
+        //sendRequest("docker-library", "php", "3")
+        var dataToBeStored = new Set(),
+            labelList = $("labelList"),
+            labelMapLength = 0,
+            labelMap = {},
+            requestPage = 1,
+            displayPage = 0,
+            maxRequest = 6,
+            username = "",
+            reponame = "";
+
+        /**
+        * This method is setting the initial values
+        */
+        function initValues() {
+            dataToBeStored = new Set();
+            labelMapLength = 0;
+            labelMap = {};
+            requestPage = 1;
+            displayPage = 0;
+        }
+
+        /**
+        * This method is starting the whole procedure and is activated, if the user clicks on the "start" button
+        */
+        function clickedOnStart() {
+            initValues();
+            maxRequest = parseInt($$("txfMaxRequests")) || 6;
+            if ($$("inputUserNameAndRepo") !== "") {
+                let userRepoNameArray = $$("inputUserNameAndRepo").split("/").map(x => x.trim());
+                if (userRepoNameArray.length == 2) {
+                    username = userRepoNameArray[1].trim();
+                    reponame = userRepoNameArray[0].trim();
+                    console.log(username, reponame)
+                }
+            } else {
+                username = $$("inputUserName").trim();
+                reponame = $$("inputRepoName").trim();
+            }
+            sendRequest(username, reponame, getAllLabels())
+
+        }
+        /**
+        * This mehtod is used to go one requestPage forward or backwards
+        */
+        function nextIssue(nextPage = false) {
+            gotoPage(displayPage + (nextPage ? 1 : -1))
+        }
+        /**
+        * This mehtod is used to display the downloaded issue-page
+        */
+        function gotoPage(pageNr) {
+            if (dataToBeStored.size <= 0) return
+            var data = [...dataToBeStored];
+            displayPage = pageNr % data.length;
+            if (displayPage < 0)
+                displayPage = data.length - displayPage - 2;
+
+            $("txaText").value = data[displayPage].text;
+            $("lblOut").value = "labels: " + data[displayPage].labels.join(",");
+            $("txfPage").innerText = `  ${displayPage + 1} / ${data.length}  `;
+        }
+
+        /**
+        * This method is used to create a new html element in the issue mapping list
+        */
+        function createListElement() {
+            let li = document.createElement("li"),
+                inp1 = document.createElement("input"),
+                inp2 = document.createElement("input"),
+                div = document.createElement("div");
+
+            inp1.id = `isLbl${++labelMapLength}`;
+            inp2.id = `toLbl${labelMapLength}`;
+            inp1.placeholder = " istLabel";
+            inp2.placeholder = " sollLabel";
+
+            div.classList.add("autocomplete");
+            div.appendChild(inp2);
+            li.append(inp1);
+            li.append(div);
+
+            labelList.appendChild(li);
+            labelList.appendChild($("addLabel"));
+
+            autocomplete($(`toLbl${labelMapLength}`), autocompletionTerms);
+        }
+
+        function getAllLabels() {
+            for (let i = 0; i <= labelMapLength; i++) {
+                let tmp = document.getElementById(`isLbl${i}`).value
+                if (!(tmp in labelMap) && (tmp != ""))
+                    labelMap[tmp] = document.getElementById(`toLbl${i}`).value;
+            }
+            return Object.keys(labelMap).join(",");
+        }
+
+        function reqListener() {        //falls was schief geht zum debuggen
+            let apiResponse = JSON.parse(this.responseText);
+            queryResult(apiResponse)
+            if (apiResponse.length >= 100 && requestPage <= maxRequest) {
+                $("txfCurrentPage").innerText = `#requests:${requestPage} von ${maxRequest}\ngesammelte Issues:${dataToBeStored.size}`;
+                ++requestPage
+                sendRequest(username, reponame, getAllLabels())
+            } else {
+                let name = `${username}_${reponame}`;
+                if ($("toLbl0").value != "") {
+                    name += "_" + $("toLbl0").value;
+                }
+                download(JSON.stringify([...dataToBeStored]), `${name}.json`, "text/plain");
+                gotoPage(0);
+            }
+        }
+
+        /*
+        * This method sends a request to github, to the specific repo
+        */
+        function sendRequest(user, repo, lbl = "") {
+            let oReq = new XMLHttpRequest(),
+                lblQuerry = (lbl != "") ? `&&labels=${lbl}` : "";
+            oReq.addEventListener("load", reqListener);
+            let requestText = `https://api.github.com/repos/${user}/${repo}/issues?state=all${lblQuerry}&page=${requestPage}&per_page=100`;
+            console.log(`requestText: ${requestText}`);
+            oReq.open("GET", requestText);
+            oReq.send();
+        }
+
+        /*
+        * This method is being used to put the received data in a readable format 
+        */
+        function queryResult(jsonData) {
+            if (jsonData.length == undefined) return
+            for (obj of jsonData) {
+                if (obj.pull_request || obj.labels.length == 0) {
+                    console.log("pull");
+                    continue;
+                };
+                let { body, labels, ...rest } = obj
+                labelNames = labels.map((x) => (Object.keys(labelMap).length > 0) ? labelMap[x.name] : x.name)
+                let newJson = { "labels": labelNames, "text": body }
+                //console.log(newJson)
+                dataToBeStored.add(newJson)
+            }
+        }
+
+        /**
+        This method is being used to download the received data
+        */
+        function download(data, filename, type) {
+            let file = new Blob([data], { type: type });
+            if (window.navigator.msSaveOrOpenBlob)
+                window.navigator.msSaveOrOpenBlob(file, filename);
+            else {
+                let a = document.createElement("a"),
+                    url = URL.createObjectURL(file);
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                setTimeout(function () {
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+                }, 0);
+            }
+        }
+    </script>
+    <script>
+        function autocomplete(inp, arr) {
+            /*the autocomplete function takes two arguments,
+            the text field element and an array of possible autocompleted values:*/
+            var currentFocus;
+            /*execute a function when someone writes in the text field:*/
+            inp.addEventListener("input", function (e) {
+                var a, b, i, val = this.value;
+                /*close any already open lists of autocompleted values*/
+                closeAllLists();
+                if (!val) { return false; }
+                currentFocus = -1;
+                /*create a DIV element that will contain the items (values):*/
+                a = document.createElement("DIV");
+                a.setAttribute("id", this.id + "autocomplete-list");
+                a.setAttribute("class", "autocomplete-items");
+                /*append the DIV element as a child of the autocomplete container:*/
+                this.parentNode.appendChild(a);
+                /*for each item in the array...*/
+                for (i = 0; i < arr.length; i++) {
+                    /*check if the item starts with the same letters as the text field value:*/
+                    if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+                        /*create a DIV element for each matching element:*/
+                        b = document.createElement("DIV");
+                        /*make the matching letters bold:*/
+                        b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+                        b.innerHTML += arr[i].substr(val.length);
+                        /*insert a input field that will hold the current array item's value:*/
+                        b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+                        /*execute a function when someone clicks on the item value (DIV element):*/
+                        b.addEventListener("click", function (e) {
+                            /*insert the value for the autocomplete text field:*/
+                            inp.value = this.getElementsByTagName("input")[0].value;
+                            /*close the list of autocompleted values,
+                            (or any other open lists of autocompleted values:*/
+                            closeAllLists();
+                        });
+                        a.appendChild(b);
+                    }
+                }
+            });
+            /*execute a function presses a key on the keyboard:*/
+            inp.addEventListener("keydown", function (e) {
+                var x = document.getElementById(this.id + "autocomplete-list");
+                if (x) x = x.getElementsByTagName("div");
+                if (e.keyCode == 40) {
+                    /*If the arrow DOWN key is pressed,
+                    increase the currentFocus variable:*/
+                    currentFocus++;
+                    /*and and make the current item more visible:*/
+                    addActive(x);
+                } else if (e.keyCode == 38) { //up
+                    /*If the arrow UP key is pressed,
+                    decrease the currentFocus variable:*/
+                    currentFocus--;
+                    /*and and make the current item more visible:*/
+                    addActive(x);
+                } else if (e.keyCode == 13) {
+                    /*If the ENTER key is pressed, prevent the form from being submitted,*/
+                    e.preventDefault();
+                    if (currentFocus > -1) {
+                        /*and simulate a click on the "active" item:*/
+                        if (x) x[currentFocus].click();
+                    }
+                }
+            });
+            function addActive(x) {
+                /*a function to classify an item as "active":*/
+                if (!x) return false;
+                /*start by removing the "active" class on all items:*/
+                removeActive(x);
+                if (currentFocus >= x.length) currentFocus = 0;
+                if (currentFocus < 0) currentFocus = (x.length - 1);
+                /*add class "autocomplete-active":*/
+                x[currentFocus].classList.add("autocomplete-active");
+            }
+            function removeActive(x) {
+                /*a function to remove the "active" class from all autocomplete items:*/
+                for (var i = 0; i < x.length; i++) {
+                    x[i].classList.remove("autocomplete-active");
+                }
+            }
+            function closeAllLists(elmnt) {
+                /*close all autocomplete lists in the document,
+                except the one passed as an argument:*/
+                var x = document.getElementsByClassName("autocomplete-items");
+                for (var i = 0; i < x.length; i++) {
+                    if (elmnt != x[i] && elmnt != inp) {
+                        x[i].parentNode.removeChild(x[i]);
+                    }
+                }
+            }
+            /*execute a function when someone clicks in the document:*/
+            document.addEventListener("click", function (e) {
+                closeAllLists(e.target);
+            });
+        }
+
+        /*An array containing all the country names in the world:*/
+        var autocompletionTerms = ["documentation", "api", "bug", "api+Bug", "..."];
+
+        autocomplete($("toLbl0"), autocompletionTerms);
+    </script>
+    <script>
+        uploadedData = null;
+
+        function uploadedFile() {
+            let file = $("fileUploader").files[0],
+                fileReader = new FileReader();
+
+            fileReader.readAsText(file);
+            fileReader.onload = function () {
+                uploadedData = JSON.parse(fileReader.result)
+                let labelsSet = new Set();
+                labelsSet.add(uploadedData.map(x => x.labels).flat(1))
+                labelsSet.delete(null);
+                if (labelsSet.size == 1) {
+                    let set = new Set();
+                    uploadedData.map(x => x.classified_as).forEach(x => set.add(x))
+                    labelsSet = set;
+                }
+                displayPage = 0;
+                let texts = uploadedData.map(x => { return { "text": x.text, "labels": ["class. as "+x.classified_as] } })
+                dataToBeStored = new Set();
+                texts.forEach(x => dataToBeStored.add(x))
+                $("txfIssueCount").innerText = `-> #issues: ${uploadedData.length}\n-> label: ${[...labelsSet]}`;
+            };
+        }
+
+    </script>
+</body>
+
+</html>
