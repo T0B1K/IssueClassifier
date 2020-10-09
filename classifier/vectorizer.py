@@ -6,28 +6,65 @@ import joblib
 import numpy as np
 import fileManipulation
 
+"""
+This class is used for creating / loading an Vectorrizer, which is used to create feature vectors out of the documents
+"""
 class Vectorrizer(fileManipulation.FileManipulation):
+
+    """
+    This is the constructor for the Vectorrizer class
+    Input:  loadVec (optional)      true is default - should the vectorrizer be loaded
+            saveVec (optional)      false is default- should the vectorrizer be saved
+            ngram   (optional)      (1,2) is default- means the word itself and the neighbor
+            stripAccents (optional) should the accents be stripped 
+            stopWords (optional)    should stopwords be removed
+    """
     def __init__(self, loadVec=True, saveVec=False, ngram=(1, 2), stripAccents=None, stopWords=None):
         super().__init__()
-        self.Vecotrizer = self.prepareVectorizer(loadVec, saveVec, stripAccents, ngram, stopWords)
+        self.Vecotrizer = self.prepareVectorizer(
+            loadVec, saveVec, stripAccents, ngram, stopWords)
 
-    #this is a stemmer
+    """
+    Description: This method is used for stemming tokens. I.e. cat should identify such strings as cats, catlike, and catty
+    Input: List[String] of documents
+    Output: List[String] of documents with stemmed tokens
+    """
+
     def stemmer(self, text):
         return [PorterStemmer().stem(token) for token in text]
 
-    #this is a lemmatizer
+    """
+    !Attention - currently not in use - just used for performance testing! TODO remove in final version 
+    Description: This method is used for lemmatizing tokens. I.e.  "better" is mapped to "good" or "walking" to "walk"
+    Input: List[String] of documents
+    Output: List[String] of lemmatized documents
+    """
+
     def lemmatizer(self, text):
         return [WordNetLemmatizer().lemmatize(token) for token in text]
-    
-    #This method is used to convert the documents to actual numbers
-    #TODO maybe store
-    #it returns the training data normalized to tfidf and the vectorized test data
+
+    """
+    Description: This method is used for the vectorisation of the training and testing documents (creating tf-idf, ngram vectors out of the data)
+    Input:  X_train_documents:  List[String] of unvectorized text documents
+            X_test_documents:   List[String] of unvectorized text documents
+    Output: X_train_vectorized: List[String] of tfidf vectorized text documents
+            X_test_vectorized:  List[String] of tfidf vectorized text documents
+    """
+
     def createFeatureVectors(self, X_train_documents, X_test_documents):
-        #the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
-        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)    
-        X_test_vectorized = self.Vecotrizer.transform(X_test_documents) #vectorisation
+        # the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
+        X_train_vectorized = self.Vecotrizer.transform(X_train_documents)
+        X_test_vectorized = self.Vecotrizer.transform(X_test_documents)  # vectorisation
+        print(X_train_vectorized[:1])
         return X_train_vectorized, X_test_vectorized
-    
+
+    """
+    Description: This method is used to load the vectorrizer from an .vz file, if it exists, or to create a vectorrizer
+    Input:  loadVec: Boolean    whether the vectorrizer should be loaded or not
+            saveVec: Boolean    whether the vectorizer should be saved afterwards or not
+    Output: an loaded or newly created TfidfVectorizer object
+    """
+
     def prepareVectorizer(self, loadVec, saveVec, stripAccents, ngram, stopWords):
         Vecotrizer = None
         if loadVec == True:
@@ -35,11 +72,10 @@ class Vectorrizer(fileManipulation.FileManipulation):
                 Vecotrizer = joblib.load('../vectorizer.vz', )
                 return Vecotrizer
             except:
-                print("Vec could not be loaded")
-                raise
-                # prepareVectorizer(False,False)
+                raise "Vec could not be loaded"
         else:
-            train_Data = self.getSplitedDocs(fileManipulation.FileManipulation.values["sampleSize"])
+            train_Data = self.getSplitedDocs(
+                fileManipulation.FileManipulation.values["sampleSize"])
             Vecotrizer = TfidfVectorizer(tokenizer=None,
                                          strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
                                          stop_words=stopWords,
@@ -48,13 +84,19 @@ class Vectorrizer(fileManipulation.FileManipulation):
             if saveVec == True:
                 joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
             return Vecotrizer
-        
-    def getSplitedDocs(self,sampleSize):
+    
+
+    """
+    Description: This method is used for getting an equal amount of documents from each label class
+    Input:  samplesize :int     how many documents should be returned
+    Output: List[String]        the documents from the different label classes
+    """
+
+    def getSplitedDocs(self, sampleSize):
         length = len(self.labelClasses)
-        docCount = round (sampleSize / length)
+        docCount = round(sampleSize / length)
         docs = np.empty(0)
         for label in self.labelClasses:
             print("docs size: {} Byte".format(docs.itemsize))
-            docs = np.append(self.getRandomDocs(label, docCount),docs)
+            docs = np.append(self.getRandomDocs(label, docCount), docs)
         return docs
-    

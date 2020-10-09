@@ -1,0 +1,45 @@
+<!doctype html>
+
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>delete JSON duplicates</title>
+</head>
+
+<body>
+    <textarea id="input" style="width: 90%; height: 40vh;"></textarea>
+    <br><br>
+    <input type="button" id="btn" value="delete duplicates" />
+    <br><br>
+    <textarea id="output" style="width: 90%; height: 40vh;"></textarea>
+    
+    <script> 
+        document.getElementById("btn").addEventListener('click', function(){
+            let data = document.getElementById('input').value;
+            let result = [];
+            
+            let json = data.split('{"text":');
+            json.splice(0,1);
+
+            for(let i = 0; i < json.length-1; i++){
+                let bool = false;
+                for(let j = i+1; j < json.length; j++){
+                    if(json[i] === json[j]) {
+                        bool = true;
+                    }
+                }
+                if(bool === false) {
+                    result.push('{"text":' + json[i].substring(0, (json[i].lastIndexOf('}')) + 1));
+                }
+            }
+
+            result[0] = "[" + result[0];
+            if(result[result.length-1] !== ']'){
+                result[result.length-1] = result[result.length-1] + ']';
+            }
+
+            document.getElementById("output").value = result;
+        });
+    </script>
+</body>
+</html>
