@@ -10,6 +10,9 @@ import joblib
 import vectorizer
 import fileManipulation
 
+"""
+This class is used to preprocess the data 
+"""
 class DataPreprocessor(vectorizer.Vectorrizer):
     def __init__(self, labelClasses, categories, trainingPercentage=fileManipulation.FileManipulation.values["trainingPercentage"], loadVec=True, saveVec=False):
         super().__init__()
@@ -19,6 +22,12 @@ class DataPreprocessor(vectorizer.Vectorrizer):
         self.reverseData = []
         self.randPerm = []
 
+
+    """
+    This method is used to split the documents into a training and testing array
+    Input X :List[String]       The documents
+          y :List[String]       The corresponding label { 0, 1 }
+    """
     def train_test_split(self, X, y):
         np.random.seed(fileManipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
@@ -41,11 +50,23 @@ class DataPreprocessor(vectorizer.Vectorrizer):
         y_test = y[rnd_idx[threshold:]]
         # create feature vectors TODO maby store the create vector func
         return X_train, X_test, y_train, y_test
-        
+    
+
+    """
+    This method returns the training and testing data for specified categories
+    """
+
     def getTrainingAndTestingData2(self):
         for cat in self.categories:
             yield self.trainingAndTestingDataFromCategory(cat)
 
+
+    """
+    This method loads the training and testing data from specific categories
+    Input:  categorieArray :List[String] i.e. [("bug","enhancement"), ("doku", "api", "bug")]
+    Output: List[String], List[String]      returns the trainig and testing data
+    """
+    
     def trainingAndTestingDataFromCategory(self, categorieArray):
         print("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
