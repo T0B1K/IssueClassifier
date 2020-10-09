@@ -11,9 +11,9 @@ trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentag
 
 
 
-#Pascal load aus einem Dokument
+
 classifiers = [joblib.load('../trainedClassifier/ensembleClassifier_doku-api.joblib.pkl'),
-    joblib.load('../trainedClassifier/ensembleClassifier_doku-bug.joblib.pkl')]
+joblib.load('../trainedClassifier/ensembleClassifier_doku-bug.joblib.pkl')]
 classifierClassification = [("bug", "enhancement"), ("doku", "nodoku")]
 
 classifiers = [i for i in zip(classifierClassification, classifiers)]

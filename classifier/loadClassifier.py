@@ -8,6 +8,11 @@ rootFolder = loadConfig['classifierFolder']
 
 
 def getClassifier (categories):
+    """
+        Description: Method return classifier 
+        Input:  categories  array of labels
+        Output: classifier 
+    """
     classifierPath = None
     for element in classifier_locations:
         if element['labels'] == categories:
@@ -16,7 +21,12 @@ def getClassifier (categories):
     classifier = joblib.load(path)
     return classifier
 
-def getVortingClassifier():
+def getVotingClassifier():
+    """
+        Description: Return Voting Classifier  
+        Input:  categories  array of labels
+        Output: classifier 
+    """
     classifierPath = loadConfig['voting']
     path =  path = "{}/{}".format(rootFolder,classifierPath)
     classifier = joblib.load(path)
@@ -24,6 +34,10 @@ def getVortingClassifier():
 
 
 def getVectorizer ():
+    """
+        Description: Method returns Vectorizer   
+        Output: vectorizer
+    """
     vecpath = 'vectorizer.vz'
     vectorizer = joblib.load(vecpath)
     return vectorizer

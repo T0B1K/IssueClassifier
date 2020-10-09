@@ -3,13 +3,26 @@ import joblib
 import numpy as np
 
 class FileManipulation:
+    """ Class provies methods for loading and writthing files with additional parameters  """
+
     values = {"trainingPercentage":0.7, "sampleSize":4000, "randomSeed":2020, "elementcount":7000}
 
     def __init__(self, outputFolder="../auswertungen"):
+        """
+        Description: Constructor for FileManipulation
+        Input:  outputFolder optional path parameter 
+        Output: Return FileManipulation object
+        """
         self.folderName = "../documents"
         self.outputFolder = outputFolder
 
     def getRandomDocs(self, label, elementcount):
+        """
+        Description: get random Documents a class
+        Input:  label of the document class
+                elementcount amount of documents to load 
+        Output: Return List[String] of documents
+        """
         path = "{}/{}.json".format(self.folderName, label)
         data = self.openFile(path, elementcount)
         perm = np.random.permutation(data.shape[0]) 
@@ -17,6 +30,12 @@ class FileManipulation:
     
         # This method opens a file and returns all the documents
     def openFile(self, filename, elementcount=values["elementcount"]):
+        """
+        Description: Method loads file 
+        Input:  filename name of the file
+                elementcount amount of documents to load optional
+        Output: Return List[String] of documents
+        """
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
@@ -24,6 +43,12 @@ class FileManipulation:
         return np.array(documents)
     
     def saveAntmapToFile(self, filename, data):
+        """
+        Description: Method to save Antmap to file
+        Input:  filename name of the file
+                data to save
+        Output: Return nothing
+        """
         path = self.outputFolder+"/"+filename
         print(">\tsaving antmap in {}".format(path))
         f = open(path, "w",encoding='utf-8', errors='ignore')
@@ -31,6 +56,12 @@ class FileManipulation:
         f.close()
     
     def saveWrongClassifiedToFile(self, filename, data):
+        """
+        Description: Method to save wrong Classified 
+        Input:  filename name of the file
+                data to save
+        Output: Nothing
+        """
         path = self.outputFolder+"/"+filename
         print(">\tsaving Wrong Classified Texts in {}".format(path))
         f = open(path, "w",encoding='utf-8', errors='ignore')
