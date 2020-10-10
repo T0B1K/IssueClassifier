@@ -11,7 +11,7 @@ import vectorizer
 import fileManipulation
 
 """
-This class is used to preprocess the data 
+Description: This class is used to preprocess the data 
 """
 class DataPreprocessor(vectorizer.Vectorrizer):
     def __init__(self, labelClasses, categories, trainingPercentage=fileManipulation.FileManipulation.values["trainingPercentage"], loadVec=True, saveVec=False):
@@ -24,7 +24,7 @@ class DataPreprocessor(vectorizer.Vectorrizer):
 
 
     """
-    This method is used to split the documents into a training and testing array
+    Description: This method is used to split the documents into a training and testing array
     Input X :List[String]       The documents
           y :List[String]       The corresponding label { 0, 1 }
     """
@@ -53,7 +53,7 @@ class DataPreprocessor(vectorizer.Vectorrizer):
     
 
     """
-    This method returns the training and testing data for specified categories
+    Description: This method returns the training and testing data for specified categories
     """
 
     def getTrainingAndTestingData2(self):
@@ -62,7 +62,7 @@ class DataPreprocessor(vectorizer.Vectorrizer):
 
 
     """
-    This method loads the training and testing data from specific categories
+    Description: This method loads the training and testing data from specific categories
     Input:  categorieArray :List[String] i.e. [("bug","enhancement"), ("doku", "api", "bug")]
     Output: List[String], List[String]      returns the trainig and testing data
     """

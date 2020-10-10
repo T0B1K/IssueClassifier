@@ -22,19 +22,19 @@ It is only used for sanity checking purposes
 
 class AntMapPreprozessor(vectorizer.Vectorrizer):
     """
-    This is the constructor of the Class
+    Description: This is the constructor of the class AntMapPreprozessor
     Input:  labelClasses List[String]                   the classes for the labels ["bug", "doku", "api", "enhancement"]
             categories   List[Tuple(String, String)]    the categories i.e. [("bug","enhancement"), ("doku", "api")]
     """
     def __init__(self, labelClasses, categories):
-        super().__init__()
+        super().__init__(labelClasses)
         self.reverseData = []
         self.labelClasses = labelClasses
         self.categories = categories
         self.trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]
 
     """
-    This method is used to load the (data/documents) from the label classes
+    Description: This method is used to load the (data/documents) from the label classes
     Input: consoleOutput : Boolean (optional) (true default) determines, wether an informative console output should be printed or not
     Output: List[String] loaded documents from corresponding files
     """
@@ -52,7 +52,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         return listOfDocuments
 
     """
-    This method is used to creating document pairs for label pairs i.e. "bug" vs "enhancement"
+    Description: This method is used to creating document pairs for label pairs i.e. "bug" vs "enhancement"
     Input:  List[List[String]] - list of documents for each label
     Output: returns the document lists to the categories
     """
@@ -71,7 +71,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             yield (name1, name2), (X, y)
 
     """
-    This method is used for creating a random permutation, as well as splitting the document array into an training and an testing part using the treshold
+    Description: This method is used for creating a random permutation, as well as splitting the document array into an training and an testing part using the treshold
     Input:  X List[String]    The list of documents
             y List[String]    The list of labels for the specifc documents { 0, 1 }
     Output: X_train List[String]    The training documents
@@ -103,7 +103,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         return X_train, X_test, y_train, y_test
 
     """
-    This method is used for finding a specific document
+    Description: This method is used for finding a specific document
     Input:  permutedIdx     The permutation index from the specific document
             The category    The corresponding categories
             justReturnIndex :Boolean (default false) just return the file
@@ -121,7 +121,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         return returnvalue
 
     """
-    This method returns the training and testing data to the specific categories
+    Description: This method returns the training and testing data to the specific categories
     Input:  labelClasses List[String], categories
     Output: returns the splitted training and testing data
     """
@@ -135,7 +135,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             yield self.train_test_split(j[0], j[1])
 
     """
-    This method is used for creating an antmap and saving it to a file
+    Description: This method is used for creating an antmap and saving it to a file
     Input:  Xpredicted - The predicted label
             yTest      - the testlabels
             Xtrain     - the trainings data
@@ -179,7 +179,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
 
 
     """
-    This method is used preporcessing the antmap array i.e. how it should be printed
+    Description: This method is used preporcessing the antmap array i.e. how it should be printed
     Input:  lenTrain: int       length of the trainingsdata
             lenPred: int        length of the predicted data
             category: (string, string)  categorie labels
@@ -196,7 +196,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         return antmap
 
     """
-    This method is used to get all the documents from all the labels, which are loaded
+    Description: This method is used to get all the documents from all the labels, which are loaded
     Output: List[ List[String] ] the documents to the corresponding labels
     """
 

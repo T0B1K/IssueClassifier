@@ -19,8 +19,9 @@ class Vectorrizer(fileManipulation.FileManipulation):
             stripAccents (optional) should the accents be stripped 
             stopWords (optional)    should stopwords be removed
     """
-    def __init__(self, loadVec=True, saveVec=False, ngram=(1, 2), stripAccents=None, stopWords=None):
+    def __init__(self, labelClasses, loadVec=True, saveVec=False, ngram=(1, 2), stripAccents=None, stopWords=None):
         super().__init__()
+        self.labelClasses = labelClasses
         self.Vecotrizer = self.prepareVectorizer(
             loadVec, saveVec, stripAccents, ngram, stopWords)
 
@@ -61,30 +62,32 @@ class Vectorrizer(fileManipulation.FileManipulation):
     """
     Description: This method is used to load the vectorrizer from an .vz file, if it exists, or to create a vectorrizer
     Input:  loadVec: Boolean    whether the vectorrizer should be loaded or not
-            saveVec: Boolean    whether the vectorizer should be saved afterwards or not
+            saveVec: Boolean    whether the vectorrizer should be saved afterwards or not
     Output: an loaded or newly created TfidfVectorizer object
     """
-
+    #TODO refactor
     def prepareVectorizer(self, loadVec, saveVec, stripAccents, ngram, stopWords):
         Vecotrizer = None
         if loadVec == True:
-            try:
-                Vecotrizer = joblib.load('../vectorizer.vz', )
-                return Vecotrizer
-            except:
-                raise "Vec could not be loaded"
-        else:
-            train_Data = self.getSplitedDocs(
-                fileManipulation.FileManipulation.values["sampleSize"])
-            Vecotrizer = TfidfVectorizer(tokenizer=None,
-                                         strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
-                                         stop_words=stopWords,
-                                         min_df=2)
-            Vecotrizer.fit_transform(train_Data)
-            if saveVec == True:
-                joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
+            return self.createNewVectorrizer(loadVec, saveVec, stripAccents, ngram, stopWords)
+        try:
+            Vecotrizer = joblib.load('../vectorizer.vz', )
             return Vecotrizer
+        except:
+            return self.createNewVectorrizer(loadVec, saveVec, stripAccents, ngram, stopWords)
     
+    def createNewVectorrizer(self, loadVec, saveVec, stripAccents, ngram, stopWords):
+        train_Data = self.getSplitedDocs(
+            fileManipulation.FileManipulation.values["sampleSize"])
+        Vecotrizer = TfidfVectorizer(tokenizer=None,
+            strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
+            stop_words=stopWords,
+            min_df=2)
+        Vecotrizer.fit_transform(train_Data)
+        if saveVec == True:
+            joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
+        return Vecotrizer
+
 
     """
     Description: This method is used for getting an equal amount of documents from each label class
