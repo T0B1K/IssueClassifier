@@ -81,7 +81,7 @@ class LabelClassifier:
         """
         if self.trainedEstimator == None:
             raise AssertionError("Classifier has not been trained yet")
-        print("\n► ensemble-score:{}\n".format(np.mean(predicted == y_test)))
+        print("\n ->> ensemble-score:{}\n".format(np.mean(predicted == y_test)))
         plot_confusion_matrix(self.trainedEstimator, X_test, y_test, normalize="all",display_labels=[self.category[0],self.category[1]])
         plt.show()
     

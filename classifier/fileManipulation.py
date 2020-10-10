@@ -3,18 +3,19 @@ import joblib
 import numpy as np
 
 
-values = {"trainingPercentage": 0.7, "sampleSize": 40,
-          "randomSeed": 2020, "elementcount": 70}
 
 """ Class provies methods for loading and writthing files with additional parameters """
 
 
 class FileManipulation:
+    
+    values = {"trainingPercentage": 0.7, "sampleSize": 40,
+            "randomSeed": 2020, "elementcount": 70}
     """Description: Constructor for FileManipulation
         Input:  outputFolder optional path parameter 
         Output: Return FileManipulation object"""
 
-    def __init__(self, outputFolder="../auswertungen"):
+    def __init__(self, outputFolder=""):
         self.outputFolder = outputFolder
         self.folderName = "../issues"
 

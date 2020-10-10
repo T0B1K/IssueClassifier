@@ -37,7 +37,7 @@ for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData(labelClass
     hue2.trainClassifier(X_train, y_train, False,False)
     prediction = hue2.predict(X_test)
     amp.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
-    print("► ensemble-score:{}\n".format(np.mean(prediction == y_test)))
+    print("->> ensemble-score:{}\n".format(np.mean(prediction == y_test)))
 
     catIDX += 1
 
