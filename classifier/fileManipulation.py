@@ -9,8 +9,8 @@ import numpy as np
 
 class FileManipulation:
     
-    values = {"trainingPercentage": 0.7, "sampleSize": 40,
-            "randomSeed": 2020, "elementcount": 70}
+    values = json.loads(open("TrainingConfig.txt").read())
+    
     """Description: Constructor for FileManipulation
         Input:  outputFolder optional path parameter 
         Output: Return FileManipulation object"""
