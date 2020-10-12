@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "Issue Classification Microservice"
+name = "issue-classification-microservice"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
@@ -9,6 +9,7 @@ python = "^3.8"
 joblib = "^0.17.0"
 numpy = "^1.19.2"
 pika = "^1.1.0"
+celery = "^5.0.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.4"
