@@ -15,7 +15,7 @@ class FileManipulation:
         Input:  outputFolder optional path parameter 
         Output: Return FileManipulation object"""
 
-    def __init__(self, outputFolder=""):
+    def __init__(self, outputFolder="."):
         self.outputFolder = outputFolder
         self.folderName = "../issues"
 
