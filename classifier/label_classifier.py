@@ -29,7 +29,7 @@ class LabelClassifier:
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainClassifier(self, X_train, y_train,loadClassifier = True, saveToFile = True):
+    def trainClassifier(self, X_train, y_train,loadClassifier = False, saveToFile = False):
         """
         Description: Constructor for Label Classier 
         Input:  X_train training documents
