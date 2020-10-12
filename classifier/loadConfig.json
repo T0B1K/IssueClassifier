@@ -17,6 +17,10 @@
 
     "voting":"VotingClassifier",  
     "vectorizerFoler": "../",
-    "vecotrizer_locations": "vectorizer.vz"
+    "vecotrizer_locations": "vectorizer.vz",
+    "trainingPercentage": 0.7,
+    "sampleSize": 40,
+    "randomSeed": 2020, 
+    "elementcount": 70
 
 }

@@ -9,7 +9,7 @@ import numpy as np
 
 class FileManipulation:
     
-    values = json.loads(open("TrainingConfig.txt").read())
+    values = json.loads(open("loadConfig.json").read())
     
     """Description: Constructor for FileManipulation
         Input:  outputFolder optional path parameter 
