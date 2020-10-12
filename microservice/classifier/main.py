@@ -1,13 +1,10 @@
 import joblib
 import numpy as np
 
-
-#------------------ Dummy to be replaced by pascal load logic ------------------------
-folderPath = "trainedClassifiers/"
+folderPath = "./classifier/trainedClassifiers/"
 trainedClassifiers = [joblib.load(folderPath + 'ensembleClassifier_enhancement-bug.joblib.pkl'),
     joblib.load(folderPath + 'ensembleClassifier_doku-api.joblib.pkl')]
 classifierCategories = [("enhancement", "bug"), ("doku", "api")]
-#------------------------------------------------------------------------------------
 
 """
     This method predicts the output given by a vectorrizer output and returns the labels zipped as list
