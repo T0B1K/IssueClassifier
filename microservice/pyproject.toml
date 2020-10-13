@@ -10,6 +10,9 @@ joblib = "^0.17.0"
 numpy = "^1.19.2"
 pika = "^1.1.0"
 celery = "^5.0.0"
+redis = "^3.5.3"
+sklearn = "^0.0"
+flower = "^0.9.5"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.4"
