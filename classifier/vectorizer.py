@@ -5,6 +5,7 @@ from nltk.stem import WordNetLemmatizer, PorterStemmer
 import joblib
 import numpy as np
 import fileManipulation
+import loadClassifier
 
 """
 This class is used for creating / loading an Vectorrizer, which is used to create feature vectors out of the documents
@@ -71,7 +72,7 @@ class Vectorrizer(fileManipulation.FileManipulation):
         if loadVec == True:
             return self.createNewVectorrizer(loadVec, saveVec, stripAccents, ngram, stopWords)
         try:
-            Vecotrizer = joblib.load('../vectorizer.vz', )
+            Vecotrizer = loadClassifier.getVectorizer()
             return Vecotrizer
         except:
             return self.createNewVectorrizer(loadVec, saveVec, stripAccents, ngram, stopWords)
