@@ -1,3 +1,6 @@
+let $ = (x) => document.getElementById(x); //für die, die unbedingt JQuery wollen
+let $$ = (x) => $(x).value;
+
 function autocomplete(inp, arr) {
     /*the autocomplete function takes two arguments,
     the text field element and an array of possible autocompleted values:*/
@@ -95,7 +98,7 @@ function autocomplete(inp, arr) {
     });
 }
 
-/*An array containing all the country names in the world:*/
+/*An array containing the labels:*/
 var autocompletionTerms = ["documentation", "api", "bug", "api+Bug", "..."];
 
 autocomplete($("toLbl0"), autocompletionTerms);

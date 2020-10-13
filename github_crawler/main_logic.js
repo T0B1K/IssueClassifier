@@ -1,6 +1,3 @@
-let $ = (x) => document.getElementById(x);  //für die, die unbedingt JQuery wollen
-let $$ = (x) => $(x).value;
-
 //sendRequest("docker-library", "php", "3")
 var dataToBeStored = new Set(),
     labelList = $("labelList"),
@@ -34,7 +31,6 @@ function clickedOnStart() {
         if (userRepoNameArray.length == 2) {
             username = userRepoNameArray[1].trim();
             reponame = userRepoNameArray[0].trim();
-            console.log(username, reponame)
         }
     } else {
         username = $$("inputUserName").trim();
@@ -89,6 +85,9 @@ function createListElement() {
     autocomplete($(`toLbl${labelMapLength}`), autocompletionTerms);
 }
 
+/**
+ * This method returns all the labels the user wants to crawl.
+ */
 function getAllLabels() {
     for (let i = 0; i <= labelMapLength; i++) {
         let tmp = document.getElementById(`isLbl${i}`).value
@@ -123,7 +122,6 @@ function sendRequest(user, repo, lbl = "") {
         lblQuerry = (lbl != "") ? `&&labels=${lbl}` : "";
     oReq.addEventListener("load", reqListener);
     let requestText = `https://api.github.com/repos/${user}/${repo}/issues?state=all${lblQuerry}&page=${requestPage}&per_page=100`;
-    console.log(`requestText: ${requestText}`);
     oReq.open("GET", requestText);
     oReq.send();
 }
@@ -135,13 +133,11 @@ function queryResult(jsonData) {
     if (jsonData.length == undefined) return
     for (obj of jsonData) {
         if (obj.pull_request || obj.labels.length == 0) {
-            console.log("pull");
             continue;
         };
         let { body, labels, ...rest } = obj
         labelNames = labels.map((x) => (Object.keys(labelMap).length > 0) ? labelMap[x.name] : x.name)
         let newJson = { "labels": labelNames, "text": body }
-        //console.log(newJson)
         dataToBeStored.add(newJson)
     }
 }
