@@ -3,13 +3,13 @@
 ## instructions
 1. Make sure you have at least Python 3.7 installed.
 2. Install all the necessary libraries.
-  - numpy
-  - pandas
-  - seaborn
-  - joblib
-  - matplotlib.pyplot
-  - sklearn
-  - nltk
+   - numpy
+   - pandas
+   - seaborn
+   - joblib
+   - matplotlib.pyplot
+   - sklearn
+   - nltk
 3. ...
 
 ## directory structure
