@@ -1,5 +1,5 @@
 {
-    "classifierFolder": "trainedClassifier",
+    "classifierFolder": "classifier/trained_classifier",
     "classifier_locations" : [
         {
             "path": "ensembleClassifier_doku-api.joblib.pkl",
@@ -16,7 +16,7 @@
     ],
 
     "voting":"VotingClassifier",  
-    "vectorizerFoler": "../",
+    "vectorizerFoler": "classifier",
     "vecotrizer_locations": "vectorizer.vz",
     "trainingPercentage": 0.7,
     "sampleSize": 40,
