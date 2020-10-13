@@ -7,7 +7,7 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics import plot_confusion_matrix
 
 from nltk.stem import WordNetLemmatizer, PorterStemmer
-# nltk.download('wordnet')
+# nltk.download('wordnet')  #if you are running the lemmatizer for the first time, you need this
 import json
 import joblib
 

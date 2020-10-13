@@ -7,6 +7,7 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB
+import loadClassifier
 
 class LabelClassifier:
     """Class implemens various label Classifiers """
@@ -29,7 +30,7 @@ class LabelClassifier:
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainClassifier(self, X_train, y_train,loadClassifier = True, saveToFile = True):
+    def trainClassifier(self, X_train, y_train,loadClassifier = False, saveToFile = False):
         """
         Description: Constructor for Label Classier 
         Input:  X_train training documents
@@ -41,7 +42,7 @@ class LabelClassifier:
         if loadClassifier == True:
             try:
                 self.trainedEstimator = joblib.load(self.fileLocation)
-                voting = joblib.load('../trainedClassifier/VotingClassifier')
+                voting = loadClassifier.getVotingClassifier()
             except:
                 raise("load voting classifier failed")
                 
