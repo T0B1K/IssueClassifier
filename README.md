@@ -30,4 +30,4 @@
   This contains all output files from the software that let us review the quality of the software. 
 
 ## architecture
-![](images/architecture.png?raw=true)
+![](architecture.png "Architecture")
