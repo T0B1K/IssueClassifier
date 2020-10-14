@@ -12,7 +12,7 @@ services:
             - PIKA_EXCHANGE_TYPE=direct
             - PIKA_IS_QUEUE_EXCLUSIVE=True
             - PIKA_QUEUE_NAME=''
-            - PIKA_RABBITMQ_HOST=localhost
+            - PIKA_RABBITMQ_HOST=rabbitmq
             - VECTORISER_PATH=/microservice/vectoriser.vz
             - CLASSIFIER_PATH=/microservice/trained_classifiers/
             - PYTHONPATH=/microservice/
