@@ -218,7 +218,7 @@ description = "Library for building powerful interactive command lines in Python
 name = "prompt-toolkit"
 optional = false
 python-versions = ">=3.6.1"
-version = "3.0.7"
+version = "3.0.8"
 
 [package.dependencies]
 wcwidth = "*"
@@ -423,8 +423,8 @@ prometheus-client = [
     {file = "prometheus_client-0.8.0.tar.gz", hash = "sha256:c6e6b706833a6bd1fd51711299edee907857be10ece535126a158f911ee80915"},
 ]
 prompt-toolkit = [
-    {file = "prompt_toolkit-3.0.7-py3-none-any.whl", hash = "sha256:83074ee28ad4ba6af190593d4d4c607ff525272a504eb159199b6dd9f950c950"},
-    {file = "prompt_toolkit-3.0.7.tar.gz", hash = "sha256:822f4605f28f7d2ba6b0b09a31e25e140871e96364d1d377667b547bb3bf4489"},
+    {file = "prompt_toolkit-3.0.8-py3-none-any.whl", hash = "sha256:7debb9a521e0b1ee7d2fe96ee4bd60ef03c6492784de0547337ca4433e46aa63"},
+    {file = "prompt_toolkit-3.0.8.tar.gz", hash = "sha256:25c95d2ac813909f813c93fde734b6e44406d1477a9faef7c915ff37d39c0a8c"},
 ]
 pycodestyle = [
     {file = "pycodestyle-2.6.0-py2.py3-none-any.whl", hash = "sha256:2295e7b2f6b5bd100585ebcb1f616591b652db8a741695b3d8f5d28bdc934367"},

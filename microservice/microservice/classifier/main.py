@@ -1,7 +1,9 @@
+import os
+
 import joblib
 import numpy as np
 
-FOLDER_PATH = "./classifier/trainedClassifiers/"
+FOLDER_PATH = os.environ["CLASSIFIER_PATH"] or "./classifier/trained_classifiers/"
 
 trained_classifiers = [joblib.load(FOLDER_PATH + 'ensembleClassifier_enhancement-bug.joblib.pkl'),
                        joblib.load(FOLDER_PATH + 'ensembleClassifier_doku-api.joblib.pkl')]

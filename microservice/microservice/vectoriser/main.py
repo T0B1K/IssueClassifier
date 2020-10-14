@@ -1,9 +1,11 @@
-from typing import List
+import os
 
 import joblib
 import numpy as np
 
-vectoriser = joblib.load('./vectoriser/vectoriser.vz')
+VECTORISER_PATH = os.environ["VECTORISER_PATH"] or './vectoriser/vectoriser.vz'
+
+vectoriser = joblib.load(VECTORISER_PATH)
 
 
 def get_from_queue(string_array: np.array) -> np.array:

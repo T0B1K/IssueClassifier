@@ -1,12 +1,16 @@
+import os
 from typing import List
 
 from celery import Celery
 from numpy import array as np_array
 
-from vectoriser.main import get_from_queue as vectorise_string_list
+from microservice.vectoriser.main import vectoriser as vectorise_string_list
 
-app = Celery("celery_app", broker="amqp://localhost",
-             backend="redis://localhost")
+CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL'] or "amqp://guest:guest@rabbitmq:5672"
+RESULT_BACKEND_URL = os.environ['RESULT_BACKEND_URL'] or "redis://localhost"
+
+app = Celery("celery_app", broker=CELERY_BROKER_URL,
+             backend=RESULT_BACKEND_URL)
 
 app.conf.task_routes = {
     'celery_app.vectorise': 'vectorise_queue',
