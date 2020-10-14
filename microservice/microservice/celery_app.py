@@ -20,11 +20,15 @@ app.conf.task_routes = {
 
 @app.task
 def vectorise(issues: List[str]) -> np_array:
-    string_array = np_array(issues)
-    return vectorise_string_list(string_array)
+    # FIXME Add working vectorisation logic
+    # string_array = np_array(issues)
+    # return vectorise_string_list(string_array)
+    print("Celery vectoriser received issues: " + str(issues))
+    return issues
 
 
 @app.task(reply_to='result_queue')
 def classify(issue: str) -> str:
-    print("Classifying issue: " + issue)
+    # FIXME Add working classification logic
+    print("Celery classifier recieved issue: " + issue)
     return issue

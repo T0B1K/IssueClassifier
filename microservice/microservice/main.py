@@ -6,7 +6,7 @@ import pika
 from microservice.celery_app import classify, vectorise
 
 PIKA_AUTO_ACK = os.environ["PIKA_AUTO_ACK"] or True
-PIKA_DEFAULT_ROUTING_KEYS = os.environ["PIKA_DEFAULT_ROUTING_KEYS"] or ["Classification.Classify"]
+PIKA_DEFAULT_ROUTING_KEY = os.environ["PIKA_DEFAULT_ROUTING_KEY"] or "Classification.Classify"
 PIKA_EXCHANGE_NAME = os.environ["PIKA_EXCHANGE_NAME"] or 'classification_requests'
 PIKA_EXCHANGE_TYPE = os.environ["PIKA_EXCHANGE_TYPE"] or 'direct'
 PIKA_IS_QUEUE_EXCLUSIVE = os.environ["PIKA_IS_QUEUE_EXCLUSIVE"] or True
@@ -20,13 +20,13 @@ class ICMPikaClient(object):
     This is a wrapper class around pika suitable for quickly getting the microservice up and running consuming classification requests. Default values for several configuration options, such as the host for the running RabbitMQ instance, can be found above.
     """
 
-    def __init__(self, routing_keys=PIKA_DEFAULT_ROUTING_KEYS):
+    def __init__(self, routing_keys=PIKA_DEFAULT_ROUTING_KEY):
         self.routing_keys = routing_keys
 
         self._init_connection()
         self._declare_exchange()
         self._declare_queue()
-        self._bind_rkeys_to_queue()
+        self._bind_rkey_to_queue()
 
     def _init_connection(self):
         connection = pika.BlockingConnection(
@@ -42,10 +42,9 @@ class ICMPikaClient(object):
             queue=PIKA_QUEUE_NAME, exclusive=PIKA_IS_QUEUE_EXCLUSIVE)
         self.queue = res_queue_declare.method.queue
 
-    def _bind_rkeys_to_queue(self):
-        for routing_key in self.routing_keys:
-            self.channel.queue_bind(
-                exchange=PIKA_EXCHANGE_NAME, queue=self.queue, routing_key=routing_key)
+    def _bind_rkey_to_queue(self):
+        self.channel.queue_bind(
+            exchange=PIKA_EXCHANGE_NAME, queue=self.queue, routing_key=PIKA_DEFAULT_ROUTING_KEY)
 
     def handle_issue_request(self, channel, method, properties, message_body):
         issues = json.loads(message_body)

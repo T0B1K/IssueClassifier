@@ -4,10 +4,10 @@ services:
         build: .
         image: &img ic_microservice
         environment: &env
-            - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq:5672
-            - RESULT_BACKEND_URL=redis://localhost
+            - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
+            - RESULT_BACKEND_URL=redis://redis
             - PIKA_AUTO_ACK=True
-            - PIKA_DEFAULT_ROUTING_KEYS=["Classification.Classify"]
+            - PIKA_DEFAULT_ROUTING_KEY=Classification.Classify
             - PIKA_EXCHANGE_NAME=classification_requests
             - PIKA_EXCHANGE_TYPE=direct
             - PIKA_IS_QUEUE_EXCLUSIVE=True
@@ -43,7 +43,10 @@ services:
 #            - ./app:/microservice/app
 
     rabbitmq:
-        image: rabbitmq:latest
+        image: rabbitmq:3-management
+        ports: 
+            - "5672:5672"
+            - "15672:15672"
     
     redis:
         image: redis:latest
