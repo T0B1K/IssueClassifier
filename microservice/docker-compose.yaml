@@ -11,11 +11,13 @@ services:
             - PIKA_EXCHANGE_NAME=classification_requests
             - PIKA_EXCHANGE_TYPE=direct
             - PIKA_IS_QUEUE_EXCLUSIVE=True
-            - PIKA_QUEUE_NAME=''
+            - PIKA_QUEUE_NAME='ic_microservice_input_queue'
             - PIKA_RABBITMQ_HOST=rabbitmq
             - VECTORISER_PATH=/microservice/vectoriser.vz
             - CLASSIFIER_PATH=/microservice/trained_classifiers/
             - PYTHONPATH=/microservice/
+            - VECTORISER_QUEUE=vectorise_queue
+            - CLASSIFIER_QUEUE=classify_queue
         entrypoint: /microservice/scripts/entrypoint_main.sh
         depends_on: &dep
             - rabbitmq
@@ -28,19 +30,27 @@ services:
         build: .
         image: *img
         entrypoint: /microservice/scripts/entrypoint_vectoriser.sh
+        hostname: vectoriser_worker
         environment: *env
         depends_on: *dep
         volumes: 
             - ./app:/microservice/app
+        links: 
+            - rabbitmq
+            - redis
     
-#    classifier_worker:
-#        build: .
-#        image: *img
-#        entrypoint: /microservice/entrypoint_classifier.sh
-#        environment: *env
-#        depends_on: *dep
-#        volumes: 
-#            - ./app:/microservice/app
+    classifier_worker:
+        build: .
+        image: *img
+        entrypoint: /microservice/scripts/entrypoint_classifier.sh
+        hostname: classifier_worker
+        environment: *env
+        depends_on: *dep
+        volumes: 
+            - ./app:/microservice/app
+        links: 
+            - rabbitmq
+            - redis
 
     rabbitmq:
         image: rabbitmq:3-management
@@ -51,9 +61,11 @@ services:
     redis:
         image: redis:latest
     
-#    flower:
-#        image: mher/flower:0.9.5
-#        command: ["-A app.ms_celery.celery_app", "--url_prefix=flower", "--broker=amqp://guest:guest@localhost:5672//"]
-#        ports:
-#            - 5555:5555
-#        restart: unless-stopped
+    flower:
+        image: mher/flower:0.9.4
+        command: ["--broker=amqp://guest:guest@rabbitmq:5672//"]
+        ports:
+            - 5555:5555
+        restart: unless-stopped
+        depends_on:
+            - rabbitmq

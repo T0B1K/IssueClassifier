@@ -12,6 +12,8 @@ PIKA_EXCHANGE_TYPE = os.environ["PIKA_EXCHANGE_TYPE"] or 'direct'
 PIKA_IS_QUEUE_EXCLUSIVE = os.environ["PIKA_IS_QUEUE_EXCLUSIVE"] or True
 PIKA_QUEUE_NAME = os.environ["PIKA_QUEUE_NAME"] or ''
 PIKA_RABBITMQ_HOST = os.environ["PIKA_RABBITMQ_HOST"] or 'localhost'
+VECTORISER_QUEUE = os.environ['VECTORISER_QUEUE'] or "vectorise_queue"
+CLASSIFIER_QUEUE = os.environ['CLASSIFIER_QUEUE'] or "classify_queue"
 
 
 class ICMPikaClient(object):
@@ -83,11 +85,11 @@ class ICMPikaClient(object):
         issues = json.loads(message_body)
         issues_body_list = [issue["body"] for issue in issues]
 
-        vectorisation_aresult = vectorise.delay(issues_body_list)
+        vectorisation_aresult = vectorise.apply_async((issues_body_list,), queue=VECTORISER_QUEUE)
         vectorised_issues = vectorisation_aresult.get(
             timeout=5, propagate=False)
 
-        classify.map(vectorised_issues)
+        classify.map(vectorised_issues).apply_async(queue=CLASSIFIER_QUEUE)
 
     def start_consuming_issue_requests(self):
         """The (blocking) request consumption method.
