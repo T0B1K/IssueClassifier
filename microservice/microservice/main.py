@@ -27,7 +27,6 @@ class ICMPikaClient(object):
         self._declare_exchange()
         self._declare_queue()
         self._bind_rkey_to_queue()
-#/exchanges/%2F/classification_requests
     def _init_connection(self):
         connection = pika.BlockingConnection(
             pika.ConnectionParameters(host=PIKA_RABBITMQ_HOST))
