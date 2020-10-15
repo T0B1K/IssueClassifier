@@ -1,4 +1,4 @@
-FROM python:3.8-buster AS base
+FROM python:3.8-buster
 
 ENV PYTHONFAULTHANDLER=1
 ENV PYTHONHASHSEED=random

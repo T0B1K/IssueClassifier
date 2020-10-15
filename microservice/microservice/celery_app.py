@@ -6,10 +6,10 @@ from numpy import array as np_array
 
 from microservice.vectoriser.main import vectoriser as vectorise_string_list
 
-CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL'] or "amqp://guest:guest@rabbitmq:5672"
-RESULT_BACKEND_URL = os.environ['RESULT_BACKEND_URL'] or "redis://localhost"
-VECTORISER_QUEUE = os.environ['VECTORISER_QUEUE'] or "vectorise_queue"
-CLASSIFIER_QUEUE = os.environ['CLASSIFIER_QUEUE'] or "classify_queue"
+CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', "amqp://guest:guest@rabbitmq:5672")
+RESULT_BACKEND_URL = os.getenv('RESULT_BACKEND_URL', "redis://localhost")
+VECTORISER_QUEUE = os.getenv('VECTORISER_QUEUE', "vectorise_queue")
+CLASSIFIER_QUEUE = os.getenv('CLASSIFIER_QUEUE', "classify_queue")
 
 app = Celery("celery_app", broker=CELERY_BROKER_URL,
              backend=RESULT_BACKEND_URL)

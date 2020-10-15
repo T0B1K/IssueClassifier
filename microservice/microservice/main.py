@@ -5,15 +5,15 @@ import pika
 
 from microservice.celery_app import classify, vectorise
 
-PIKA_AUTO_ACK = os.environ["PIKA_AUTO_ACK"] or True
-PIKA_DEFAULT_ROUTING_KEY = os.environ["PIKA_DEFAULT_ROUTING_KEY"] or "Classification.Classify"
-PIKA_EXCHANGE_NAME = os.environ["PIKA_EXCHANGE_NAME"] or 'classification_requests'
-PIKA_EXCHANGE_TYPE = os.environ["PIKA_EXCHANGE_TYPE"] or 'direct'
-PIKA_IS_QUEUE_EXCLUSIVE = os.environ["PIKA_IS_QUEUE_EXCLUSIVE"] or True
-PIKA_QUEUE_NAME = os.environ["PIKA_QUEUE_NAME"] or ''
-PIKA_RABBITMQ_HOST = os.environ["PIKA_RABBITMQ_HOST"] or 'localhost'
-VECTORISER_QUEUE = os.environ['VECTORISER_QUEUE'] or "vectorise_queue"
-CLASSIFIER_QUEUE = os.environ['CLASSIFIER_QUEUE'] or "classify_queue"
+PIKA_AUTO_ACK = os.getenv("PIKA_AUTO_ACK", True)
+PIKA_DEFAULT_ROUTING_KEY = os.getenv("PIKA_DEFAULT_ROUTING_KEY", "Classification.Classify")
+PIKA_EXCHANGE_NAME = os.getenv("PIKA_EXCHANGE_NAME", 'classification_requests')
+PIKA_EXCHANGE_TYPE = os.getenv("PIKA_EXCHANGE_TYPE", 'direct')
+PIKA_IS_QUEUE_EXCLUSIVE = os.getenv("PIKA_IS_QUEUE_EXCLUSIVE", True)
+PIKA_QUEUE_NAME = os.getenv("PIKA_QUEUE_NAME", '')
+PIKA_RABBITMQ_HOST = os.getenv("PIKA_RABBITMQ_HOST", 'localhost')
+VECTORISER_QUEUE = os.getenv('VECTORISER_QUEUE', "vectorise_queue")
+CLASSIFIER_QUEUE = os.getenv('CLASSIFIER_QUEUE', "classify_queue")
 
 
 class ICMPikaClient(object):
