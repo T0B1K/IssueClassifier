@@ -10,17 +10,15 @@ trained_classifiers = [joblib.load(FOLDER_PATH + 'ensembleClassifier_enhancement
 classifier_categories = [("enhancement", "bug"), ("doku", "api")]
 
 
-def predict(vectorrizerOutput) -> np.array:
+def classify_issues(vectorised_issues) -> np.array:
     """
         This method predicts the output given by a vectorrizer output and returns the labels zipped as list
+
         Input-representation of the numpy array: [[1,2,7,0,4], [0,2,67,3,1], ...]
+
         returns: [["bug", "api"], ["enhancement"], ...]
     """
-
-    final_labels = []*vectorrizerOutput.shape[0]
-    for classifier, label in zip(trained_classifiers, classifier_categories):
-        prediction = classifier.predict(vectorrizerOutput)
-        prediction = np.array(
-            list(map(lambda x: label[0] if x == 0 else label[1], prediction)))
-        final_labels.push(prediction)
-    return list(zip(final_labels))
+    prediction = trained_classifiers[0].predict(vectorised_issues)
+    prediction = np.array(list(map(
+        lambda x: classifier_categories[0][0] if x == 0 else classifier_categories[0][1], prediction)))
+    return prediction

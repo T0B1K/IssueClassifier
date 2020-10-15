@@ -19,7 +19,4 @@ RUN poetry install --no-dev --no-interaction --no-ansi --no-root
 
 COPY . .
 
-COPY ./microservice/vectoriser/vectoriser.vz .
-COPY ./microservice/classifier/trained_classifiers .
-
 RUN chmod -R +x ./scripts
