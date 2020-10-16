@@ -39,7 +39,10 @@ In short, it performs the following steps:
 - poetry.lock: Contains resolved versions of dependencies to produce deterministic builds. This avoids cases where, for example, a newer version of some dependency breaks the functionality of libraries that depend on it.
 - pyproject.toml: Used to manage information about the project, such as general information about the Python project as well as its the Python (development) dependencies.
 - .dockerignore: Contains files that will be ignored by Docker when building the microservice image.
-- microservice/main.py: Represents the pika client used by the microservice to receive issues for classification as well as their classification results.
+- microservice/main.py: Represents the pika client used by the microservice to receive issues for classification as well as returning their classification results.
+- microservice/celery_app.py: Represents the tasks that can be performed by celery. This takes the form of two functions, one for vectorising using the vectoriser provided by `microservice/vectoriser/main.py`, and the other for classifying using the classifier provided by `microservice/classifier/main.py`.
+- microservice/vectoriser/main.py: Contains the vectorisation function which uses the provided `vectorizer.vz` for creating the feature vector of the input issues. Returns the results to the pika client in `ic_microservice`.
+- microservice/classifier/main.py: Contains the classification function which uses the result feature vectors from the vectoriser to classify the issues. Returns the results to the pika client in `ic_microservice`.
 ---
 ## Usage instructions
 Before starting, it's recommended, but not required, to install the following Visual Studio Code [Docker extension](https://www.google.com/search?q=docker+extension+vscode&oq=docker+extension+vscode&aqs=chrome.0.0i457j0i22i30l7.4185j0j1&sourceid=chrome&ie=UTF-8). It has proven quite useful to us in getting a quick glance of the health of the (running) containers as well as downloaded images.
