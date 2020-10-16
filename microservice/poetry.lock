@@ -288,17 +288,6 @@ version = "1.15.0"
 
 [[package]]
 category = "main"
-description = "A set of python modules for machine learning and data mining"
-name = "sklearn"
-optional = false
-python-versions = "*"
-version = "0.0"
-
-[package.dependencies]
-scikit-learn = "*"
-
-[[package]]
-category = "main"
 description = "threadpoolctl"
 name = "threadpoolctl"
 optional = false
@@ -339,7 +328,7 @@ python-versions = "*"
 version = "0.2.5"
 
 [metadata]
-content-hash = "546f228c197e09a0dfb81bb68a604a889ffe6ccd628fe128e94aeeb9ddc1bc5a"
+content-hash = "0826f6d4d04d08846d48b4c24e2e2bb8be4e48d4d288ac9a48f865fb7748af68"
 lock-version = "1.0"
 python-versions = "^3.8"
 
@@ -477,9 +466,6 @@ scipy = [
 six = [
     {file = "six-1.15.0-py2.py3-none-any.whl", hash = "sha256:8b74bedcbbbaca38ff6d7491d76f2b06b3592611af620f8426e82dddb04a5ced"},
     {file = "six-1.15.0.tar.gz", hash = "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259"},
-]
-sklearn = [
-    {file = "sklearn-0.0.tar.gz", hash = "sha256:e23001573aa194b834122d2b9562459bf5ae494a2d59ca6b8aa22c85a44c0e31"},
 ]
 threadpoolctl = [
     {file = "threadpoolctl-2.1.0-py3-none-any.whl", hash = "sha256:38b74ca20ff3bb42caca8b00055111d74159ee95c4370882bbff2b93d24da725"},

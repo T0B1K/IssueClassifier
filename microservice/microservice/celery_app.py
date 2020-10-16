@@ -1,15 +1,17 @@
 import os
-from typing import List
+import pickle
+from typing import Any
 
 from celery import Celery
-from numpy import array as np_array
 
-from microservice.vectoriser.main import vectoriser as vectorise_string_list
+from microservice.vectoriser.main import vectorise_issues
+from microservice.classifier.main import classify_issues
 
-CELERY_BROKER_URL = os.environ['CELERY_BROKER_URL'] or "amqp://guest:guest@rabbitmq:5672"
-RESULT_BACKEND_URL = os.environ['RESULT_BACKEND_URL'] or "redis://localhost"
-VECTORISER_QUEUE = os.environ['VECTORISER_QUEUE'] or "vectorise_queue"
-CLASSIFIER_QUEUE = os.environ['CLASSIFIER_QUEUE'] or "classify_queue"
+CELERY_BROKER_URL = os.getenv(
+    'CELERY_BROKER_URL', "amqp://guest:guest@rabbitmq:5672")
+RESULT_BACKEND_URL = os.getenv('RESULT_BACKEND_URL', "redis://localhost")
+VECTORISER_QUEUE = os.getenv('VECTORISER_QUEUE', "vectorise_queue")
+CLASSIFIER_QUEUE = os.getenv('CLASSIFIER_QUEUE', "classify_queue")
 
 app = Celery("celery_app", broker=CELERY_BROKER_URL,
              backend=RESULT_BACKEND_URL)
@@ -19,18 +21,16 @@ app.conf.task_routes = {
     'celery_app.classify': CLASSIFIER_QUEUE
 }
 
+app.conf.result_serializer = 'pickle'
+app.conf.task_serializer = 'pickle'
+app.conf.accept_content = ['pickle', 'json']
+
 
 @app.task
-def vectorise(issues: List[str]) -> np_array:
-    # FIXME Add working vectorisation logic
-    # string_array = np_array(issues)
-    # return vectorise_string_list(string_array)
-    print("Celery vectoriser received issues: " + str(issues))
-    return issues
+def vectorise(issues: Any) -> Any:
+    return vectorise_issues(issues)
 
 
-@app.task(reply_to='result_queue')
-def classify(issue: str) -> str:
-    # FIXME Add working classification logic
-    print("Celery classifier recieved issue: " + issue)
-    return issue
+@app.task(reply_to='ic_microservice_output_queue')
+def classify(vectorised_issues: Any) -> Any:
+    return classify_issues(vectorised_issues)

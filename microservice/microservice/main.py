@@ -5,15 +5,20 @@ import pika
 
 from microservice.celery_app import classify, vectorise
 
-PIKA_AUTO_ACK = os.environ["PIKA_AUTO_ACK"] or True
-PIKA_DEFAULT_ROUTING_KEY = os.environ["PIKA_DEFAULT_ROUTING_KEY"] or "Classification.Classify"
-PIKA_EXCHANGE_NAME = os.environ["PIKA_EXCHANGE_NAME"] or 'classification_requests'
-PIKA_EXCHANGE_TYPE = os.environ["PIKA_EXCHANGE_TYPE"] or 'direct'
-PIKA_IS_QUEUE_EXCLUSIVE = os.environ["PIKA_IS_QUEUE_EXCLUSIVE"] or True
-PIKA_QUEUE_NAME = os.environ["PIKA_QUEUE_NAME"] or ''
-PIKA_RABBITMQ_HOST = os.environ["PIKA_RABBITMQ_HOST"] or 'localhost'
-VECTORISER_QUEUE = os.environ['VECTORISER_QUEUE'] or "vectorise_queue"
-CLASSIFIER_QUEUE = os.environ['CLASSIFIER_QUEUE'] or "classify_queue"
+PIKA_AUTO_ACK = os.getenv("PIKA_AUTO_ACK", True)
+PIKA_INPUT_ROUTING_KEY = os.getenv(
+    "PIKA_INPUT_ROUTING_KEY", "Classification.Classify")
+PIKA_OUTPUT_ROUTING_KEY = os.getenv(
+    "PIKA_OUTPUT_ROUTING_KEY", "Classification.Results")
+PIKA_EXCHANGE_NAME = os.getenv("PIKA_EXCHANGE_NAME", 'classification')
+PIKA_EXCHANGE_TYPE = os.getenv("PIKA_EXCHANGE_TYPE", 'direct')
+PIKA_INPUT_QUEUE_NAME = os.getenv(
+    "PIKA_INPUT_QUEUE_NAME", 'ic_microservice_input_queue')
+PIKA_OUTPUT_QUEUE_NAME = os.getenv(
+    "PIKA_OUTPUT_QUEUE_NAME", 'ic_microservice_output_queue')
+PIKA_RABBITMQ_HOST = os.getenv("PIKA_RABBITMQ_HOST", 'localhost')
+VECTORISER_QUEUE = os.getenv('VECTORISER_QUEUE', "vectorise_queue")
+CLASSIFIER_QUEUE = os.getenv('CLASSIFIER_QUEUE', "classify_queue")
 
 
 class ICMPikaClient(object):
@@ -22,13 +27,15 @@ class ICMPikaClient(object):
     This is a wrapper class around pika suitable for quickly getting the microservice up and running consuming classification requests. Default values for several configuration options, such as the host for the running RabbitMQ instance, can be found above.
     """
 
-    def __init__(self, routing_key=PIKA_DEFAULT_ROUTING_KEY):
+    def __init__(self, routing_key=PIKA_INPUT_ROUTING_KEY):
         self.routing_key = routing_key
 
         self._init_connection()
         self._declare_exchange()
-        self._declare_queue()
-        self._bind_rkey_to_queue()
+        self._declare_input_queue()
+        self._declare_output_queue()
+        self._bind_rkeys_to_queues()
+
     def _init_connection(self):
         """Initialise connection with the RabbitMQ instance
 
@@ -49,7 +56,7 @@ class ICMPikaClient(object):
         self.channel.exchange_declare(
             exchange=PIKA_EXCHANGE_NAME, exchange_type=PIKA_EXCHANGE_TYPE)
 
-    def _declare_queue(self):
+    def _declare_input_queue(self):
         """Declare a (new if not previously existing) queue with the connected RabbitMQ instance.
 
         Uses the follwing environment variables:
@@ -57,11 +64,23 @@ class ICMPikaClient(object):
             - PIKA_IS_QUEUE_EXCLUSIVE: Whether the queue should be declared as exclusive, 
         i.e. whether the queue can only be used by the channel of the declaring running pika client.
         """
-        res_queue_declare = self.channel.queue_declare(
-            queue=PIKA_QUEUE_NAME, exclusive=PIKA_IS_QUEUE_EXCLUSIVE)
-        self.queue = res_queue_declare.method.queue
+        input_queue = self.channel.queue_declare(
+            queue=PIKA_INPUT_QUEUE_NAME)
+        self.input_queue = input_queue.method.queue
 
-    def _bind_rkey_to_queue(self):
+    def _declare_output_queue(self):
+        """Declare a (new if not previously existing) queue with the connected  RabbitMQ instance.
+
+        Uses the follwing environment variables:
+            - PIKA_QUEUE_NAME: The name of the queue to be declared.
+            - PIKA_IS_QUEUE_EXCLUSIVE: Whether the queue should be declared as  exclusive, 
+        i.e. whether the queue can only be used by the channel of the declaring     running pika client.
+        """
+        output_queue = self.channel.queue_declare(
+            queue=PIKA_OUTPUT_QUEUE_NAME)
+        self.output_queue = output_queue.method.queue
+
+    def _bind_rkeys_to_queues(self):
         """Bind queue to the exchange declared in the pika client using a routing key.
 
         Uses the following environment variables:
@@ -69,10 +88,23 @@ class ICMPikaClient(object):
             - PIKA_DEFAULT_ROUTING_KEY: The routing key to bind the queue and exchange on.
         """
         self.channel.queue_bind(
-            exchange=PIKA_EXCHANGE_NAME, queue=self.queue, routing_key=PIKA_DEFAULT_ROUTING_KEY)
+            exchange=PIKA_EXCHANGE_NAME,
+            queue=self.input_queue,
+            routing_key=PIKA_INPUT_ROUTING_KEY)
+        self.channel.queue_bind(
+            exchange=PIKA_EXCHANGE_NAME,
+            queue=self.output_queue,
+            routing_key=PIKA_OUTPUT_ROUTING_KEY
+        )
 
-    def handle_issue_request(self, channel, method, properties, message_body):
-        # FIXME Give types of method paramteres
+    def _return_classification_results(self, results):
+        self.channel.basic_publish(
+            exchange=PIKA_EXCHANGE_NAME,
+            routing_key=PIKA_OUTPUT_ROUTING_KEY,
+            body=json.dumps(list(results))
+        )
+
+    def _handle_issue_request(self, channel, method, properties, message_body):
         """Callback function for incoming issue classification request messages.
 
         Args:
@@ -83,12 +115,18 @@ class ICMPikaClient(object):
         """
         issues = json.loads(message_body)
         issues_body_list = [issue["body"] for issue in issues]
+        print(issues_body_list)
 
-        vectorisation_aresult = vectorise.apply_async((issues_body_list,), queue=VECTORISER_QUEUE)
-        vectorised_issues = vectorisation_aresult.get(
-            timeout=5, propagate=False)
+        vectorised_issues = vectorise.apply_async(
+            (issues_body_list,), queue=VECTORISER_QUEUE).get(
+            timeout=10, propagate=False)
+        print(vectorised_issues)
 
-        classify.map(vectorised_issues).apply_async(queue=CLASSIFIER_QUEUE)
+        classified_issues = classify.apply_async((vectorised_issues,),
+                                                 queue=CLASSIFIER_QUEUE).get(timeout=120, propagate=False)
+        print(classified_issues)
+        
+        self._return_classification_results(classified_issues)
 
     def start_consuming_issue_requests(self):
         """The (blocking) request consumption method.
@@ -103,8 +141,8 @@ class ICMPikaClient(object):
             to inform the RabbitMQ instance of the successful reception of the message.
         """
         self.channel.basic_consume(
-            queue=self.queue, on_message_callback=self.
-            handle_issue_request, auto_ack=PIKA_AUTO_ACK)
+            queue=self.input_queue, on_message_callback=self.
+            _handle_issue_request, auto_ack=PIKA_AUTO_ACK)
         print("Now consuming issue classification requests. To cancel, press CTRL+C.")
         self.channel.start_consuming()
 

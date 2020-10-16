@@ -1,4 +1,4 @@
-FROM python:3.8-buster AS base
+FROM python:3.8-buster
 
 ENV PYTHONFAULTHANDLER=1
 ENV PYTHONHASHSEED=random
@@ -18,8 +18,5 @@ COPY pyproject.toml poetry.lock ./
 RUN poetry install --no-dev --no-interaction --no-ansi --no-root
 
 COPY . .
-
-COPY ./microservice/vectoriser/vectoriser.vz .
-COPY ./microservice/classifier/trained_classifiers .
 
 RUN chmod -R +x ./scripts

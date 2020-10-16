@@ -8,5 +8,5 @@ VECTORISER_PATH = os.environ["VECTORISER_PATH"] or './vectoriser/vectoriser.vz'
 vectoriser = joblib.load(VECTORISER_PATH)
 
 
-def get_from_queue(string_array: np.array) -> np.array:
+def vectorise_issues(string_array: np.array) -> np.array:
     return vectoriser.transform(string_array)
