@@ -2,7 +2,7 @@ import pika
 import sys
 
 DEFAULT_ROUTING_KEYS = ["Classification.Classify"]
-EXCHANGE_NAME = 'classification_requests'
+EXCHANGE_NAME = 'classification'
 EXCHANGE_TYPE = 'direct'
 RABBITMQ_HOST = 'localhost'
 
