@@ -53,7 +53,9 @@ Run `docker-compose up --build` in the folder containing the `docker-compose.yam
 Under localhost:15672 and localhost:5555, you can obtain an overview of the running RabbitMQ and Flower instances, repectively.
 
 ### To test the microservice:
-Run `python test_issue_producer.py "Classification.Classify" '[{"id": 1, "body": "Hello"},{"id": 2, "body": "World"}, {"id": 3, "body": "foo"}]'` in the sub-folder with the name `microservice`.
+For testing, Python 3.8 is recommended. Older versions have NOT been tested with, so your mileage with older versions may vary.
+
+Run `python test_issue_producer.py "Classification.Classify" '[{"id": 1, "body": "Hello"},{"id": 2, "body": "World"}, {"id": 3, "body": "foo"}]'` in the sub-folder with the name `microservice` in a separate terminal.
 
 This will send an issue in the form of JSON containing the following payload:
 ```json
