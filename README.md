@@ -35,7 +35,7 @@ To sanity check the issues crawled, just click on "prev" or "next" to change the
   This folder contains all crawled issues so far. "To add" contains all issues not jet added to our dataset.
 
 ### microservice:
-    
+    This folder contains all the dokuments required to run the microservice
 
 ### results:
   This contains all output files from the software that let us review the quality of the software. 
