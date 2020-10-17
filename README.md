@@ -1,6 +1,9 @@
 # Issue Classifier
 
-## instructions
+## instructinos for running the microservice
+please refer to the [microservice dokumentation](microservice/README.md) for further information
+
+## instructions for creating classifiers
 1. Make sure you have at least Python 3.7 installed.
 2. Install all the necessary libraries.
    - numpy
@@ -10,7 +13,7 @@
    - matplotlib.pyplot
    - sklearn
    - nltk
-3. ...
+3. run [classifier/train.py]. Make changes in the loadConfig.json to fit the training to your needs and change the classifiers / labels in train.py to train the specific classifier.
 
 ## directory structure
 
@@ -28,6 +31,3 @@
 
 ### results:
   This contains all output files from the software that let us review the quality of the software. 
-
-## architecture
-![](architecture.png "Architecture")
