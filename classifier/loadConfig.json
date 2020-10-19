@@ -1,5 +1,5 @@
 {
-    "classifierFolder": "classifier/trained_classifier",
+    "classifierFolder": "../classifier/trained_classifier",
     "classifier_locations" : [
         {
             "path": "ensembleClassifier_doku-api.joblib.pkl",

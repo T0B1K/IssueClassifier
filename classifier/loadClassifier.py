@@ -1,7 +1,7 @@
 import json
 import joblib
 
-rawConfig = open ('classifier/loadConfig.json','r') 
+rawConfig = open ('../classifier/loadConfig.json','r') 
 loadConfig = json.load(rawConfig)
 classifier_locations = loadConfig['classifier_locations']
 rootFolder = loadConfig['classifierFolder']

@@ -57,7 +57,6 @@ class Vectorrizer(fileManipulation.FileManipulation):
         # the vectorizer is creating a vector out of the trainingsdata (bow) as well as removing the stopwords and emojis (non ascii) etc.
         X_train_vectorized = self.Vecotrizer.transform(X_train_documents)
         X_test_vectorized = self.Vecotrizer.transform(X_test_documents)  # vectorisation
-        print(X_train_vectorized[:1])
         return X_train_vectorized, X_test_vectorized
 
     """

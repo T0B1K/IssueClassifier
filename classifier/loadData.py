@@ -14,9 +14,9 @@ import fileManipulation
 Description: This class is used to preprocess the data 
 """
 class DataPreprocessor(vectorizer.Vectorrizer):
-    def __init__(self, labelClasses, categories, trainingPercentage=fileManipulation.FileManipulation.values["trainingPercentage"], loadVec=True, saveVec=False):
+    def __init__(self, labelClasses, categories, loadVec=True, saveVec=False):
         super().__init__(labelClasses)
-        self.trainingPercentage = trainingPercentage
+        self.trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]
         self.labelClasses = labelClasses
         self.categories = categories
         self.reverseData = []
