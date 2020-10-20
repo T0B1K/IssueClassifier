@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "issue-classifier-training-toolkit"
+version = "0.1.0"
+description = "A training toolkit for classifiers to be integrated with the Issue Classifier Microservice"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+joblib = "^0.17.0"
+matplotlib = "^3.3.2"
+nltk = "^3.5"
+numpy = "^1.19.2"
+pandas = "^1.1.3"
+scikit-learn = "^0.23.2"
+seaborn = "^0.11.0"
+
+[tool.poetry.dev-dependencies]
+autopep8 = "^1.5.4"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
