@@ -10,12 +10,11 @@ import logging
 class FileManipulation:
     
     values = json.loads(open("loadConfig.json").read())
-    
-    """Description: Constructor for FileManipulation
-        Input:  outputFolder optional path parameter 
-        Output: Return FileManipulation object"""
 
     def __init__(self, outputFolder="."):
+        """Description: Constructor for FileManipulation
+        Input:  outputFolder optional path parameter 
+        Output: Return FileManipulation object"""
         self.outputFolder = outputFolder
         self.folderName = "../issues"
 
@@ -29,7 +28,6 @@ class FileManipulation:
         perm = np.random.permutation(data.shape[0])
         return data[perm]
 
-        # This method opens a file and returns all the documents
     def openFile(self, filename, elementcount=values["elementcount"]):
         """
         Description: Method loads file 
