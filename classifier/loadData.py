@@ -23,13 +23,12 @@ class DataPreprocessor(vectorizer.Vectorrizer):
         self.reverseData = []
         self.randPerm = []
 
-
-    """
-    Description: This method is used to split the documents into a training and testing array
-    Input X :List[String]       The documents
-          y :List[String]       The corresponding label { 0, 1 }
-    """
     def train_test_split(self, X, y):
+        """
+        Description: This method is used to split the documents into a training and testing array
+        Input X :List[String]       The documents
+            y :List[String]       The corresponding label { 0, 1 }
+        """
         np.random.seed(fileManipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
         threshold = int(self.trainingPercentage*X.shape[0])
@@ -51,24 +50,20 @@ class DataPreprocessor(vectorizer.Vectorrizer):
         y_test = y[rnd_idx[threshold:]]
         # create feature vectors TODO maby store the create vector func
         return X_train, X_test, y_train, y_test
-    
-
-    """
-    Description: This method returns the training and testing data for specified categories
-    """
 
     def getTrainingAndTestingData2(self):
+        """
+        Description: This method returns the training and testing data for specified categories
+        """
         for cat in self.categories:
             yield self.trainingAndTestingDataFromCategory(cat)
-
-
-    """
-    Description: This method loads the training and testing data from specific categories
-    Input:  categorieArray :List[String] i.e. [("bug","enhancement"), ("doku", "api", "bug")]
-    Output: List[String], List[String]      returns the trainig and testing data
-    """
     
     def trainingAndTestingDataFromCategory(self, categorieArray):
+        """
+        Description: This method loads the training and testing data from specific categories
+        Input:  categorieArray :List[String] i.e. [("bug","enhancement"), ("doku", "api", "bug")]
+        Output: List[String], List[String]      returns the trainig and testing data
+        """
         logging.info("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
         path = "{}/{}.json".format(self.folderName, categorieArray[0])
