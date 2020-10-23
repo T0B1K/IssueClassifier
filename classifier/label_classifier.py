@@ -9,6 +9,8 @@ from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB
 import load_classifier
 
+import logging
+
 class LabelClassifier:
     """Class implemens various label Classifiers """
 
@@ -37,7 +39,7 @@ class LabelClassifier:
                 y_train labels for training documents
         Output: Nothing
         """
-        print("> training classifier")
+        logging.info("> training classifier")
         voting = None
         if loadClassifier == True:
             try:
@@ -61,7 +63,7 @@ class LabelClassifier:
         Input:  X_test data
         Output: Trained estimator
         """
-        print("> predicting")
+        logging.info("> predicting")
         return self.trainedEstimator.predict(X_test)
 
     def generateFilename(self, folder = '../trained_classifiers/'):
@@ -82,7 +84,7 @@ class LabelClassifier:
         """
         if self.trainedEstimator == None:
             raise AssertionError("Classifier has not been trained yet")
-        print("\n ->> ensemble-score:{}\n".format(np.mean(predicted == y_test)))
+        logging.info("\n ->> ensemble-score:{}\n".format(np.mean(predicted == y_test)))
         plot_confusion_matrix(self.trainedEstimator, X_test, y_test, normalize="all",display_labels=[self.category[0],self.category[1]])
         plt.show()
     
@@ -93,12 +95,12 @@ class LabelClassifier:
                 y_test labels 
         Output: Filename as string
         """
-        print("training stacking classifier")
+        logging.info("training stacking classifier")
         self.rbfKernel = RBFSampler(gamma=1, random_state=1)
         X_features = self.rbfKernel.fit_transform(X_predicted)
         self.stackingEstimator = SGDClassifier(max_iter=1000)
         self.stackingEstimator.fit(X_features, y)
-        print("stacking-classifier: " + str(self.stackingEstimator.score(X_features, y)))
+        logging.info("stacking-classifier: " + str(self.stackingEstimator.score(X_features, y)))
     
     def stackingPrediction(self, X_test):
         """
