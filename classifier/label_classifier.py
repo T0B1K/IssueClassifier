@@ -1,5 +1,6 @@
 import joblib
 import matplotlib.pyplot as plt
+import numpy
 
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.kernel_approximation import RBFSampler
@@ -10,11 +11,13 @@ from sklearn.naive_bayes import MultinomialNB
 import load_classifier
 
 import logging
+import file_manipulation
+
 
 class LabelClassifier:
     """Class implemens various label Classifiers """
 
-    def __init__(self, categoryToClassify, pretrained = None, folder2Save = '../trained_classifiers/'):
+    def __init__(self, categoryToClassify, pretrained = None):
         """
         Description: Constructor for Label Classier 
         Input:  filename name of the file
@@ -28,11 +31,11 @@ class LabelClassifier:
         ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
         ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
-        self.fileLocation = self.generateFilename(folder2Save)
+        self.fileLocation = self.generateFilename(file_manipulation.FileManipulation.values["classifier"]["path"]["saveFolder"])
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainingClassifier(self, X_train, y_train, loadClassifier = False, saveToFile = False):
+    def trainingClassifier(self, X_train, y_train):
         """
         Description: Constructor for Label Classier 
         Input:  X_train training documents
@@ -41,7 +44,7 @@ class LabelClassifier:
         """
         logging.info("> training classifier")
         voting = None
-        if loadClassifier == True:
+        if file_manipulation.FileManipulation.values["classifier"]["loadClassifier"] == True:
             try:
                 self.trainedEstimator = joblib.load(self.fileLocation)
                 voting = load_classifier.getVotingClassifier()
@@ -51,7 +54,7 @@ class LabelClassifier:
         else:
             self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
             voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
-            if saveToFile == True:
+            if file_manipulation.FileManipulation.values["classifier"]["saveClassifier"] == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
                 joblib.dump(voting, '../trained_classifiers/voting_classifier',compress=9)
                 print("> dumped Classifier: {}".format(self.fileLocation))
@@ -84,7 +87,7 @@ class LabelClassifier:
         """
         if self.trainedEstimator == None:
             raise AssertionError("Classifier has not been trained yet")
-        logging.info("\n ->> ensemble-score:{}\n".format(np.mean(predicted == y_test)))
+        logging.info("\n ->> ensemble-score:{}\n".format(numpy.mean(predicted == y_test)))
         plot_confusion_matrix(self.trainedEstimator, X_test, y_test, normalize="all",display_labels=[self.category[0],self.category[1]])
         plt.show()
     

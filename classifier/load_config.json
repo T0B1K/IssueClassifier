@@ -23,5 +23,20 @@
     "randomSeed": 2020, 
     "elementcount": 70,
     "labelClasses": ["enhancement", "bug", "doku", "api"],
-    "categories":[["doku", "bug"]]
+    "categories":[["doku", "bug"]],
+    "classifier": {
+        "loadClassifier": false,
+        "saveClassifier": false,
+        "path":{
+            "saveFolder":"",
+            "loadFolder":""
+        }
+    },
+    "vectorrizer":{
+        "saveVectorrizer":false,
+        "loadVectorizer":false,
+        "path":{
+            "saveTo":"../vectorizer.vz"
+        }
+    }
 }

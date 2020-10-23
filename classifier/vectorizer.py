@@ -23,7 +23,6 @@ class Vectorizer(file_manipulation.FileManipulation):
                 stopWords (optional)    should stopwords be removed
         """
         super().__init__()
-        self.labelClasses = file_manipulation.FileManipulation.values["labelClasses"]
         self.Vecotrizer = self.prepareVectorizer(
             loadVec, saveVec, stripAccents, ngram, stopWords)
 
@@ -66,6 +65,8 @@ class Vectorizer(file_manipulation.FileManipulation):
         Output: an loaded or newly created TfidfVectorizer object
         """
         Vecotrizer = None
+        loadVec = file_manipulation.FileManipulation.values["vectorrizer"]["loadVectorizer"]
+        saveVec = file_manipulation.FileManipulation.values["vectorrizer"]["saveVectorrizer"]
         if loadVec == True:
             return self.createNewVectorizer(loadVec, saveVec, stripAccents, ngram, stopWords)
         try:
@@ -84,7 +85,7 @@ class Vectorizer(file_manipulation.FileManipulation):
             min_df=2)
         Vecotrizer.fit_transform(train_Data)
         if saveVec == True:
-            joblib.dump(Vecotrizer, '../vectorizer.vz', compress=9)
+            joblib.dump(Vecotrizer, file_manipulation.FileManipulation.values["vectorrizer"]["path"]["saveTo"], compress=9)
         return Vecotrizer
 
     def getSplitedDocs(self, sampleSize):
@@ -93,10 +94,11 @@ class Vectorizer(file_manipulation.FileManipulation):
         Input:  samplesize :int     how many documents should be returned
         Output: List[String]        the documents from the different label classes
         """
-        length = len(self.labelClasses)
+        labelClasses = file_manipulation.FileManipulation.values["labelClasses"]
+        length = len(labelClasses)
         docCount = round(sampleSize / length)
         docs = numpy.empty(0)
-        for label in self.labelClasses:
+        for label in labelClasses:
             logging.debug("docs size: {} Byte".format(docs.itemsize))
             docs = numpy.append(self.getRandomDocs(label, docCount), docs)
         return docs

@@ -53,7 +53,7 @@ class DataPreprocessor(vectorizer.Vectorizer):
         """
         Description: This method returns the training and testing data for specified categories
         """
-        for cat in self.file_manipulation.FileManipulation.values["categories"]:
+        for cat in file_manipulation.FileManipulation.values["categories"]:
             yield self.trainingAndTestingDataFromCategory(cat)
     
     def trainingAndTestingDataFromCategory(self, categorieArray):

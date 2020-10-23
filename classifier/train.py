@@ -9,19 +9,16 @@ import label_classifier
 categories = file_manipulation.FileManipulation.values["categories"] # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 """
     Description: This method is used to init the classifier using an antmap
-    Input:  loadClassifier :Bool load the classifier
-            saveClassifier :Bool save the classifier
-    Output: 
 """
 
-def initWithAntMap(loadClassifier = False, saveClassifier = False):
+def initWithAntMap():
     amp = load_data_antmap.AntMapPreprozessor()
     catIDX = 0
 
     for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData():
         cat = categories[catIDX]
         lblClassif = label_classifier.LabelClassifier(cat)
-        lblClassif.trainingClassifier(X_train, y_train, loadClassifier, saveClassifier)
+        lblClassif.trainingClassifier(X_train, y_train)
         prediction = lblClassif.predict(X_test)
         amp.prepareAntMap(prediction, y_test, X_train, [cat])
         logging.info("► ensemble-score:{}\n".format(numpy.mean(prediction == y_test)))
@@ -35,14 +32,14 @@ def initWithAntMap(loadClassifier = False, saveClassifier = False):
             loadVectorizer:Bool  load the vectorizer
     Output: 
 """
-def initEverything(loadClassifier = False, saveClassifier = False, loadVectorizer = True):
+def initEverything(loadVectorizer = True):
     catIDX = 0
     processor = load_data.DataPreprocessor(loadVectorizer)
-    for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():#labelClasses, categories):
+    for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():
         cat = categories[catIDX]
         logging.info("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
         lblClassif = label_classifier.LabelClassifier(cat)
-        lblClassif.trainingClassifier(X_train, y_train, loadClassifier)
+        lblClassif.trainingClassifier(X_train, y_train)
         prediction = lblClassif.predict(X_test)
         lblClassif.accuracy(X_test, y_test, prediction)
 
@@ -55,6 +52,6 @@ def initEverything(loadClassifier = False, saveClassifier = False, loadVectorize
 
 logging.basicConfig(level=logging.INFO)
 logging.info('Started')
-#initEverything()
+initEverything()
 initWithAntMap()
 logging.info('Finished')
