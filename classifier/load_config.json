@@ -21,6 +21,7 @@
     "trainingPercentage": 0.7,
     "sampleSize": 40,
     "randomSeed": 2020, 
-    "elementcount": 70
-
+    "elementcount": 70,
+    "labelClasses": ["enhancement", "bug", "doku", "api"],
+    "categories":[["doku", "bug"]]
 }

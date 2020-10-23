@@ -15,11 +15,8 @@ import file_manipulation
 Description: This class is used to preprocess the data 
 """
 class DataPreprocessor(vectorizer.Vectorizer):
-    def __init__(self, labelClasses, categories, loadVec=True, saveVec=False):
-        super().__init__(labelClasses)
-        self.trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]
-        self.labelClasses = labelClasses
-        self.categories = categories
+    def __init__(self, loadVec=True, saveVec=False):
+        super().__init__()
         self.reverseData = []
         self.randPerm = []
 
@@ -29,9 +26,10 @@ class DataPreprocessor(vectorizer.Vectorizer):
         Input X :List[String]       The documents
             y :List[String]       The corresponding label { 0, 1 }
         """
+        trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]
         numpy.random.seed(file_manipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
-        threshold = int(self.trainingPercentage*X.shape[0])
+        threshold = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx = numpy.random.permutation(X.shape[0])
         # just normal array slices
@@ -40,7 +38,7 @@ class DataPreprocessor(vectorizer.Vectorizer):
         X_train = X_vectorrized[rnd_idx[:threshold]]
         X_test = X_vectorrized[rnd_idx[threshold:]]
         logging.info("training on: {}% == {} documents\ntesting on: {} documents".format(
-            self.trainingPercentage, threshold, X.shape[0]-threshold))
+            trainingPercentage, threshold, X.shape[0]-threshold))
         #logging.info(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]])
         # logging.info(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]]
         # rnd_idx = reverseData[i][1]
@@ -55,7 +53,7 @@ class DataPreprocessor(vectorizer.Vectorizer):
         """
         Description: This method returns the training and testing data for specified categories
         """
-        for cat in self.categories:
+        for cat in self.file_manipulation.FileManipulation.values["categories"]:
             yield self.trainingAndTestingDataFromCategory(cat)
     
     def trainingAndTestingDataFromCategory(self, categorieArray):

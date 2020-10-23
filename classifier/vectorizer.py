@@ -13,7 +13,7 @@ This class is used for creating / loading an Vectorizer, which is used to create
 """
 class Vectorizer(file_manipulation.FileManipulation):
 
-    def __init__(self, labelClasses, loadVec=True, saveVec=False, ngram=(1, 2), stripAccents=None, stopWords=None):
+    def __init__(self, loadVec=True, saveVec=False, ngram=(1, 2), stripAccents=None, stopWords=None):
         """
         This is the constructor for the Vectorrizer class
         Input:  loadVec (optional)      true is default - should the vectorrizer be loaded
@@ -23,7 +23,7 @@ class Vectorizer(file_manipulation.FileManipulation):
                 stopWords (optional)    should stopwords be removed
         """
         super().__init__()
-        self.labelClasses = labelClasses
+        self.labelClasses = file_manipulation.FileManipulation.values["labelClasses"]
         self.Vecotrizer = self.prepareVectorizer(
             loadVec, saveVec, stripAccents, ngram, stopWords)
 

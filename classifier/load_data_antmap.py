@@ -20,17 +20,16 @@ This class is used to get a different AntMapPreprozessor - to generate an antmap
 It is only used for sanity checking purposes
 """
 class AntMapPreprozessor(vectorizer.Vectorizer):
-    def __init__(self, labelClasses, categories):
+    def __init__(self):
         """
         Description: This is the constructor of the class AntMapPreprozessor
         Input:  labelClasses List[String]                   the classes for the labels ["bug", "doku", "api", "enhancement"]
                 categories   List[Tuple(String, String)]    the categories i.e. [("bug","enhancement"), ("doku", "api")]
         """
-        super().__init__(labelClasses)
+        super().__init__()
         self.reverseData = []
-        self.labelClasses = labelClasses
-        self.categories = categories
-        self.trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]
+        self.labelClasses = file_manipulation.FileManipulation.values["labelClasses"]
+        self.categories = file_manipulation.FileManipulation.values["categories"]
 
     def loadDataFromClasses(self, consoleOutput=True):
         """
@@ -79,7 +78,8 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         """
         numpy.random.seed(file_manipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
-        threshold = int(self.trainingPercentage*X.shape[0])
+        trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]
+        threshold = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx = numpy.random.permutation(X.shape[0])
         # just normal array slices
@@ -115,14 +115,12 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
             returnvalue = [X[idx] for idx in returnvalue]
         return returnvalue
 
-    def getTrainingAndTestingData(self, labelClasses, categories):
+    def getTrainingAndTestingData(self):
         """
         Description: This method returns the training and testing data to the specific categories
         Input:  labelClasses List[String], categories
         Output: returns the splitted training and testing data
         """
-        self.labelClasses = labelClasses
-        self.categories = categories
         docs = self.loadDataFromClasses()
         for i, j in self.dataCategorie(docs):
             logging.debug(i)

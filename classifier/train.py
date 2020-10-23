@@ -6,8 +6,7 @@ import file_manipulation
 import load_data
 import label_classifier
 
-labelClasses = ["enhancement", "bug", "doku", "api"]
-categories = [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
+categories = file_manipulation.FileManipulation.values["categories"] # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 """
     Description: This method is used to init the classifier using an antmap
     Input:  loadClassifier :Bool load the classifier
@@ -16,10 +15,10 @@ categories = [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "b
 """
 
 def initWithAntMap(loadClassifier = False, saveClassifier = False):
-    amp = load_data_antmap.AntMapPreprozessor(labelClasses, categories)
+    amp = load_data_antmap.AntMapPreprozessor()
     catIDX = 0
 
-    for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData(labelClasses, categories):
+    for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData():
         cat = categories[catIDX]
         lblClassif = label_classifier.LabelClassifier(cat)
         lblClassif.trainingClassifier(X_train, y_train, loadClassifier, saveClassifier)
@@ -38,7 +37,7 @@ def initWithAntMap(loadClassifier = False, saveClassifier = False):
 """
 def initEverything(loadClassifier = False, saveClassifier = False, loadVectorizer = True):
     catIDX = 0
-    processor = load_data.DataPreprocessor(labelClasses, categories, loadVectorizer)
+    processor = load_data.DataPreprocessor(loadVectorizer)
     for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():#labelClasses, categories):
         cat = categories[catIDX]
         logging.info("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
