@@ -52,7 +52,7 @@ class LabelClassifier:
             if saveToFile == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
                 joblib.dump(voting, '../trainedClassifier/VotingClassifier',compress=9)
-            print("> dumped Classifier: {}".format(self.fileLocation))
+                print("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
     def predict(self, X_test):

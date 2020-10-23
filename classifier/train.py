@@ -1,8 +1,5 @@
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import seaborn as sn
-import joblib
+
 
 import loadDataAntmap
 import fileManipulation
@@ -10,8 +7,8 @@ import loadData
 import label_classifier
 
 labelClasses = ["enhancement", "bug", "doku", "api"]
-categories = [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
-trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]  # This method returns X_train, X_test, y_train, y_test, of which 70% are trainingdata and 30% for testing
+categories = [("doku", "bug")]
+trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]  
 
 """
     Description: This method is used to init the classifier using an antmap
@@ -42,8 +39,8 @@ def initWithAntMap(loadClassifier = False, saveClassifier = False):
 """
 def initEverything(loadClassifier = False, saveClassifier = False, loadVectorrizer = True):
     catIDX = 0
-    hue = loadData.DataPreprocessor(labelClasses, categories, loadVectorrizer)
-    for X_train, X_test, y_train, y_test in hue.getTrainingAndTestingData2():#labelClasses, categories):
+    processor = loadData.DataPreprocessor(labelClasses, categories, loadVectorrizer)
+    for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():
         cat = categories[catIDX]
         print("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
         lblClassif = label_classifier.LabelClassifier(cat)
@@ -53,9 +50,8 @@ def initEverything(loadClassifier = False, saveClassifier = False, loadVectorriz
 
         prediction2 = lblClassif.stackingPrediction(X_test)
         print("► ensemble-score:{}\n".format(np.mean(prediction2 == y_test)))
-        #hue.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
         catIDX += 1
 
 
-initEverything()
-#initWithAntMap()
+#initEverything()
+initWithAntMap()
