@@ -128,37 +128,17 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
             logging.debug(i)
             yield self.train_test_split(j[0], j[1])
 
-    def createAntMapAndDocumentView(self, Xpredicted, yTest, Xtrain, category):
+    def createAntMap(self, tmpIncList, category, classificationMistakes, antmap):
         """
         Description: This method is used for creating an antmap and saving it to a file
-        Input:  Xpredicted - The predicted label
-                yTest      - the testlabels
-                Xtrain     - the trainings data
-                category   - the corresbonding categories
+        Input: tmpIncList             - lists all indices of wrong classified issues
+               category               - the corresbonding categories
+               classificationMistakes - prepared list of wrong classified issues
+               antmap                 - empty antmap
         """
-        # idee: erst alles auf trainingsdata also "."; danach predicted len auf "-" und dann die fehler auf "X"
-        if not Xpredicted.shape == yTest.shape:
-            raise AttributeError("prediction shape doesn't match test shape")
-        lenTrain = Xtrain.shape[0]
-        lenPred = Xpredicted.shape[0]
-        antmap = self.antmapPreprocessing(lenTrain, lenPred, category)
-
-        # (1,1) || (0,0) => 0; (1,0)=> 1 = predicted category[1] but was category[0]; (0,1)=>-1 = pred. cat.[0] but was cat.[1]
-        classification = Xpredicted-yTest
-        tmpInxList = []
-        classificationMistakes = []
-        for i in range(lenPred):
-            if classification[i] == 0:
-                continue
-            classAs = category[0][0]
-            if classification[i] == 1:
-                classAs = category[0][1]
-            classificationMistakes.append(classAs)
-            tmpInxList.append(i+lenTrain)
-
         wrongClassifiedDocumentIdx = self.findDocument(
-            tmpInxList, category, justReturnIndex=True)
-        wrongClassifiedDocuments = self.findDocument(tmpInxList, category)
+            tmpIncList, category, justReturnIndex=True)
+        wrongClassifiedDocuments = self.findDocument(tmpIncList, category)
         for idx in wrongClassifiedDocumentIdx:
             antmap[idx] = "✖"
         antmap[(int)(len(antmap)/2)] += "\n\n----  ▲ {} --------- {} ▼  ----\n\n".format(
@@ -170,7 +150,36 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         self.saveAntmapToFile("new_antmap{}.txt".format(
             nameAddon), " ".join(antmap))
 
-    def antmapPreprocessing(self, lenTrain, lenPred, category):
+    def prepareAntMap(self, Xpredicted, yTest, Xtrain, category):
+        """
+        Description: This method is used for preparing the antmap data.
+        Input:  Xpredicted - The predicted label
+                yTest      - the testlabels
+                Xtrain     - the trainings data
+                category   - the corresbonding categories
+        """
+        # idee: erst alles auf trainingsdata also "."; danach predicted len auf "-" und dann die fehler auf "X"
+        if not Xpredicted.shape == yTest.shape:
+            raise AttributeError("prediction shape doesn't match test shape")
+        lenTrain = Xtrain.shape[0]
+        lenPred = Xpredicted.shape[0]
+        antmap = self.antMapPreprocessing(lenTrain, lenPred, category)
+
+        # (1,1) || (0,0) => 0; (1,0)=> 1 = predicted category[1] but was category[0]; (0,1)=>-1 = pred. cat.[0] but was cat.[1]
+        classification = Xpredicted-yTest
+        tmpIncList = []
+        classificationMistakes = []
+        for i in range(lenPred):
+            if classification[i] == 0:
+                continue
+            classAs = category[0][0]
+            if classification[i] == 1:
+                classAs = category[0][1]
+            classificationMistakes.append(classAs)
+            tmpIncList.append(i+lenTrain)
+        self.createAntMap(tmpIncList, category, classificationMistakes, antmap)
+
+    def antMapPreprocessing(self, lenTrain, lenPred, category):
         """
         Description: This method is used preporcessing the antmap array i.e. how it should be logging.infoed
         Input:  lenTrain: int       length of the trainingsdata

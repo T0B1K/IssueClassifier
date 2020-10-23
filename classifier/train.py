@@ -24,7 +24,7 @@ def initWithAntMap(loadClassifier = False, saveClassifier = False):
         lblClassif = label_classifier.LabelClassifier(cat)
         lblClassif.trainingClassifier(X_train, y_train, loadClassifier, saveClassifier)
         prediction = lblClassif.predict(X_test)
-        amp.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
+        amp.prepareAntMap(prediction, y_test, X_train, [cat])
         logging.info("► ensemble-score:{}\n".format(numpy.mean(prediction == y_test)))
 
         catIDX += 1
