@@ -1,14 +1,14 @@
-import numpy as np
+import numpy
 
 
-import loadDataAntmap
-import fileManipulation
-import loadData
+import load_data_antmap
+import file_manipulation
+import load_data
 import label_classifier
 
 labelClasses = ["enhancement", "bug", "doku", "api"]
 categories = [("doku", "bug")]
-trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]  
+trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]  
 
 """
     Description: This method is used to init the classifier using an antmap
@@ -17,16 +17,16 @@ trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentag
     Output: 
 """
 def initWithAntMap(loadClassifier = False, saveClassifier = False):
-    amp = loadDataAntmap.AntMapPreprozessor(labelClasses, categories)
+    amp = load_data_antmap.AntMapPreprozessor(labelClasses, categories)
     catIDX = 0
 
     for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData(labelClasses, categories):
         cat = categories[catIDX]
         lblClassif = label_classifier.LabelClassifier(cat)
-        lblClassif.trainClassifier(X_train, y_train, loadClassifier, saveClassifier)
+        lblClassif.trainingClassifier(X_train, y_train, loadClassifier, saveClassifier)
         prediction = lblClassif.predict(X_test)
         amp.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
-        print("->> ensemble-score:{}\n".format(np.mean(prediction == y_test)))
+        print("->> ensemble-score:{}\n".format(numpy.mean(prediction == y_test)))
 
         catIDX += 1
 
@@ -34,22 +34,22 @@ def initWithAntMap(loadClassifier = False, saveClassifier = False):
     Description: This method is used to init the classifier without using an Ant map
     Input:  loadClassifier :Bool  load the classifier
             saveClassifier :Bool  save the classifier
-            loadVectorrizer:Bool  load the vectorrizer
+            loadVectorizer:Bool  load the vectorizer
     Output: 
 """
-def initEverything(loadClassifier = False, saveClassifier = False, loadVectorrizer = True):
+def initEverything(loadClassifier = False, saveClassifier = False, loadVectorizer = True):
     catIDX = 0
-    processor = loadData.DataPreprocessor(labelClasses, categories, loadVectorrizer)
+    processor = load_data.DataPreprocessor(labelClasses, categories, loadVectorizer)
     for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():
         cat = categories[catIDX]
         print("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
         lblClassif = label_classifier.LabelClassifier(cat)
-        lblClassif.trainClassifier(X_train, y_train, loadClassifier)
+        lblClassif.trainingClassifier(X_train, y_train, loadClassifier)
         prediction = lblClassif.predict(X_test)
         lblClassif.accuracy(X_test, y_test, prediction)
 
         prediction2 = lblClassif.stackingPrediction(X_test)
-        print("► ensemble-score:{}\n".format(np.mean(prediction2 == y_test)))
+        print("► ensemble-score:{}\n".format(numpy.mean(prediction2 == y_test)))
         catIDX += 1
 
 

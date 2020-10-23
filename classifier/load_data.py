@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy
 import nltk
 
 from sklearn import metrics
@@ -8,15 +8,15 @@ from sklearn.metrics import plot_confusion_matrix
 import json
 import joblib
 import vectorizer
-import fileManipulation
+import file_manipulation
 
 """
 Description: This class is used to preprocess the data 
 """
-class DataPreprocessor(vectorizer.Vectorrizer):
+class DataPreprocessor(vectorizer.Vectorizer):
     def __init__(self, labelClasses, categories, loadVec=True, saveVec=False):
         super().__init__(labelClasses)
-        self.trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]
+        self.trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]
         self.labelClasses = labelClasses
         self.categories = categories
         self.reverseData = []
@@ -29,11 +29,11 @@ class DataPreprocessor(vectorizer.Vectorrizer):
           y :List[String]       The corresponding label { 0, 1 }
     """
     def train_test_split(self, X, y):
-        np.random.seed(fileManipulation.FileManipulation.values["randomSeed"])
+        numpy.random.seed(file_manipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
         threshold = int(self.trainingPercentage*X.shape[0])
         # this is a random permutation
-        rnd_idx = np.random.permutation(X.shape[0])
+        rnd_idx = numpy.random.permutation(X.shape[0])
         # just normal array slices
 
         X_vectorrized = self.Vecotrizer.transform(X)
@@ -75,18 +75,18 @@ class DataPreprocessor(vectorizer.Vectorrizer):
         # TODO free memory
         dataPerClassInB = (int)(classAsize/(len(categorieArray)-1))
         print("dataPerClassInB: {}".format(dataPerClassInB))
-        classB = np.array([])
+        classB = numpy.array([])
         for category in categorieArray[1:]:
-            classB = np.append(classB, self.getRandomDocs(category, dataPerClassInB))
+            classB = numpy.append(classB, self.getRandomDocs(category, dataPerClassInB))
             print("classB size = {} Byte".format(classB.itemsize))
 
         classBsize = classB.shape[0]
-        y = np.ones(classBsize)
+        y = numpy.ones(classBsize)
         # Important, A is appended after B, means X = [(b,...,n), a]
         if (classAsize > classBsize):
-            y = np.append(y, np.zeros(classBsize))
-            X = np.append(self.getRandomDocs(categorieArray[0], classBsize), classB)
+            y = numpy.append(y, numpy.zeros(classBsize))
+            X = numpy.append(self.getRandomDocs(categorieArray[0], classBsize), classB)
         else:
-            y = np.append(y, np.zeros(classAsize))  # A might be smaller
-            X = np.append(self.openFile(path), classB)
+            y = numpy.append(y, numpy.zeros(classAsize))  # A might be smaller
+            X = numpy.append(self.openFile(path), classB)
         return self.train_test_split(X, y)

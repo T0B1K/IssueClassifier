@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import numpy as np
+import numpy
 import nltk
 
 from sklearn import metrics
@@ -12,7 +12,7 @@ import json
 import joblib
 
 import vectorizer
-import fileManipulation
+import file_manipulation
 
 """
 This class is used to get a different AntMapPreprozessor - to generate an antmap
@@ -20,7 +20,7 @@ It is only used for sanity checking purposes
 """
 
 
-class AntMapPreprozessor(vectorizer.Vectorrizer):
+class AntMapPreprozessor(vectorizer.Vectorizer):
     """
     Description: This is the constructor of the class AntMapPreprozessor
     Input:  labelClasses List[String]                   the classes for the labels ["bug", "doku", "api", "enhancement"]
@@ -31,7 +31,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         self.reverseData = []
         self.labelClasses = labelClasses
         self.categories = categories
-        self.trainingPercentage = fileManipulation.FileManipulation.values["trainingPercentage"]
+        self.trainingPercentage = file_manipulation.FileManipulation.values["trainingPercentage"]
 
     """
     Description: This method is used to load the (data/documents) from the label classes
@@ -66,8 +66,8 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             minLen = min(len(X1), len(X2))
             if output:
                 print("minlen: {}".format(minLen))
-            X = np.append(X1[:minLen], X2[:minLen])
-            y = np.append(np.zeros(minLen), np.ones(minLen))
+            X = numpy.append(X1[:minLen], X2[:minLen])
+            y = numpy.append(numpy.zeros(minLen), numpy.ones(minLen))
             yield (name1, name2), (X, y)
 
     """
@@ -81,11 +81,11 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
     """
 
     def train_test_split(self, X, y):
-        np.random.seed(fileManipulation.FileManipulation.values["randomSeed"])
+        numpy.random.seed(file_manipulation.FileManipulation.values["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
         threshold = int(self.trainingPercentage*X.shape[0])
         # this is a random permutation
-        rnd_idx = np.random.permutation(X.shape[0])
+        rnd_idx = numpy.random.permutation(X.shape[0])
         # just normal array slices
         X_unvectorized_train = X[rnd_idx[:threshold]]
         X_unvectorized_test = X[rnd_idx[threshold:]]
@@ -172,9 +172,9 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             category[0][0], category[0][1])
         nameAddon = "_{}-{}".format(category[0][0], category[0][1])
 
-        self.saveWrongClassifiedToFile("newWrongClassifiedDocuments{}.json".format(
+        self.saveWrongClassifiedToFile("wrong_classified_{}.json".format(
             nameAddon), zip(classificationMistakes, wrongClassifiedDocuments))
-        self.saveAntmapToFile("newAntmap{}.txt".format(
+        self.saveAntmapToFile("new_antmap{}.txt".format(
             nameAddon), " ".join(antmap))
 
 
@@ -201,10 +201,10 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
     """
 
     def getAllDocs(self):
-        listOfDocuments = np.empty()
+        listOfDocuments = numpy.empty()
         for lblClass in self.labelClasses:
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)
-            listOfDocuments = np.append(listOfDocuments, tmp)
+            listOfDocuments = numpy.append(listOfDocuments, tmp)
         print(listOfDocuments.shape)
         return listOfDocuments

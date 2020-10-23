@@ -1,13 +1,13 @@
-import loadClassifier
-import numpy as np
+import load_classifier
+import numpy
 
 class ClassificationTree:
     """ This class provides a classification tree """
     def __init__(self,labelClasses):
         """
-        Description: Constructor for Classification threes
+        Description: Constructor for classification trees
         Input: List[String] of labels
-        Output: Classification three object
+        Output: ClassificationTree object
         """
         self.rootNode = rootNode(labelClasses)
         
@@ -26,17 +26,17 @@ class ClassificationTree:
     
 
 class Node:
-    """ Class provides a Node implementation for the ClassificationThree """
+    """ Class provides a node implementation for the ClassificationTree """
 
     def __init__(self,labelClasses,knowledge):
         """
-        Description: Constructor for Node objects
+        Description: Constructor for node objects
         Input:  labelClasses: array of labels as Strings
                 knowledge: array of checked labels by parent Nodes
         Output: Returns Node object
         """
         self.labelClasses = labelClasses[0]
-        self.classifier = loadClassifier.getClassifier(labelClasses.extend(knowledge))
+        self.classifier = load_classifier.getClassifier(labelClasses.extend(knowledge))
         self.knowledge = knowledge
 
         if not labelClasses:
@@ -63,11 +63,11 @@ class Node:
             else:
                 torightChild.append(issue)
         if self.rightChild is None or self.rightChild is None:
-            return np.concatenate((toleftChild,torightChild,),axis= 0)
-        return np.concatenate((self.leftChild.classify(toleftChild),self.rightChild.classify(torightChild)),axis= 0)
+            return numpy.concatenate((toleftChild,torightChild,),axis= 0)
+        return numpy.concatenate((self.leftChild.classify(toleftChild),self.rightChild.classify(torightChild)),axis= 0)
 
 class rootNode:
-    """ This class provides the implemantation of the rootNode for the Classification Tree """
+    """ This class provides the implemantation of the rootNode for the classification tree """
     def __init__(self, labelClasses):
         """
         Description: Constructor for rootNode objects
@@ -75,7 +75,7 @@ class rootNode:
         Output: rootNode Object
         """
         self.labelClasses = labelClasses[0:2]
-        self.classifier = loadClassifier.getClassifier(labelClasses)
+        self.classifier = load_classifier.getClassifier(labelClasses)
         self.leftChild = Node(labelClasses[2:],labelClasses[0])
         self.rightChild = Node(labelClasses[2:],labelClasses[1])
     
@@ -96,8 +96,8 @@ class rootNode:
                 issue[1].append(self.labelClasses[1])
                 torightChild.append(issue)
         if self.rightChild is None or self.rightChild is None:
-            return np.concatenate((toleftChild,torightChild,),axis= 0)
-        return np.concatenate((self.leftChild.classify(toleftChild),self.rightChild.classify(torightChild)),axis= 0)
+            return numpy.concatenate((toleftChild,torightChild,),axis= 0)
+        return numpy.concatenate((self.leftChild.classify(toleftChild),self.rightChild.classify(torightChild)),axis= 0)
             
 
     

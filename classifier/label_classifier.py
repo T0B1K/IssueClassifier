@@ -1,18 +1,18 @@
 import joblib
 import matplotlib.pyplot as plt
-import numpy as np
+
 from sklearn.ensemble import RandomForestClassifier, VotingClassifier
 from sklearn.kernel_approximation import RBFSampler
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.svm import SVC
 from sklearn.naive_bayes import MultinomialNB
-import loadClassifier
+import load_classifier
 
 class LabelClassifier:
     """Class implemens various label Classifiers """
 
-    def __init__(self, categoryToClassify, pretrained = None, folder2Save = '../trainedClassifier/'):
+    def __init__(self, categoryToClassify, pretrained = None, folder2Save = '../trained_classifiers/'):
         """
         Description: Constructor for Label Classier 
         Input:  filename name of the file
@@ -30,7 +30,7 @@ class LabelClassifier:
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainClassifier(self, X_train, y_train,loadClassifier = False, saveToFile = False):
+    def trainingClassifier(self, X_train, y_train, loadClassifier = False, saveToFile = False):
         """
         Description: Constructor for Label Classier 
         Input:  X_train training documents
@@ -42,7 +42,7 @@ class LabelClassifier:
         if loadClassifier == True:
             try:
                 self.trainedEstimator = joblib.load(self.fileLocation)
-                voting = loadClassifier.getVotingClassifier()
+                voting = load_classifier.getVotingClassifier()
             except:
                 raise("load voting classifier failed")
                 
@@ -51,7 +51,7 @@ class LabelClassifier:
             voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
             if saveToFile == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
-                joblib.dump(voting, '../trainedClassifier/VotingClassifier',compress=9)
+                joblib.dump(voting, '../trained_classifiers/voting_classifier',compress=9)
                 print("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
@@ -64,7 +64,7 @@ class LabelClassifier:
         print("> predicting")
         return self.trainedEstimator.predict(X_test)
 
-    def generateFilename(self, folder = '../trainedClassifier/'):
+    def generateFilename(self, folder = '../trained_classifiers/'):
         """
         Description: Method generates Filename for classifier
         Input:  Nothing
