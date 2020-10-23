@@ -165,7 +165,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
             category[0][0], category[0][1])
         nameAddon = "_{}-{}".format(category[0][0], category[0][1])
 
-        self.saveWrongClassifiedToFile("wrong_classified_{}.json".format(
+        self.saveWrongClassifiedToFile("wrong_classified{}.json".format(
             nameAddon), zip(classificationMistakes, wrongClassifiedDocuments))
         self.saveAntmapToFile("new_antmap{}.txt".format(
             nameAddon), " ".join(antmap))
