@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import nltk
+import logging
 
 from sklearn import metrics
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -35,7 +36,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
 
     """
     Description: This method is used to load the (data/documents) from the label classes
-    Input: consoleOutput : Boolean (optional) (true default) determines, wether an informative console output should be printed or not
+    Input: consoleOutput : Boolean (optional) (true default) determines, wether an informative console output should be logging.infoed or not
     Output: List[String] loaded documents from corresponding files
     """
 
@@ -43,12 +44,12 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         listOfDocuments = []
         for lblClass in self.labelClasses:
             if consoleOutput:
-                print(lblClass)
+                logging.debug(lblClass)
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)
             listOfDocuments.append(tmp)
             if consoleOutput:
-                print("> {} issues in {}".format(len(tmp), lblClass))
+                logging.debug("> {} issues in {}".format(len(tmp), lblClass))
         return listOfDocuments
 
     """
@@ -65,7 +66,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             X2 = documents[idx2]
             minLen = min(len(X1), len(X2))
             if output:
-                print("minlen: {}".format(minLen))
+                logging.debug("minlen: {}".format(minLen))
             X = np.append(X1[:minLen], X2[:minLen])
             y = np.append(np.zeros(minLen), np.ones(minLen))
             yield (name1, name2), (X, y)
@@ -90,8 +91,8 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         X_unvectorized_train = X[rnd_idx[:threshold]]
         X_unvectorized_test = X[rnd_idx[threshold:]]
 
-        #print(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]])
-        # print(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]]
+        #logging.info(X_unvectorized_test[3] == X[rnd_idx[3+X_unvectorized_train.shape[0]]])
+        # logging.info(rnd_idx)                #mapping X_train[idx] = X[ rnd_idx[idx]]
         # rnd_idx = reverseData[i][1]
         self.reverseData.append(rnd_idx)
 
@@ -131,7 +132,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
         self.categories = categories
         docs = self.loadDataFromClasses()
         for i, j in self.dataCategorie(docs):
-            print(i)
+            logging.debug(i)
             yield self.train_test_split(j[0], j[1])
 
     """
@@ -179,7 +180,7 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
 
 
     """
-    Description: This method is used preporcessing the antmap array i.e. how it should be printed
+    Description: This method is used preporcessing the antmap array i.e. how it should be logging.infoed
     Input:  lenTrain: int       length of the trainingsdata
             lenPred: int        length of the predicted data
             category: (string, string)  categorie labels
@@ -206,5 +207,4 @@ class AntMapPreprozessor(vectorizer.Vectorrizer):
             path = "{}/{}.json".format(self.folderName, lblClass)
             tmp = self.openFile(path)
             listOfDocuments = np.append(listOfDocuments, tmp)
-        print(listOfDocuments.shape)
         return listOfDocuments

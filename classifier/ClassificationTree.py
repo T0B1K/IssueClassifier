@@ -1,5 +1,6 @@
 import loadClassifier
 import numpy as np
+import logging
 
 class ClassificationTree:
     """ This class provides a classification tree """

@@ -1,7 +1,7 @@
 import json
 import joblib
 import numpy as np
-
+import logging
 
 
 """ Class provies methods for loading and writthing files with additional parameters """
@@ -52,7 +52,7 @@ class FileManipulation:
         Output: Return nothing
         """
         path = self.outputFolder+"/"+filename
-        print(">\tsaving antmap in {}".format(path))
+        logging.info(">\tsaving antmap in {}".format(path))
         f = open(path, "w", encoding='utf-8', errors='ignore')
         f.write(data)
         f.close()
@@ -65,7 +65,7 @@ class FileManipulation:
         Output: Nothing
         """
         path = filename  # self.outputFolder+"/"+filename
-        print(">\tsaving Wrong Classified Texts in {}".format(path))
+        logging.info(">\tsaving Wrong Classified Texts in {}".format(path))
         f = open(path, "w", encoding='utf-8', errors='ignore')
         jsonData = []
         for classified, document in data:

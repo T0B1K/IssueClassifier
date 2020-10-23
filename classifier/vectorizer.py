@@ -1,6 +1,7 @@
 from sklearn.feature_extraction.text import TfidfVectorizer
 from nltk.stem import WordNetLemmatizer, PorterStemmer
 # nltk.download('wordnet')
+import logging
 
 import joblib
 import numpy as np
@@ -100,6 +101,6 @@ class Vectorrizer(fileManipulation.FileManipulation):
         docCount = round(sampleSize / length)
         docs = np.empty(0)
         for label in self.labelClasses:
-            print("docs size: {} Byte".format(docs.itemsize))
+            logging.debug("docs size: {} Byte".format(docs.itemsize))
             docs = np.append(self.getRandomDocs(label, docCount), docs)
         return docs
