@@ -1,6 +1,6 @@
 import json
 import joblib
-import numpy as np
+import numpy
 import logging
 
 
@@ -25,7 +25,7 @@ class FileManipulation:
         Output: Return List[String] of documents"""
         path = "{}/{}.json".format(self.folderName, label)
         data = self.openFile(path, elementcount)
-        perm = np.random.permutation(data.shape[0])
+        perm = numpy.random.permutation(data.shape[0])
         return data[perm]
 
     def openFile(self, filename, elementcount=values["elementcount"]):
@@ -40,7 +40,7 @@ class FileManipulation:
         # we just take all the "text" from the JSON
         documents = list(map(lambda entry: entry["text"], json.loads(data)))[
             :elementcount]
-        return np.array(documents)
+        return numpy.array(documents)
 
     def saveAntmapToFile(self, filename, data):
         """
