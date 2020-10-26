@@ -14,7 +14,8 @@
             "labels": ["enhancement","bug"]
         }
     ],
-
+    "issueFolder": "../issues",
+    "outputFolder": ".",
     "voting":"voting_classifier",  
     "vectorizerFoler": "classifier",
     "vecotrizer_locations": "vectorizer.vz",
