@@ -32,9 +32,9 @@ def initWithAntMap():
             loadVectorizer:Bool  load the vectorizer
     Output: 
 """
-def initEverything(loadVectorizer:bool = True):
+def initEverything():
     catIDX:int = 0
-    processor = load_data.DataPreprocessor(loadVectorizer)
+    processor = load_data.DataPreprocessor()
     for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():
         cat:list[str] = categories[catIDX]
         logging.info("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
