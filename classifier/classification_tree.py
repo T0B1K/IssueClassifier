@@ -36,15 +36,17 @@ class Node:
         Output: Returns Node object
         """
         self.labelClasses = labelClasses[0]
-        self.classifier = load_classifier.getClassifier(labelClasses.extend(knowledge))
+        self.classifier = None #load_classifier.getClassifier(labelClasses.extend(knowledge))
         self.knowledge = knowledge
+        print("Label Classes: {}".format(self.labelClasses))
+        print("Knowledge: {}".format(self.knowledge))
 
-        if not labelClasses:
+        if len(labelClasses) == 1:
             self.leftChild = None
             self.rightChild = None
         else:
-            self.leftChild = Node (labelClasses[1:],knowledge.append("{}".format(self.labelClasses)))
-            self.rightChild =Node (labelClasses[1:],knowledge.append("not{}".format(self.labelClasses)))
+            self.leftChild = Node (labelClasses[1:],self.knowledge + [("{}".format(self.labelClasses))])
+            self.rightChild = Node (labelClasses[1:],self.knowledge + [("not{}".format(self.labelClasses))])
 
 
     def classify (self,data):
@@ -57,7 +59,7 @@ class Node:
         torightChild = []
         for issue in data:
             prediction = self.classifier.predict(issue[0])
-            if prediction[0] is 0:
+            if prediction[0] == 0:
                 issue[1].append(self.labelClasses[0])
                 toleftChild.append(issue)
             else:
@@ -75,9 +77,10 @@ class rootNode:
         Output: rootNode Object
         """
         self.labelClasses = labelClasses[0:2]
-        self.classifier = load_classifier.getClassifier(labelClasses)
-        self.leftChild = Node(labelClasses[2:],labelClasses[0])
-        self.rightChild = Node(labelClasses[2:],labelClasses[1])
+        self.classifier = None #load_classifier.getClassifier(labelClasses)
+        print(self.labelClasses)
+        self.leftChild = Node(labelClasses[2:],[labelClasses[0]])
+        self.rightChild = Node(labelClasses[2:],[labelClasses[1]])
     
     def classify (self,data):
         """
@@ -89,7 +92,7 @@ class rootNode:
         torightChild = []
         for issue in data:
             prediction = self.classifier.predict(issue[0])
-            if prediction[0] is 0:
+            if prediction[0] == 0:
                 issue[1].append(self.labelClasses[0])
                 toleftChild.append(issue)
             else:
@@ -97,10 +100,10 @@ class rootNode:
                 torightChild.append(issue)
         if self.rightChild is None or self.rightChild is None:
             return numpy.concatenate((toleftChild,torightChild,),axis= 0)
-        return numpy.concatenate((self.leftChild.classify(toleftChild),self.rightChild.classify(torightChild)),axis= 0)
+        return numpy.concatenate((self.leftChild.classify(toleftChild),self.rightChild.classify(torightChild)),axis = 0)
             
-
-    
-
+print("Starting...")
+tree = ClassificationTree(["bug","enhancement","api","doku"])
+print("Ending.....")
 
 
