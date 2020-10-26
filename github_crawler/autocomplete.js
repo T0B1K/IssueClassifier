@@ -1,4 +1,4 @@
-let $ = (x) => document.getElementById(x); //für die, die unbedingt JQuery wollen
+let $ = (x) => document.getElementById(x);
 let $$ = (x) => $(x).value;
 
 function autocomplete(inp, arr) {

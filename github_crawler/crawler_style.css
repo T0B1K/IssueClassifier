@@ -1,0 +1,115 @@
+/*The grid attributes allow the crawler and the analysis tool to be displayed in the same row:*/
+body {
+    font: 12px Arial;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 50% auto;
+    margin: 0;
+}
+
+/*Wrapper for the crawler tool:*/
+#crawlerWrapper{
+    border: 2px solid black;
+    margin: 5%;
+    margin-right: 2.5%;
+    padding: 8%;
+    height: auto;
+}
+
+/*Wrapper for the analysis tool:*/
+#analysisWrapper{
+    border: 2px solid black;
+    margin: 5%;
+    margin-left: 2.5%;
+    padding: 8%;
+    height: auto;
+} 
+
+/*Adds a small gap to the other elements:*/
+#previousNextButtons{
+    margin-top: 2%;
+}
+
+/*Adds a small gap to the other elements:*/
+#addLabel{
+    margin-top: 1%;
+}
+
+/*Adds a small gap to the other list elements:*/
+*[id^='isLbl']{
+    margin-right: 1%;
+    margin-bottom: 1%;
+}
+
+/*Adds a small gap to the other list elements:*/
+*[id^='toLbl']{
+    margin-left: 1%;
+    margin-bottom: 1%;
+}
+
+/*Removes the bullet points from the list elements:*/
+ul {
+    list-style: none;
+}
+
+/*Defines the default size of the analysis tool textarea:*/
+textarea {
+    width: 100%;
+    height: 30vh;
+}
+
+/*Adds a small gap to the other elements:*/
+#issueLabel{
+    margin-top: 2%;
+    margin-bottom: 2%;
+}
+
+/*Makes the disabled input field look normal:*/
+input:disabled{
+    background-color: white;
+    border: solid 1px black;
+    color: black;
+}
+
+/*Makes the disabled textarea look normal:*/
+textarea:disabled{
+    background-color: white;
+    border: solid 1px black;
+    color: black;
+}
+
+/*The container must be positioned relative:*/
+.autocomplete {
+    position: relative;
+    display: inline-block;
+}
+
+/*Position the autocomplete items to be the same width as the container:*/
+.autocomplete-items {
+    position: absolute;
+    border-bottom: none;
+    border-top: none;
+    z-index: 99;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 12vw;
+}
+
+/*Recommends label names that have been used before:*/
+.autocomplete-items div {
+    cursor: pointer;
+    background-color: #fff;
+    border-bottom: 1px solid #d4d4d4;
+}
+
+/*When hovering an item:*/
+.autocomplete-items div:hover {
+    background-color: #e9e9e9;
+}
+
+/*When navigating through the items using the arrow keys:*/
+.autocomplete-active {
+    background-color: DodgerBlue !important;
+    color: #ffffff;
+}

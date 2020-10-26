@@ -1,42 +1,59 @@
-<html >
+<!DOCTYPE html>
 
+<html lang="de">
 <head>
-    <title>Issue Crawler/Analysis Tool</title>
+    <title>Issue Crawler/Analyse Tool</title>
     <meta name="description" content="Tool to crawl and sanity check issues from GitHub Repositories.">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="minimalist_css.css">
+    <link rel="stylesheet" href="crawler_style.css">
 </head>
 
 <body>
-    <div>
-        <div id="txfCurrentPage">-</div>
-        <div>Max requests (auto ist 6) <input id="txfMaxRequests" placeholder="6"></div>
-        <h4>entweder diese beiden Felder ausfüllen</h4>
-        <label>Username des Repo Erstellers: <input id="inputUserName" placeholder="Bob"></label></br>
-        <label>Repository name: <input id="inputRepoName" placeholder="meinRepo"></label></br>
-        <h4>oder dieses</h4>
-        <label>Username und Repo name<input id="inputUserNameAndRepo" placeholder="JabRef / jabref"></label></br>
+    <!-- This wrapper contains the crawler tool:-->
+    <div id="crawlerWrapper">
+        <h1>Crawler</h1>
+        <h4> 
+            Mit diesem Werkzeug kann man Issues aus GitHub Repositories crawlen. Optional kann man außerdem Labels angeben, welche in dem
+            Repository genutzt werden, um nur Issues einer bestimmten Klasse herunterzuladen. Das Label kann man im nebenliegenden 
+            Textfeld umbenennen.
+        </h4><br>
+        <!-- Input fields for the GitHub username, repository and the amount of requests:-->
+        <div id="requestStatus"></div>
+        <label>Username: <input id="inputUserName"></label><br><br>
+        <label>Repository: <input id="inputRepoName"></label><br><br>
+        <div>Max requests (auto ist 6): <input id="txfMaxRequests"></div>
         <h4>Optional:</h4>
+        <!-- List for the labels and a button to add more rows to the list:-->
         <ul id="labelList">
             <li>
-                <input type="text" id="isLbl0" placeholder="ist label">
-                <div class="autocomplete"><input id="toLbl0" placeholder=" soll Label (Doku,...)"></div>
+                <input type="text" id="isLbl0" placeholder="hat Label"><div class="autocomplete"><input id="toLbl0" placeholder="Label umbenennen zu..."></div>
             </li>
             <input id="addLabel" type="button" value="+" onclick="createListElement()">
         </ul>
+        <!-- Button to start crawling:-->
         <input type="button" onclick="clickedOnStart()" value="start">
     </div>
-    <div>
-        <h1>sanity check</h1>
-        <input id="lblOut"><br>
-        <textarea id="txaText"></textarea><br>
-        <button onclick="nextIssue()">prev</button><span id="txfPage" style="width: 50px;">0</span><button
-            onclick="nextIssue(true)">next</button>
-    </div>
-    <div>
-        <h2>Hier File "hochladen" um Statistiken zu sehen</h2>
+
+    <!-- This wrapper contains the analysis tool:-->
+    <div id="analysisWrapper">
+        <h1>Analyse</h1>
+        <h4>
+            Hier werden die soeben heruntergeladenen Issues angezeigt. Außerdem kann man hier andere Dateien mit Issues hochladen, 
+            um diese nachträglich zu analysieren.
+        </h4>
+        <!-- Button for uploading JSON-files with issues:-->
         <input type="file" onchange="uploadedFile()" id="fileUploader"><br>
-        <span id="txfIssueCount"></span>
+        <!-- Shows the labels of the JSON-file:-->
+        <div id="issueLabel">
+            <span id="txfIssueCount">Label:</span>
+            <input id="lblOut" disabled><br>
+        </div>
+        <!-- Shows one issue of the JSON-file:-->
+        <textarea id="txaText" disabled></textarea><br>
+        <!-- Change the currently displayed issue:-->
+        <div id="previousNextButtons">
+            <button onclick="nextIssue()">&#8882;</button> <span id="txfPage" style="width: 50px;">0</span> <button onclick="nextIssue(true)">&#8883;</button>
+        </div>
     </div>
 
     <script src="autocomplete.js"></script> 

@@ -1,5 +1,8 @@
 uploadedData = null;
 
+/**
+ * Allows the user to load a file into the analysis tool.
+ */
 function uploadedFile() {
     let file = $("fileUploader").files[0],
         fileReader = new FileReader();
@@ -15,10 +18,10 @@ function uploadedFile() {
             uploadedData.map(x => x.classified_as).forEach(x => set.add(x))
             labelsSet = set;
         }
-        displayPage = 0;
-        let texts = uploadedData.map(x => { return { "text": x.text, "labels": ["class. as " + x.classified_as] } })
+        displayIssue = 0;
+        let texts = uploadedData.map(x => { return { "text": x.text, "labels": ["klassifiziert als " + x.classified_as] } })
         dataToBeStored = new Set();
         texts.forEach(x => dataToBeStored.add(x))
-        $("txfIssueCount").innerText = `-> #issues: ${uploadedData.length}\n-> label: ${[...labelsSet]}`;
+        $("txfIssueCount").innerHTML = `Issues: ${uploadedData.length}<br>Labels: ${[...labelsSet]}<br>`;
     };
 }
