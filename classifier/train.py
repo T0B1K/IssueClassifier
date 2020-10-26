@@ -6,20 +6,20 @@ import file_manipulation
 import load_data
 import label_classifier
 
-categories = file_manipulation.FileManipulation.values["categories"] # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
+categories:list = file_manipulation.FileManipulation.values["categories"] # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 """
     Description: This method is used to init the classifier using an antmap
 """
 
 def initWithAntMap():
-    amp = load_data_antmap.AntMapPreprozessor()
-    catIDX = 0
+    amp: AntMapPreprozessor = load_data_antmap.AntMapPreprozessor()
+    catIDX:int = 0
 
     for X_train, X_test, y_train, y_test in amp.getTrainingAndTestingData():
-        cat = categories[catIDX]
-        lblClassif = label_classifier.LabelClassifier(cat)
+        cat:list[str] = categories[catIDX]
+        lblClassif:LabelClassifier = label_classifier.LabelClassifier(cat)
         lblClassif.trainingClassifier(X_train, y_train)
-        prediction = lblClassif.predict(X_test)
+        prediction:numpy.ndarray = lblClassif.predict(X_test)
         amp.prepareAntMap(prediction, y_test, X_train, [cat])
         logging.info("► ensemble-score:{}\n".format(numpy.mean(prediction == y_test)))
 
@@ -32,20 +32,19 @@ def initWithAntMap():
             loadVectorizer:Bool  load the vectorizer
     Output: 
 """
-def initEverything(loadVectorizer = True):
-    catIDX = 0
+def initEverything(loadVectorizer:bool = True):
+    catIDX:int = 0
     processor = load_data.DataPreprocessor(loadVectorizer)
     for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():
-        cat = categories[catIDX]
+        cat:list[str] = categories[catIDX]
         logging.info("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
-        lblClassif = label_classifier.LabelClassifier(cat)
+        lblClassif:LabelClassifier = label_classifier.LabelClassifier(cat)
         lblClassif.trainingClassifier(X_train, y_train)
-        prediction = lblClassif.predict(X_test)
+        prediction:numpy.ndarray = lblClassif.predict(X_test)
         lblClassif.accuracy(X_test, y_test, prediction)
 
-        prediction2 = lblClassif.stackingPrediction(X_test)
+        prediction2:numpy.ndarray = lblClassif.stackingPrediction(X_test)
         logging.info("► ensemble-score:{}\n".format(numpy.mean(prediction2 == y_test)))
-        #hue.createAntMapAndDocumentView(prediction, y_test, X_train, [cat])
         catIDX += 1
 
 
