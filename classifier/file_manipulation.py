@@ -11,21 +11,20 @@ class FileManipulation:
     
     values = json.loads(open("load_config.json").read())
 
-    def __init__(self, outputFolder="."):
+    def __init__(self):
         """Description: Constructor for FileManipulation
         Input:  outputFolder optional path parameter 
         Output: Return FileManipulation object"""
-        self.outputFolder = outputFolder
-        self.folderName = "../issues"
+        self.outputFolder = FileManipulation.values["outputFolder"]
 
-    def getRandomDocs(self, label, elementcount):
+    def getRandomDocs(self, label:str, elementcount:int) -> numpy.ndarray:
         """Description: get random Documents a class
         Input:  label of the document class
                 elementcount amount of documents to load 
         Output: Return List[String] of documents"""
-        path = "{}/{}.json".format(self.folderName, label)
-        data = self.openFile(path, elementcount)
-        perm = numpy.random.permutation(data.shape[0])
+        path:str = "{}/{}.json".format(FileManipulation.values["issueFolder"], label)
+        data:numpy.ndarray = self.openFile(path, elementcount)
+        perm:numpy.ndarray = numpy.random.permutation(data.shape[0])
         return data[perm]
 
     def openFile(self, filename, elementcount=values["elementcount"]):
