@@ -26,7 +26,7 @@ class FileManipulation:
         perm:numpy.ndarray = numpy.random.permutation(data.shape[0])
         return data[perm]
 
-    def openFile(self, filename:str, elementcount:int=values["elementcount"]) -> numpy.ndarray:
+    def openFile(self, filename:str, elementcount:int=values["trainingConstants"]["elementCount"]) -> numpy.ndarray:
         """
         Description: Method loads file 
         Input:  filename name of the file

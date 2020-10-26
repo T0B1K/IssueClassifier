@@ -1,43 +1,64 @@
 {
     "classifierFolder": "../classifier/trained_classifiers",
-    "classifier_locations" : [
+    "classifier_locations": [
         {
             "path": "ensembleClassifier_doku-api.joblib.pkl",
-            "labels": ["doku","api"]
+            "labels": [
+                "doku",
+                "api"
+            ]
         },
         {
             "path": "ensembleClassifier_doku-bug.joblib.pkl",
-            "labels": ["doku","bug"]
+            "labels": [
+                "doku",
+                "bug"
+            ]
         },
         {
-            "path":  "ensembleClassifier_enhancement-bug.joblib.pkl",
-            "labels": ["enhancement","bug"]
+            "path": "ensembleClassifier_enhancement-bug.joblib.pkl",
+            "labels": [
+                "enhancement",
+                "bug"
+            ]
         }
     ],
+    "trainingConstants": {
+        "trainingPercentage": 0.7,
+        "sampleSize": 40,
+        "randomSeed": 2020,
+        "elementCount": 70,
+        "voting": "voting_classifier"
+    },
     "issueFolder": "../issues",
     "outputFolder": ".",
-    "voting":"voting_classifier",  
-    "vectorizerFoler": "classifier",
+    "vectorizerFolder": "classifier",
     "vecotrizer_locations": "vectorizer.vz",
-    "trainingPercentage": 0.7,
-    "sampleSize": 40,
-    "randomSeed": 2020, 
-    "elementcount": 70,
-    "labelClasses": ["enhancement", "bug", "doku", "api"],
-    "categories":[["doku", "bug"]],
+    "labelClasses": [
+        "enhancement",
+        "bug",
+        "doku",
+        "api"
+    ],
+    "categories": [
+        [
+            "doku",
+            "bug"
+        ]
+    ],
     "classifier": {
         "loadClassifier": false,
         "saveClassifier": false,
-        "path":{
-            "saveFolder":"",
-            "loadFolder":""
+        "path": {
+            "saveFolder": "",
+            "loadFolder": ""
         }
     },
-    "vectorrizer":{
-        "saveVectorrizer":false,
-        "loadVectorizer":false,
-        "path":{
-            "saveTo":"../vectorizer.vz"
+    "vectorrizer": {
+        "saveVectorrizer": false,
+        "loadVectorizer": false,
+        "path": {
+            "saveTo": "../vectorizer.vz"
         }
     }
 }

@@ -17,21 +17,21 @@ import file_manipulation
 class LabelClassifier:
     """Class implemens various label Classifiers """
 
-    def __init__(self, categoryToClassify, pretrained = None):
+    def __init__(self, categoryToClassify:list, pretrained = None):
         """
         Description: Constructor for Label Classier 
         Input:  filename name of the file
                 data to save
         Output: Return nothing
         """
-        self.category = categoryToClassify
+        self.category:list = categoryToClassify
         self.estimators = estimators=[('MultinomialNB', MultinomialNB()), \
         ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
         ('sigmoidSVM', SVC(kernel='sigmoid', gamma=1.0)),
         ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
         ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
-        self.fileLocation = self.generateFilename(file_manipulation.FileManipulation.values["classifier"]["path"]["saveFolder"])
+        self.fileLocation:str = self.generateFilename(file_manipulation.FileManipulation.values["classifier"]["path"]["saveFolder"])
         self.stackingEstimator = None
         self.rbfKernel = None
     
@@ -57,10 +57,10 @@ class LabelClassifier:
             if file_manipulation.FileManipulation.values["classifier"]["saveClassifier"] == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
                 joblib.dump(voting, '../trained_classifiers/voting_classifier',compress=9)
-                print("> dumped Classifier: {}".format(self.fileLocation))
+                logging.info("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
-    def predict(self, X_test):
+    def predict(self, X_test) -> numpy.ndarray:
         """
         Description: Method labels data
         Input:  X_test data
@@ -69,7 +69,7 @@ class LabelClassifier:
         logging.info("> predicting")
         return self.trainedEstimator.predict(X_test)
 
-    def generateFilename(self, folder = '../trained_classifiers/'):
+    def generateFilename(self, folder = '../trained_classifiers/') -> str:
         """
         Description: Method generates Filename for classifier
         Input:  Nothing
@@ -77,7 +77,7 @@ class LabelClassifier:
         """
         return "{}ensembleClassifier_{}-{}.joblib.pkl".format(folder, self.category[0], self.category[1])
 
-    def accuracy(self, X_test, y_test, predicted):
+    def accuracy(self, X_test:numpy.ndarray, y_test:numpy.ndarray, predicted:numpy.ndarray):
         """
         Description: Methods plots the accuracy of the trained classifier
         Input:  X_test test documents

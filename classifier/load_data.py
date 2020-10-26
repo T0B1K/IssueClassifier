@@ -25,8 +25,8 @@ class DataPreprocessor(vectorizer.Vectorizer):
         Input X :List[String]       The documents
             y :List[String]       The corresponding label { 0, 1 }
         """
-        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingPercentage"]
-        numpy.random.seed(file_manipulation.FileManipulation.values["randomSeed"])
+        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
+        numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
