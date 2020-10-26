@@ -41,7 +41,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         for lblClass in self.labelClasses:
             if consoleOutput:
                 logging.debug(lblClass)
-            path = "{}/{}.json".format(self.folderName, lblClass)
+            path = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], lblClass)
             tmp = self.openFile(path)
             listOfDocuments.append(tmp)
             if consoleOutput:
@@ -200,7 +200,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         """
         listOfDocuments = numpy.empty()
         for lblClass in self.labelClasses:
-            path = "{}/{}.json".format(self.folderName, lblClass)
+            path = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], lblClass)
             tmp = self.openFile(path)
             listOfDocuments = numpy.append(listOfDocuments, tmp)
         return listOfDocuments
