@@ -15,10 +15,9 @@ import file_manipulation
 Description: This class is used to preprocess the data 
 """
 class DataPreprocessor(vectorizer.Vectorizer):
-    def __init__(self, loadVec=True, saveVec=False):
+    def __init__(self):
         super().__init__()
-        self.reverseData = []
-        self.randPerm = []
+        self.reverseData:list = []
 
     def train_test_split(self, X:numpy.ndarray, y:numpy.ndarray) -> tuple:
         """
