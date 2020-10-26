@@ -15,7 +15,6 @@ class FileManipulation:
         """Description: Constructor for FileManipulation
         Input:  outputFolder optional path parameter 
         Output: Return FileManipulation object"""
-        self.outputFolder = FileManipulation.values["outputFolder"]
 
     def getRandomDocs(self, label:str, elementcount:int) -> numpy.ndarray:
         """Description: get random Documents a class
@@ -27,7 +26,7 @@ class FileManipulation:
         perm:numpy.ndarray = numpy.random.permutation(data.shape[0])
         return data[perm]
 
-    def openFile(self, filename, elementcount=values["elementcount"]):
+    def openFile(self, filename:str, elementcount:int=values["elementcount"]) -> numpy.ndarray:
         """
         Description: Method loads file 
         Input:  filename name of the file
@@ -37,39 +36,38 @@ class FileManipulation:
         with open(filename, "r") as file:
             data = file.read()
         # we just take all the "text" from the JSON
-        documents = list(map(lambda entry: entry["text"], json.loads(data)))[
+        documents:list = list(map(lambda entry: entry["text"], json.loads(data)))[
             :elementcount]
         return numpy.array(documents)
 
-    def saveAntmapToFile(self, filename, data):
+    def saveAntmapToFile(self, filename:str, data:str):
         """
         Description: Method to save Antmap to file
         Input:  filename name of the file
                 data to save
         Output: Return nothing
         """
-        path = self.outputFolder+"/"+filename
+        path:str = "{}/{}".format(FileManipulation.values["outputFolder"], filename)
         logging.info(">\tsaving antmap in {}".format(path))
-        f = open(path, "w", encoding='utf-8', errors='ignore')
-        f.write(data)
-        f.close()
+        with open(path, "w", encoding='utf-8', errors='ignore') as f:
+            f.write(data)
 
-    def saveWrongClassifiedToFile(self, filename, data):
+    def saveWrongClassifiedToFile(self, filename:str, data:str):
         """
         Description: Method to save wrong Classified 
         Input:  filename name of the file
                 data to save
         Output: Nothing
         """
-        path = filename  # self.outputFolder+"/"+filename
+        path:str = filename  # self.outputFolder+"/"+filename
         logging.info(">\tsaving Wrong Classified Texts in {}".format(path))
-        f = open(path, "w", encoding='utf-8', errors='ignore')
-        jsonData = []
-        for classified, document in data:
-            jsonData.append({
-                "classified_as": classified,
-                "text": document
-            })
-            # convert into JSON:
-        f.write(json.dumps(jsonData))
-        f.close()
+        with open(path, "w", encoding='utf-8', errors='ignore') as f:
+            jsonData:list = []
+            for classified, document in data:
+                jsonData.append({
+                    "classified_as": classified,
+                    "text": document
+                })
+                # convert into JSON:
+            f.write(json.dumps(jsonData))
+            f.close()
