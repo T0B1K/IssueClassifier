@@ -5,7 +5,7 @@
     <title>Issue Crawler/Analyse Tool</title>
     <meta name="description" content="Tool to crawl and sanity check issues from GitHub Repositories.">
     <meta charset="UTF-8">
-    <link rel="stylesheet" href="crawler_style.css">
+    <link rel="stylesheet" href="style/crawler_style.css">
 </head>
 
 <body>
@@ -31,7 +31,7 @@
             <input id="addLabel" type="button" value="+" onclick="createListElement()">
         </ul>
         <!-- Button to start crawling:-->
-        <input type="button" onclick="clickedOnStart()" value="start">
+        <input id="startButton" type="button" onclick="clickedOnStart()" value="start">
     </div>
 
     <!-- This wrapper contains the analysis tool:-->
@@ -56,9 +56,9 @@
         </div>
     </div>
 
-    <script src="autocomplete.js"></script> 
-    <script src="main_logic.js"></script> 
-    <script src="upload_file.js"></script>   
+    <script src="scripts/autocomplete.js"></script> 
+    <script src="scripts/main_logic.js"></script> 
+    <script src="scripts/upload_file.js"></script>   
 
 </body>
 

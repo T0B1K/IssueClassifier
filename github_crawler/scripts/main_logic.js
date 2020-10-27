@@ -1,19 +1,19 @@
-var dataToBeStored = new Set(), // Contains the crawled issues.
-    labelList = $("labelList"), // Contains the list of all the labels the issues are filtered by. 
-    labelMapLength = 0,         // The amount of specified labels.
-    labelMap = {},              // The set of labels to which the original labels are mapped.
-    requestPage = 1,            // The page number of the requested issue page.
-    displayIssue = 0,           // The number of the currently displayed issue.
-    maxRequest = 6,             // The max. number of requests.
-    username = "",              // The owner of the GitHub Repostory.
-    reponame = "";              // The name of the GitHub Repository.
+var dataToBeStored = new Set(),         // Contains the crawled issues.
+    labelList = elemById("labelList"),  // Contains the list of all the labels the issues are filtered by. 
+    labelMapLength = 0,                 // The amount of specified labels.
+    labelMap = {},                      // The set of labels to which the original labels are mapped.
+    requestPage = 1,                    // The page number of the requested issue page.
+    displayIssue = 0,                   // The number of the currently displayed issue.
+    maxRequest = 6,                     // The max. number of requests.
+    username = "",                      // The owner of the GitHub Repostory.
+    reponame = "";                      // The name of the GitHub Repository.
 
 /**
  * This method is setting the initial values.
  */
 function initValues() {
     dataToBeStored = new Set();
-    labelMapLength = $("labelList").getElementsByTagName("li").length - 1;
+    labelMapLength = elemById("labelList").getElementsByTagName("li").length - 1;
     labelMap = {};
     requestPage = 1;
     displayIssue = 0;
@@ -24,10 +24,10 @@ function initValues() {
  */
 function clickedOnStart() {
     initValues();
-    maxRequest = parseInt($$("txfMaxRequests")) || 6;
-    username = $$("inputUserName").trim();
-    reponame = $$("inputRepoName").trim(); 
-    sendRequest(username, reponame, getAllLabels())
+    maxRequest = parseInt(elemByIdValue("txfMaxRequests")) || 6;
+    username = elemByIdValue("inputUserName").trim();
+    reponame = elemByIdValue("inputRepoName").trim(); 
+    sendRequest(username, reponame, getAllLabels());
 }
 
 /**
@@ -47,9 +47,9 @@ function gotoPage(pageNr) {
     if (displayIssue < 0)
         displayIssue = data.length - displayIssue - 2;
 
-    $("txaText").value = data[displayIssue].text;
-    $("lblOut").value = data[displayIssue].labels.join(",");
-    $("txfPage").innerText = `  ${displayIssue + 1} / ${data.length}  `;
+    elemById("txaText").value = data[displayIssue].text;
+    elemById("lblOut").value = data[displayIssue].labels.join(",");
+    elemById("txfPage").innerText = `  ${displayIssue + 1} / ${data.length}  `;
 }
 
 /**
@@ -76,9 +76,9 @@ function createListElement() {
     li.append(div);
 
     labelList.appendChild(li);
-    labelList.appendChild($("addLabel"));
+    labelList.appendChild(elemById("addLabel"));
 
-    autocomplete($(`toLbl${labelMapLength}`), autocompletionTerms);
+    autocomplete(elemById(`toLbl${labelMapLength}`), autocompletionTerms);
 }
 
 /**
@@ -100,15 +100,15 @@ function getAllLabels() {
 function reqListener() {
     let apiResponse = JSON.parse(this.responseText);
     queryResult(apiResponse)
-    /*Sends a request if there are more than hundred issues left and if the maximum number of requests has not yet been reached:*/
+    /*Sends a request if there are at least hundred issues left and if the maximum number of requests has not yet been reached:*/
     if (apiResponse.length >= 100 && requestPage <= maxRequest) {
-        $("requestStatus").innerHTML = `Requests:${requestPage} von ${maxRequest}<br>Gesammelte Issues:${dataToBeStored.size}<br><br>`;
+        elemById("requestStatus").innerHTML = `Requests:${requestPage} von ${maxRequest}<br>Gesammelte Issues:${dataToBeStored.size}<br><br>`;
         ++requestPage
         sendRequest(username, reponame, getAllLabels())
     } else {
         let name = `${username}_${reponame}`;
-        if ($("toLbl0").value != "") {
-            name += "_" + $("toLbl0").value;
+        if (elemById("toLbl0").value != "") {
+            name += "_" + elemById("toLbl0").value;
         }
         /*Downloads the JSON file with the issues:*/
         download(JSON.stringify([...dataToBeStored]), `${name}.json`, "text/plain");

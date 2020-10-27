@@ -25,6 +25,10 @@ body {
     height: auto;
 } 
 
+#startButton{
+    margin-top: 5%;
+}
+
 /*Adds a small gap to the other elements:*/
 #previousNextButtons{
     margin-top: 2%;
