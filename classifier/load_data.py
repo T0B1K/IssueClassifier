@@ -11,19 +11,27 @@ import joblib
 import vectorizer
 import file_manipulation
 
-"""
-Description: This class is used to preprocess the data 
-"""
 class DataPreprocessor(vectorizer.Vectorizer):
+    """This class is used to preprocess the data before training
+
+    Args:
+        vectorizer (Vectorizer): The Vectorizer is used for creating a feature vector
+    """
     def __init__(self):
+        """This is the constructor to create a DataPreprocessor object
+        """
         super().__init__()
         self.reverseData:list = []
 
     def train_test_split(self, X:numpy.ndarray, y:numpy.ndarray) -> tuple:
-        """
-        Description: This method is used to split the documents into a training and testing array
-        Input X :List[String]       The documents
-            y :List[String]       The corresponding label { 0, 1 }
+        """This method is used to split the documents into a training and testing array
+
+        Args:
+            X (numpy.ndarray): a list of documents (strings).
+            y (numpy.ndarray): the description for the documents. Either a 1 or 0, shows whether the document uses label 1 or 0
+
+        Returns:
+            tuple: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions
         """
         trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
         numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
@@ -48,18 +56,24 @@ class DataPreprocessor(vectorizer.Vectorizer):
         # create feature vectors TODO maby store the create vector func
         return X_train, X_test, y_train, y_test
 
-    def getTrainingAndTestingData2(self) -> tuple:
-        """
-        Description: This method returns the training and testing data for specified categories
+    def getTrainingAndTestingData(self) -> tuple:
+        """This method returns the training and testing data for multiple categories.
+        It yields the specific data for each category tuple
+
+        Yields:
+            Iterator[tuple]: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
         """
         for cat in file_manipulation.FileManipulation.values["categories"]:
             yield self.trainingAndTestingDataFromCategory(cat)
     
     def trainingAndTestingDataFromCategory(self, categorieArray:list) -> tuple:
-        """
-        Description: This method loads the training and testing data from specific categories
-        Input:  categorieArray :List[String] i.e. [("bug","enhancement"), ("doku", "api", "bug")]
-        Output: List[String], List[String]      returns the trainig and testing data
+        """This method is used for loading the training and testing data from a specific categorie as well as creating the training and testing data
+
+        Args:
+            categorieArray (list): A array of categories i.e. [("bug","enhancement"), ("doku", "api", "bug")]
+
+        Returns:
+            tuple: [description] returns (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
         """
         logging.info("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
