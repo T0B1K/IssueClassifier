@@ -1,5 +1,5 @@
-let $ = (x) => document.getElementById(x);
-let $$ = (x) => $(x).value;
+let elemById = (x) => document.getElementById(x);  //Query a HTML element by its ID.
+let elemByIdValue = (x) => elemById(x).value;      //Get value from the queried element.
 
 function autocomplete(inp, arr) {
     /*the autocomplete function takes two arguments,
@@ -101,4 +101,4 @@ function autocomplete(inp, arr) {
 /*An array containing the labels:*/
 var autocompletionTerms = ["documentation", "api", "bug", "api+Bug", "..."];
 
-autocomplete($("toLbl0"), autocompletionTerms);
+autocomplete(elemById("toLbl0"), autocompletionTerms);

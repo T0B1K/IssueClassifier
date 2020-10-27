@@ -1,10 +1,10 @@
-uploadedData = null;
+let uploadedData = null; //Data from the uploaded issue json.
 
 /**
  * Allows the user to load a file into the analysis tool.
  */
 function uploadedFile() {
-    let file = $("fileUploader").files[0],
+    let file = elemById("fileUploader").files[0],
         fileReader = new FileReader();
 
     fileReader.readAsText(file);
@@ -22,6 +22,6 @@ function uploadedFile() {
         let texts = uploadedData.map(x => { return { "text": x.text, "labels": ["klassifiziert als " + x.classified_as] } })
         dataToBeStored = new Set();
         texts.forEach(x => dataToBeStored.add(x))
-        $("txfIssueCount").innerHTML = `Issues: ${uploadedData.length}<br>Labels: ${[...labelsSet]}<br>`;
+        elemById("txfIssueCount").innerHTML = `Labels: ${[...labelsSet]}<br>`;
     };
 }

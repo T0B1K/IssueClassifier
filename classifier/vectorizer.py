@@ -81,7 +81,7 @@ class Vectorizer(file_manipulation.FileManipulation):
         saveVec:bool = file_manipulation.FileManipulation.values["vectorrizer"]["saveVectorrizer"]
 
         train_Data:numpy.ndarray = self.getSplitedDocs(
-            file_manipulation.FileManipulation.values["sampleSize"])
+            file_manipulation.FileManipulation.values["trainingConstants"]["sampleSize"])
         Vecotrizer = TfidfVectorizer(tokenizer=None,
                                      strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
                                      stop_words=stopWords,

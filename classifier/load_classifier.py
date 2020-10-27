@@ -17,7 +17,7 @@ def getClassifier (categories):
     for element in classifier_locations:
         if element['labels'] == categories:
             classifierPath =  element['path']
-    path =  path = "{}/{}".format(rootFolder,classifierPath)
+    path: str = "{}/{}".format(rootFolder,classifierPath)
     assert classifierPath != None ,"Categories: {}".format(categories)
     classifier = joblib.load(path)
     return classifier
@@ -29,7 +29,7 @@ def getVotingClassifier():
         Output: classifier 
     """
     classifierPath = loadConfig['voting']
-    path =  path = "{}/{}".format(rootFolder,classifierPath)
+    path:str = "{}/{}".format(rootFolder,classifierPath)
     classifier = joblib.load(path)
     return classifier
 

@@ -70,9 +70,9 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
                 y_train List[String]    The train document solutions
                 y_test  List[String]    the test document solutions
         """
-        numpy.random.seed(file_manipulation.FileManipulation.values["randomSeed"])
+        numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
         # 70% for training, 30% for testing - no cross validation yet
-        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingPercentage"]
+        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx:numpy.ndarray = numpy.random.permutation(X.shape[0])
