@@ -2,26 +2,34 @@
     "classifierFolder": "../classifier/trained_classifiers",
     "classifier_locations": [
         {
-            "path": "ensembleClassifier_doku-api.joblib.pkl",
-            "labels": [
-                "doku",
-                "api"
-            ]
+            "path":  "ensembleClassifier-bug-enhancement-joblib.pkl",
+            "labels": ["bug","enhancement"]
         },
         {
-            "path": "ensembleClassifier_doku-bug.joblib.pkl",
-            "labels": [
-                "doku",
-                "bug"
-            ]
+            "path":  "ensembleClassifier-api-bug-joblib.pkl",
+            "labels": ["api","enhancement"]
         },
         {
-            "path": "ensembleClassifier_enhancement-bug.joblib.pkl",
-            "labels": [
-                "enhancement",
-                "bug"
-            ]
+            "path": "ensembleClassifier_api-enhancement.joblib.pkl",
+            "labels": ["api","bug"]
+        },
+        {
+            "path":  "ensembleClassifier_doku-enhancement.joblib.pkl",
+            "labels": ["doku","bug","api"]
+        },
+        {
+            "path": "ensembleClassifier_doku-api-enhancement.joblib.pkl",
+            "labels": ["doku","bug","notapi"]
+        },
+        {
+            "path":  "ensembleClassifier_doku-bug.joblib.pkl",
+            "labels": ["doku","enhancement","api"]
+        },
+        {
+            "path":  "ensembleClassifier_doku-api-bug.joblib.pkl",
+            "labels": ["doku","enhancement","notapi"]
         }
+
     ],
     "trainingConstants": {
         "trainingPercentage": 0.7,
@@ -42,7 +50,33 @@
     ],
     "categories": [
         [
+            "bug", 
+            "enhancement"
+        ],
+        [
+            "api",
+            "bug"
+        ],
+        [
+            "api",
+            "enhancement"
+        ],
+        [
             "doku",
+            "enhancement"
+        ],
+        [
+            "doku",
+            "api",
+            "enhancement"
+        ],
+        [
+            "doku",
+            "bug"
+        ],
+        [
+            "doku",
+            "api",
             "bug"
         ]
     ],
