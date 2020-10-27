@@ -56,7 +56,7 @@ class LabelClassifier:
             voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
             if file_manipulation.FileManipulation.values["classifier"]["saveClassifier"] == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
-                joblib.dump(voting, '../trained_classifiers/voting_classifier',compress=9)
+                joblib.dump(voting, '../classifier/trained_classifiers/voting_classifier',compress=9)
                 print("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
@@ -75,7 +75,10 @@ class LabelClassifier:
         Input:  Nothing
         Output: Filename as string
         """
-        return "{}ensembleClassifier_{}-{}.joblib.pkl".format(folder, self.category[0], self.category[1])
+        if len(self.category) == 3:
+            return "{}ensembleClassifier_{}-{}-{}.joblib.pkl".format(folder, self.category[0],self.category[1],self.category[2])
+        else:
+            return "{}ensembleClassifier_{}-{}.joblib.pkl".format(folder, self.category[0],self.category[1])
 
     def accuracy(self, X_test, y_test, predicted):
         """

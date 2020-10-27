@@ -18,6 +18,7 @@ def getClassifier (categories):
         if element['labels'] == categories:
             classifierPath =  element['path']
     path =  path = "{}/{}".format(rootFolder,classifierPath)
+    assert classifierPath != None ,"Categories: {}".format(categories)
     classifier = joblib.load(path)
     return classifier
 

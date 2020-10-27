@@ -52,5 +52,5 @@ def initEverything():
 logging.basicConfig(level=logging.INFO)
 logging.info('Started')
 initEverything()
-initWithAntMap()
+#initWithAntMap()
 logging.info('Finished')

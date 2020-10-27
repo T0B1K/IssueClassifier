@@ -18,7 +18,8 @@ class ClassificationTree:
         Input: List[String] of documents
         Output: Ordered List[List[labels]] for the given documents
         """
-        classified =  self.rootNode.classify(data)
+        toclassify = [(issue,[],idx)for issue in data for idx in range(len(data))]
+        classified =  self.rootNode.classify(toclassify)
         sortedClassified = (sorted(classified, key = lambda element: element[2])) 
         return sortedClassified
         
@@ -36,8 +37,8 @@ class Node:
         Output: Returns Node object
         """
         self.labelClasses = labelClasses[0]
-        self.classifier = None #load_classifier.getClassifier(labelClasses.extend(knowledge))
         self.knowledge = knowledge
+        self.classifier = load_classifier.getClassifier([self.labelClasses] + self.knowledge)
         print("Label Classes: {}".format(self.labelClasses))
         print("Knowledge: {}".format(self.knowledge))
 
@@ -77,7 +78,7 @@ class rootNode:
         Output: rootNode Object
         """
         self.labelClasses = labelClasses[0:2]
-        self.classifier = None #load_classifier.getClassifier(labelClasses)
+        self.classifier = load_classifier.getClassifier(self.labelClasses)
         print(self.labelClasses)
         self.leftChild = Node(labelClasses[2:],[labelClasses[0]])
         self.rightChild = Node(labelClasses[2:],[labelClasses[1]])
@@ -104,6 +105,7 @@ class rootNode:
             
 print("Starting...")
 tree = ClassificationTree(["bug","enhancement","api","doku"])
+print("Result: {}".format(tree.classify(["Hello World"])))
 print("Ending.....")
 
 
