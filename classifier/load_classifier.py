@@ -39,7 +39,7 @@ def getVectorizer ():
         Description: Method returns Vectorizer   
         Output: vectorizer
     """
-    vecpath = 'vectorizer.vz'
+    vecpath = '../classifier/trained_classifiers/vectoriser.vz'
     vectorizer = joblib.load(vecpath)
     return vectorizer
 

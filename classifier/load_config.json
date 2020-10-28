@@ -2,11 +2,11 @@
     "classifierFolder": "../classifier/trained_classifiers",
     "classifier_locations": [
         {
-            "path":  "ensembleClassifier-bug-enhancement-joblib.pkl",
+            "path":  "ensembleClassifier_bug-enhancement.joblib.pkl",
             "labels": ["bug","enhancement"]
         },
         {
-            "path":  "ensembleClassifier-api-bug-joblib.pkl",
+            "path":  "ensembleClassifier_api-bug.joblib.pkl",
             "labels": ["api","enhancement"]
         },
         {
@@ -35,7 +35,7 @@
         "trainingPercentage": 0.7,
         "sampleSize": 40,
         "randomSeed": 2020,
-        "elementCount": 70,
+        "elementCount": 40,
         "voting": "voting_classifier"
     },
     "issueFolder": "../issues",
@@ -82,14 +82,14 @@
     ],
     "classifier": {
         "loadClassifier": false,
-        "saveClassifier": false,
+        "saveClassifier": true,
         "path": {
             "saveFolder": "",
             "loadFolder": ""
         }
     },
     "vectorrizer": {
-        "saveVectorrizer": false,
+        "saveVectorrizer": true,
         "loadVectorizer": false,
         "path": {
             "saveTo": "../vectorizer.vz"

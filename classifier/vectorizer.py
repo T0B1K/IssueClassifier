@@ -69,7 +69,7 @@ class Vectorizer(file_manipulation.FileManipulation):
         Output: an loaded or newly created TfidfVectorizer object
         """
         loadVec:bool = file_manipulation.FileManipulation.values["vectorrizer"]["loadVectorizer"]
-        if loadVec == True:
+        if loadVec == False:
             return self.createNewVectorizer(stripAccents, ngram, stopWords)
         try:
             return load_classifier.getVectorizer() 
