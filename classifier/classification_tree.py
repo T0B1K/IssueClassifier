@@ -41,8 +41,6 @@ class Node:
         self.knowledge = knowledge
         self.vectorizer = load_classifier.getVectorizer()
         self.classifier = load_classifier.getClassifier([self.labelClasses] + self.knowledge)
-        print("Label Classes: {}".format(self.labelClasses))
-        print("Knowledge: {}".format(self.knowledge))
 
         if len(labelClasses) == 1:
             self.leftChild = None
@@ -83,7 +81,6 @@ class rootNode:
         self.labelClasses = labelClasses[0:2]
         self.classifier = load_classifier.getClassifier(self.labelClasses)
         self.vectorizer = load_classifier.getVectorizer()
-        print(self.labelClasses)
         self.leftChild = Node(labelClasses[2:],[labelClasses[0]])
         self.rightChild = Node(labelClasses[2:],[labelClasses[1]])
     
@@ -110,7 +107,7 @@ class rootNode:
             
 print("Starting...")
 tree = ClassificationTree(["bug","enhancement","api","doku"])
-print("Result: {}".format(tree.classify(["Hello World","enhancement"])))
+print("Result: {}".format(tree.classify(["Howdy,\n\nIt would be great if we could have centered content in the navbar built into Bootstrap.\n\nI find it useful to be able to slightly off-center content depending on the rest of the content in the navbar eg lots of content using .navbar-right... use .navbar-center-left to slightly move it to the left.\n\nI use this to do it which works great:\n\n.navbar-center {\n    position:   absolute;\n    left:       50%;\n    -webkit-transform:  translateX(-50%);\n    -moz-transform: translateX(-50%);\n    -ms-transform:      translateX(-50%);\n    -o-transform:       translateX(-50%);\n    transform:      translateX(-50%);\n}\n\n.navbar-center-left {\n    position:   absolute;\n    left:       40%;\n    -webkit-transform:  translateX(-50%);\n    -moz-transform: translateX(-50%);\n    -ms-transform:      translateX(-50%);\n    -o-transform:       translateX(-50%);\n    transform:      translateX(-50%);\n}\n\n.navbar-center-right {\n    position:   absolute;\n    right:      40%;\n    -webkit-transform:  translateX(-50%);\n    -moz-transform: translateX(-50%);\n    -ms-transform:      translateX(-50%);\n    -o-transform:       translateX(-50%);\n    transform:      translateX(-50%);\n}\n\nThe 40% could easily be a variable for custom aligning per site.\n\nHope you like my idea. :-)\n"])))
 print("Ending.....")
 
 

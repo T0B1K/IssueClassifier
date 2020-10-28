@@ -33,9 +33,9 @@
     ],
     "trainingConstants": {
         "trainingPercentage": 0.7,
-        "sampleSize": 40,
+        "sampleSize": 6000,
         "randomSeed": 2020,
-        "elementCount": 40,
+        "elementCount": 6000,
         "voting": "voting_classifier"
     },
     "issueFolder": "../issues",
