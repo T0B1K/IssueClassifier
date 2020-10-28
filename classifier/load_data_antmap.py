@@ -14,42 +14,49 @@ import joblib
 
 import vectorizer
 import file_manipulation
+import configuration
 
-"""
-This class is used to get a different AntMapPreprozessor - to generate an antmap
-It is only used for sanity checking purposes
-"""
+config = configuration.Configuration()
+
 class AntMapPreprozessor(vectorizer.Vectorizer):
+    """This class is used to get a different kind of Preprozessor, the so called AntMapPreprozessor.
+    It is only used for sanity checking purposes, because it creates an so called "ant map" for trainings evaluation purposes 
+
+    Args:
+        vectorizer (Vectorizer): The Vectorizer is used for creating a feature vector
+    """
     def __init__(self):
-        """
-        Description: This is the constructor of the class AntMapPreprozessor
-        Input:  labelClasses List[String]                   the classes for the labels ["bug", "doku", "api", "enhancement"]
-                categories   List[Tuple(String, String)]    the categories i.e. [("bug","enhancement"), ("doku", "api")]
+        """This is the constructor of the class and it is used to create an AntMapPreprozessor object.
         """
         super().__init__()
         self.reverseData:list = []
-        self.labelClasses:list = file_manipulation.FileManipulation.values["labelClasses"]
-        self.categories:list = file_manipulation.FileManipulation.values["categories"]
+        self.labelClasses:list = config.getValueFromConfig("labelClasses")
+        self.categories:list = config.getValueFromConfig("categories")
 
     def loadDataFromClasses(self) -> list:
+        """This method is used to load the (data/documents) from the label classes
+
+        Returns:
+            list: loaded documents from corresponding labels provided in the config file
         """
-        Description: This method is used to load the (data/documents) from the label classes
-        Input: consoleOutput : Boolean (optional) (true default) determines, wether an informative console output should be logging.infoed or not
-        Output: List[String] loaded documents from corresponding files
-        """
+
         listOfDocuments:list = []
         for lblClass in self.labelClasses:
-            path:str = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], lblClass)
+            path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments.append(tmp)
         return listOfDocuments
 
     def dataCategorie(self, documents: list) -> tuple:
+        """This method is used to creating document pairs for label pairs i.e. "bug" vs "enhancement"
+
+        Args:
+            documents (list): list of documents for each label procided in the config file
+
+        Yields:
+            Iterator[tuple]: (catA, catB) the name of the categiries, (X, y) the list of documents as well as the solutions, which label each document has
         """
-        Description: This method is used to creating document pairs for label pairs i.e. "bug" vs "enhancement"
-        Input:  List[List[String]] - list of documents for each label
-        Output: returns the document lists to the categories
-        """
+        
         for name1, name2 in self.categories:
             idx1:int = self.labelClasses.index(name1)
             idx2:int = self.labelClasses.index(name2)
@@ -61,18 +68,22 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
             yield (name1, name2), (X, y)
 
     def train_test_split(self, X:numpy.ndarray, y:numpy.ndarray) -> tuple:
+        """This method shuffels the documents using a random permutatoin, as well as
+        splitting the document array into an training and an testing part using the treshold provided in the config file
+
+        Args:
+            X (numpy.ndarray): The list of trainings documents
+            y (numpy.ndarray): The corresponding solutions if the specific document belongs either to label 1 or label 0
+
+        Returns:
+            tuple:  X_train numpy.ndarray[String]    The training documents
+                    X_test  numpy.ndarray[String]    The testing documents
+                    y_train numpy.ndarray[String]    The train document solutions
+                    y_test  numpy.ndarray[String]    the test document solutions
         """
-        Description: This method is used for creating a random permutation, as well as splitting the document array into an training and an testing part using the treshold
-        Input:  X List[String]    The list of documents
-                y List[String]    The list of labels for the specifc documents { 0, 1 }
-        Output: X_train List[String]    The training documents
-                X_test  List[String]    The testing documents
-                y_train List[String]    The train document solutions
-                y_test  List[String]    the test document solutions
-        """
-        numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
-        # 70% for training, 30% for testing - no cross validation yet
-        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
+                
+        numpy.random.seed(config.getValueFromConfig("trainingConstants randomSeed"))
+        trainingPercentage:float = config.getValueFromConfig("trainingConstants trainingPercentage")
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx:numpy.ndarray = numpy.random.permutation(X.shape[0])
@@ -87,19 +98,22 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
 
         y_train:numpy.ndarray = y[rnd_idx[:threshold]]
         y_test:numpy.ndarray = y[rnd_idx[threshold:]]
-        # create feature vectors TODO maby store the create vector func
         X_train, X_test = self.createFeatureVectors(
             X_unvectorized_train, X_unvectorized_test)
         return X_train, X_test, y_train, y_test
 
-    def findDocument(self, permutedIdx:list, category, justReturnIndex: bool=False) -> list:
+    def findDocument(self, permutedIdx:list, category:list, justReturnIndex:bool=False) -> list:
+        """This method is used for finding a specific document
+
+        Args:
+            permutedIdx (list): The permutation index from the specific document
+            category (list):  The corresponding categories
+            justReturnIndex (bool, optional): Whether just the index should be returned or also the text. Defaults to False.
+
+        Returns:
+            list: The specific returnvalues, where to find the documents
         """
-        Description: This method is used for finding a specific document
-        Input:  permutedIdx     The permutation index from the specific document
-                The category    The corresponding categories
-                justReturnIndex :Boolean (default false) just return the file
-        Output: The specific returnvalues, where to find the documents
-        """
+        
         docs:list = self.loadDataFromClasses()
         X, y = next(self.dataCategorie(docs))[1]
         catIdx:int = self.categories.index(category[0])
@@ -110,24 +124,31 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         return returnvalue
 
     def getTrainingAndTestingData(self) -> tuple:
+        """This method returns the training and testing data for the specific categories
+
+        Yields:
+            Iterator[tuple]: The splitted training and testing data
+                X_train numpy.ndarray[String]    The training documents
+                X_test  numpy.ndarray[String]    The testing documents
+                y_train numpy.ndarray[String]    The train document solutions
+                y_test  numpy.ndarray[String]    the test document solutions
         """
-        Description: This method returns the training and testing data to the specific categories
-        Input:  labelClasses List[String], categories
-        Output: returns the splitted training and testing data
-        """
+        
         docs:list = self.loadDataFromClasses()
         for i, j in self.dataCategorie(docs):
             logging.debug(i)
             yield self.train_test_split(j[0], j[1])
 
-    def createAntMap(self, tmpIncList, category, classificationMistakes, antmap):
+    def createAntMap(self, tmpIncList:list, category:list, classificationMistakes:list, antmap:list):
+        """This method is used for creating an antmap and saving it to a file
+
+        Args:
+            tmpIncList (list): lists all indices of wrong classified issues
+            category (list): the corresbonding categories
+            classificationMistakes (list): prepared list of wrong classified issues
+            antmap (list): empty antmap
         """
-        Description: This method is used for creating an antmap and saving it to a file
-        Input: tmpIncList             - lists all indices of wrong classified issues
-               category               - the corresbonding categories
-               classificationMistakes - prepared list of wrong classified issues
-               antmap                 - empty antmap
-        """
+
         wrongClassifiedDocumentIdx:list = self.findDocument(
             tmpIncList, category, justReturnIndex=True)
         wrongClassifiedDocuments:list = self.findDocument(tmpIncList, category)
@@ -142,15 +163,19 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         self.saveAntmapToFile("new_antmap{}.txt".format(
             nameAddon), " ".join(antmap))
 
-    def prepareAntMap(self, Xpredicted:numpy.ndarray, yTest:numpy.ndarray, Xtrain:numpy.ndarray, category):
+    def prepareAntMap(self, Xpredicted:numpy.ndarray, yTest:numpy.ndarray, Xtrain:numpy.ndarray, category:list):
+        """This method is used for preparing the antmap data.
+
+        Args:
+            Xpredicted (numpy.ndarray): The predicted label
+            yTest (numpy.ndarray): the testlabels
+            Xtrain (numpy.ndarray): the trainings data
+            category (list): the corresbonding categories
+
+        Raises:
+            AttributeError: If the prediction array shape doesn't match the testing array shape
         """
-        Description: This method is used for preparing the antmap data.
-        Input:  Xpredicted - The predicted label
-                yTest      - the testlabels
-                Xtrain     - the trainings data
-                category   - the corresbonding categories
-        """
-        # idee: erst alles auf trainingsdata also "."; danach predicted len auf "-" und dann die fehler auf "X"
+        
         if not Xpredicted.shape == yTest.shape:
             raise AttributeError("prediction shape doesn't match test shape")
         lenTrain:int = Xtrain.shape[0]
@@ -171,13 +196,18 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
             tmpIncList.append(i+lenTrain)
         self.createAntMap(tmpIncList, category, classificationMistakes, antmap)
 
-    def antMapPreprocessing(self, lenTrain, lenPred, category) -> list:
-        """
-        Description: This method is used preporcessing the antmap array i.e. how it should be logging.infoed
-        Input:  lenTrain: int       length of the trainingsdata
-                lenPred: int        length of the predicted data
-                category: (string, string)  categorie labels
-        """
+    def antMapPreprocessing(self, lenTrain:int, lenPred:int, category:tuple) -> list:
+        """This method is used preporcessing the antmap array i.e. how it should be printed
+
+        Args:
+            lenTrain (int): length of the trainingsdata
+            lenPred (int): length of the predicted data
+            category (tuple): category labels
+
+        Returns:
+            list: The partly finished antmap array
+        """ 
+                
         antmap:list = ["_"]*(lenPred+lenTrain)
         # train = [0, treshold]; test = (treshold, inf] (so we have to add lenPred onto the idx to get the testIdx)
         testedPart:list = list(map(lambda x: x+lenPred, range(lenPred)))
@@ -186,14 +216,16 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
             antmap[x]:str = "✓"
         return antmap
 
-    def getAllDocs(self) -> list:
+    def getAllDocs(self) -> numpy.ndarray:
+        """This method is used to get all the documents from all the labels, which are loaded
+
+        Returns:
+            numpy.ndarray: the documents to the corresponding labels
         """
-        Description: This method is used to get all the documents from all the labels, which are loaded
-        Output: List[ List[String] ] the documents to the corresponding labels
-        """
+        
         listOfDocuments:numpy.ndarray = numpy.empty()
         for lblClass in self.labelClasses:
-            path:str = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], lblClass)
+            path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments:numpy.ndarray = numpy.append(listOfDocuments, tmp)
         return listOfDocuments

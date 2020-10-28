@@ -3,14 +3,16 @@ import joblib
 import numpy
 import logging
 
+import configuration
+
+config = configuration.Configuration()
+
 
 """ Class provies methods for loading and writthing files with additional parameters """
 
 
 class FileManipulation:
     
-    values = json.loads(open("load_config.json").read())
-
     def __init__(self):
         """Description: Constructor for FileManipulation
         Input:  outputFolder optional path parameter 
@@ -21,12 +23,12 @@ class FileManipulation:
         Input:  label of the document class
                 elementcount amount of documents to load 
         Output: Return List[String] of documents"""
-        path:str = "{}/{}.json".format(FileManipulation.values["issueFolder"], label)
+        path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), label)
         data:numpy.ndarray = self.openFile(path, elementcount)
         perm:numpy.ndarray = numpy.random.permutation(data.shape[0])
         return data[perm]
 
-    def openFile(self, filename:str, elementcount:int=values["trainingConstants"]["elementCount"]) -> numpy.ndarray:
+    def openFile(self, filename:str, elementcount:int=config.getValueFromConfig("trainingConstants elementCount")) -> numpy.ndarray:
         """
         Description: Method loads file 
         Input:  filename name of the file
@@ -47,7 +49,7 @@ class FileManipulation:
                 data to save
         Output: Return nothing
         """
-        path:str = "{}/{}".format(FileManipulation.values["outputFolder"], filename)
+        path:str = "{}/{}".format(config.getValueFromConfig("outputFolder"), filename)
         logging.info(">\tsaving antmap in {}".format(path))
         with open(path, "w", encoding='utf-8', errors='ignore') as f:
             f.write(data)

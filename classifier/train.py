@@ -5,13 +5,15 @@ import load_data_antmap
 import file_manipulation
 import load_data
 import label_classifier
+import configuration
 
-categories:list = file_manipulation.FileManipulation.values["categories"] # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
-"""
-    Description: This method is used to init the classifier using an antmap
-"""
+config = configuration.Configuration()
+categories:list = config.getValueFromConfig("categories") # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 
 def initWithAntMap():
+    """
+    Description: This method is used to init the classifier using an antmap
+    """
     amp: AntMapPreprozessor = load_data_antmap.AntMapPreprozessor()
     catIDX:int = 0
 
@@ -25,17 +27,12 @@ def initWithAntMap():
 
         catIDX += 1
 
-"""
-    Description: This method is used to init the classifier without using an Ant map
-    Input:  loadClassifier :Bool  load the classifier
-            saveClassifier :Bool  save the classifier
-            loadVectorizer:Bool  load the vectorizer
-    Output: 
-"""
 def initEverything():
+    """This method is used to init the classifier without using an Ant map
+    """
     catIDX:int = 0
     processor = load_data.DataPreprocessor()
-    for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData2():
+    for X_train, X_test, y_train, y_test in processor.getTrainingAndTestingData():
         cat:list[str] = categories[catIDX]
         logging.info("\n--------- ( '{}', {} ) ---------".format(cat[0],str(cat[1:])))
         lblClassif:LabelClassifier = label_classifier.LabelClassifier(cat)

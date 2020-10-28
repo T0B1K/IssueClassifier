@@ -12,7 +12,9 @@ import load_classifier
 
 import logging
 import file_manipulation
+import configuration
 
+config = configuration.Configuration()
 
 class LabelClassifier:
     """Class implemens various label Classifiers """
@@ -31,7 +33,7 @@ class LabelClassifier:
         ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
         ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
-        self.fileLocation:str = self.generateFilename(file_manipulation.FileManipulation.values["classifier"]["path"]["saveFolder"])
+        self.fileLocation:str = self.generateFilename(config.getValueFromConfig("classifier path saveFolder"))
         self.stackingEstimator = None
         self.rbfKernel = None
     
@@ -44,7 +46,7 @@ class LabelClassifier:
         """
         logging.info("> training classifier")
         voting = None
-        if file_manipulation.FileManipulation.values["classifier"]["loadClassifier"] == True:
+        if config.getValueFromConfig("classifier loadClassifier") == True:
             try:
                 self.trainedEstimator = joblib.load(self.fileLocation)
                 voting = load_classifier.getVotingClassifier()
@@ -54,7 +56,7 @@ class LabelClassifier:
         else:
             self.trainedEstimator = VotingClassifier(self.estimators, voting='hard')
             voting = self.trainedEstimator.fit_transform(X_train, y_train) # test our model on the test data
-            if file_manipulation.FileManipulation.values["classifier"]["saveClassifier"] == True:
+            if config.getValueFromConfig("classifier saveClassifier") == True:
                 joblib.dump(self.trainedEstimator , self.fileLocation, compress=9)
                 joblib.dump(voting, '../classifier/trained_classifiers/voting_classifier',compress=9)
                 logging.info("> dumped Classifier: {}".format(self.fileLocation))

@@ -10,23 +10,34 @@ import json
 import joblib
 import vectorizer
 import file_manipulation
+import configuration
 
-"""
-Description: This class is used to preprocess the data 
-"""
+config = configuration.Configuration()
+
 class DataPreprocessor(vectorizer.Vectorizer):
+    """This class is used to preprocess the data before training
+
+    Args:
+        vectorizer (Vectorizer): The Vectorizer is used for creating a feature vector
+    """
     def __init__(self):
+        """This is the constructor to create a DataPreprocessor object
+        """
         super().__init__()
         self.reverseData:list = []
 
     def train_test_split(self, X:numpy.ndarray, y:numpy.ndarray) -> tuple:
+        """This method is used to split the documents into a training and testing array
+
+        Args:
+            X (numpy.ndarray): a list of documents (strings).
+            y (numpy.ndarray): the description for the documents. Either a 1 or 0, shows whether the document uses label 1 or 0
+
+        Returns:
+            tuple: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions
         """
-        Description: This method is used to split the documents into a training and testing array
-        Input X :List[String]       The documents
-            y :List[String]       The corresponding label { 0, 1 }
-        """
-        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
-        numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
+        trainingPercentage:float = config.getValueFromConfig("trainingConstants trainingPercentage")
+        numpy.random.seed(config.getValueFromConfig("trainingConstants randomSeed"))
         # 70% for training, 30% for testing - no cross validation yet
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
@@ -48,22 +59,28 @@ class DataPreprocessor(vectorizer.Vectorizer):
         # create feature vectors TODO maby store the create vector func
         return X_train, X_test, y_train, y_test
 
-    def getTrainingAndTestingData2(self) -> tuple:
+    def getTrainingAndTestingData(self) -> tuple:
+        """This method returns the training and testing data for multiple categories.
+        It yields the specific data for each category tuple
+
+        Yields:
+            Iterator[tuple]: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
         """
-        Description: This method returns the training and testing data for specified categories
-        """
-        for cat in file_manipulation.FileManipulation.values["categories"]:
+        for cat in config.getValueFromConfig("categories"):
             yield self.trainingAndTestingDataFromCategory(cat)
     
     def trainingAndTestingDataFromCategory(self, categorieArray:list) -> tuple:
-        """
-        Description: This method loads the training and testing data from specific categories
-        Input:  categorieArray :List[String] i.e. [("bug","enhancement"), ("doku", "api", "bug")]
-        Output: List[String], List[String]      returns the trainig and testing data
+        """This method is used for loading the training and testing data from a specific categorie as well as creating the training and testing data
+
+        Args:
+            categorieArray (list): A array of categories i.e. [("bug","enhancement"), ("doku", "api", "bug")]
+
+        Returns:
+            tuple: [description] returns (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
         """
         logging.info("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
-        path:str = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], categorieArray[0])
+        path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), categorieArray[0])
         classAsize:int = self.openFile(path).shape[0]
         dataPerClassInB:int = (int)(classAsize/(len(categorieArray)-1))
         logging.info("dataPerClassInB: {}".format(dataPerClassInB))
