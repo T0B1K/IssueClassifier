@@ -10,6 +10,9 @@ import json
 import joblib
 import vectorizer
 import file_manipulation
+import configuration
+
+config = configuration.Configuration()
 
 class DataPreprocessor(vectorizer.Vectorizer):
     """This class is used to preprocess the data before training
@@ -33,8 +36,8 @@ class DataPreprocessor(vectorizer.Vectorizer):
         Returns:
             tuple: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions
         """
-        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
-        numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
+        trainingPercentage:float = config.getValueFromConfig("trainingConstants trainingPercentage")
+        numpy.random.seed(config.getValueFromConfig("trainingConstants randomSeed"))
         # 70% for training, 30% for testing - no cross validation yet
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
@@ -63,7 +66,7 @@ class DataPreprocessor(vectorizer.Vectorizer):
         Yields:
             Iterator[tuple]: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
         """
-        for cat in file_manipulation.FileManipulation.values["categories"]:
+        for cat in config.getValueFromConfig("categories"):
             yield self.trainingAndTestingDataFromCategory(cat)
     
     def trainingAndTestingDataFromCategory(self, categorieArray:list) -> tuple:
@@ -77,7 +80,7 @@ class DataPreprocessor(vectorizer.Vectorizer):
         """
         logging.info("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
-        path:str = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], categorieArray[0])
+        path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), categorieArray[0])
         classAsize:int = self.openFile(path).shape[0]
         dataPerClassInB:int = (int)(classAsize/(len(categorieArray)-1))
         logging.info("dataPerClassInB: {}".format(dataPerClassInB))

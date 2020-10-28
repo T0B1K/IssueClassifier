@@ -5,9 +5,10 @@ import load_data_antmap
 import file_manipulation
 import load_data
 import label_classifier
+import configuration
 
-categories:list = file_manipulation.FileManipulation.values["categories"] # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
-
+config = configuration.Configuration()
+categories:list = config.getValueFromConfig("categories") # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 
 def initWithAntMap():
     """

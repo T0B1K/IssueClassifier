@@ -7,7 +7,9 @@ import joblib
 import numpy
 import file_manipulation
 import load_classifier
+import configuration
 
+config = configuration.Configuration()
 
 class Vectorizer(file_manipulation.FileManipulation):
     """This class is used for creating / loading an Vectorizer, which is used to create feature vectors out of the documents
@@ -83,7 +85,7 @@ class Vectorizer(file_manipulation.FileManipulation):
             TfidfVectorizer: An loaded or newly created TfidfVectorizer object
         """
         
-        loadVec:bool = file_manipulation.FileManipulation.values["vectorrizer"]["loadVectorizer"]
+        loadVec:bool = config.getValueFromConfig("vectorrizer loadVectorizer")
         if loadVec == True:
             return self.createNewVectorizer(stripAccents, ngram, stopWords)
         try:
@@ -102,18 +104,16 @@ class Vectorizer(file_manipulation.FileManipulation):
         Returns:
             TfidfVectorizer: The newly created tfidf vectorrizer object
         """
-        saveVec:bool = file_manipulation.FileManipulation.values["vectorrizer"]["saveVectorrizer"]
+        saveVec:bool = config.getValueFromConfig("vectorrizer saveVectorrizer")
 
-        train_Data:numpy.ndarray = self.getSplitedDocs(
-            file_manipulation.FileManipulation.values["trainingConstants"]["sampleSize"])
+        train_Data:numpy.ndarray = self.getSplitedDocs(config.getValueFromConfig("trainingConstants sampleSize"))
         Vecotrizer: TfidfVectorizer = TfidfVectorizer(tokenizer=None,
                                      strip_accents=stripAccents, lowercase=None, ngram_range=ngram,
                                      stop_words=stopWords,
                                      min_df=2)
         Vecotrizer.fit_transform(train_Data)
         if saveVec == True:
-            joblib.dump(
-                Vecotrizer, file_manipulation.FileManipulation.values["vectorrizer"]["path"]["saveTo"], compress=9)
+            joblib.dump(Vecotrizer, config.getValueFromConfig("vectorrizer path saveTo"), compress=9)
         return Vecotrizer
 
     def getSplitedDocs(self, sampleSize:int) -> numpy.ndarray:
@@ -127,7 +127,7 @@ class Vectorizer(file_manipulation.FileManipulation):
             numpy.ndarray: a list of {sampleSize} documents, with an equal amount of documents in each label class provided in the config
         """   
         
-        labelClasses:list = file_manipulation.FileManipulation.values["labelClasses"]
+        labelClasses:list = config.getValueFromConfig("labelClasses")
         length:int = len(labelClasses)
         docCount:float = round(sampleSize / length)
         docs:numpy.ndarray = numpy.empty(0)

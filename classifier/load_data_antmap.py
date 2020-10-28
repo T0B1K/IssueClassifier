@@ -14,6 +14,9 @@ import joblib
 
 import vectorizer
 import file_manipulation
+import configuration
+
+config = configuration.Configuration()
 
 class AntMapPreprozessor(vectorizer.Vectorizer):
     """This class is used to get a different kind of Preprozessor, the so called AntMapPreprozessor.
@@ -27,8 +30,8 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         """
         super().__init__()
         self.reverseData:list = []
-        self.labelClasses:list = file_manipulation.FileManipulation.values["labelClasses"]
-        self.categories:list = file_manipulation.FileManipulation.values["categories"]
+        self.labelClasses:list = config.getValueFromConfig("labelClasses")
+        self.categories:list = config.getValueFromConfig("categories")
 
     def loadDataFromClasses(self) -> list:
         """This method is used to load the (data/documents) from the label classes
@@ -39,7 +42,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
 
         listOfDocuments:list = []
         for lblClass in self.labelClasses:
-            path:str = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], lblClass)
+            path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments.append(tmp)
         return listOfDocuments
@@ -79,8 +82,8 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
                     y_test  numpy.ndarray[String]    the test document solutions
         """
                 
-        numpy.random.seed(file_manipulation.FileManipulation.values["trainingConstants"]["randomSeed"])
-        trainingPercentage:float = file_manipulation.FileManipulation.values["trainingConstants"]["trainingPercentage"]
+        numpy.random.seed(config.getValueFromConfig("trainingConstants randomSeed"))
+        trainingPercentage:float = config.getValueFromConfig("trainingConstants trainingPercentage")
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx:numpy.ndarray = numpy.random.permutation(X.shape[0])
@@ -222,7 +225,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         
         listOfDocuments:numpy.ndarray = numpy.empty()
         for lblClass in self.labelClasses:
-            path:str = "{}/{}.json".format(file_manipulation.FileManipulation.values["issueFolder"], lblClass)
+            path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments:numpy.ndarray = numpy.append(listOfDocuments, tmp)
         return listOfDocuments
