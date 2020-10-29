@@ -28,7 +28,7 @@ To sanity check the issues crawled, just click on "prev" or "next" to change the
 ### classifier:
   Contains the current state of development. It includes the trained classifiers and the logic of how the classifiers work together to add an issue to its related class.
 ### classifier_doku:
-   [This](classifier_doku/index.html) contains all the html documentation pages for the python files in [classifier](classifier)
+   [classifier_doku/index.html](classifier_doku/index.html) contains all the html documentation pages for the python files in [classifier](classifier)
 ### github_crawler:
   This folder contains the HTML file and the related scripts/stylesheets that allow you to crawl and analyze issues from GitHub repositories.
 
