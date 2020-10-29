@@ -1,10 +1,12 @@
 import json
 import joblib
 
-rawConfig = open ('../classifier/load_config.json','r') 
-loadConfig = json.load(rawConfig)
-classifier_locations = loadConfig['classifier_locations']
-rootFolder = loadConfig['classifierFolder']
+import configuration
+
+config = configuration.Configuration()
+
+classifierLocations = config.getValueFromConfig("classifier_locations")
+rootFolder = config.getValueFromConfig("classifierFolder")
 
 
 def getClassifier (categories):
@@ -14,7 +16,7 @@ def getClassifier (categories):
         Output: classifier 
     """
     classifierPath = None
-    for element in classifier_locations:
+    for element in classifierLocations:
         if element['labels'] == categories:
             classifierPath =  element['path']
     path: str = "{}/{}".format(rootFolder,classifierPath)
@@ -28,7 +30,7 @@ def getVotingClassifier():
         Input:  categories  array of labels
         Output: classifier 
     """
-    classifierPath = loadConfig['voting']
+    classifierPath = config.getValueFromConfig("trainingConstants voting")
     path:str = "{}/{}".format(rootFolder,classifierPath)
     classifier = joblib.load(path)
     return classifier
