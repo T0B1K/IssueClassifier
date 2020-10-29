@@ -1,6 +1,6 @@
 {
     "classifierFolder": "../classifier/trained_classifiers",
-    "classifier_locations": [
+    "classifierLocations": [
         {
             "path":  "ensembleClassifier_bug-enhancement.joblib.pkl",
             "labels": ["bug","enhancement"]
@@ -38,10 +38,11 @@
         "elementCount": 100,
         "voting": "voting_classifier"
     },
+    "SGDClassifierIterations": 1000,
     "issueFolder": "../issues",
     "outputFolder": ".",
     "vectorizerFolder": "classifier",
-    "vecotrizer_locations": "vectorizer.vz",
+    "vecotrizerLocations": "vectorizer.vz",
     "labelClasses": [
         "enhancement",
         "bug",
@@ -88,9 +89,9 @@
             "loadFolder": ""
         }
     },
-    "vectorrizer": {
+    "vectorizer": {
         "loadVectorizer": false,
-        "saveVectorrizer": false,
+        "saveVectorizer": false,
         "path": {
             "saveTo": "../vectorizer.vz",
             "loadPath":"'../classifier/trained_classifiers/vectoriser.vz'"

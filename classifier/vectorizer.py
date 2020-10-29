@@ -89,7 +89,7 @@ class Vectorizer(file_manipulation.FileManipulation):
         Returns:
             TfidfVectorizer: An loaded or newly created TfidfVectorizer object
         """
-        loadVec:bool = config.getValueFromConfig("vectorrizer loadVectorizer")
+        loadVec:bool = config.getValueFromConfig("vectorizer loadVectorizer")
         if loadVec == False:
             return self.createNewVectorizer(stripAccents, ngram, stopWords)
         try:
@@ -106,9 +106,9 @@ class Vectorizer(file_manipulation.FileManipulation):
             stopWords (list, optional): Which stopwords should be removed i.e. {'english'}. Defaults to None.
 
         Returns:
-            TfidfVectorizer: The newly created tfidf vectorrizer object.
+            TfidfVectorizer: The newly created tfidf vectorizer object.
         """
-        saveVec:bool = config.getValueFromConfig("vectorrizer saveVectorrizer")
+        saveVec:bool = config.getValueFromConfig("vectorizer saveVectorizer")
 
         train_Data:numpy.ndarray = self.getSplitedDocs(config.getValueFromConfig("trainingConstants sampleSize"))
         Vecotrizer: TfidfVectorizer = TfidfVectorizer(tokenizer=None,
@@ -117,7 +117,7 @@ class Vectorizer(file_manipulation.FileManipulation):
                                      min_df=2)
         Vecotrizer.fit_transform(train_Data)
         if saveVec == True:
-            joblib.dump(Vecotrizer, config.getValueFromConfig("vectorrizer path saveTo"), compress=9)
+            joblib.dump(Vecotrizer, config.getValueFromConfig("vectorizer path saveTo"), compress=9)
         return Vecotrizer
 
     def getSplitedDocs(self, sampleSize:int) -> numpy.ndarray:

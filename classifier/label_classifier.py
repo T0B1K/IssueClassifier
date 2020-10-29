@@ -139,7 +139,7 @@ class LabelClassifier:
         logging.info("training stacking classifier")
         self.rbfKernel = RBFSampler(gamma=1, random_state=1)
         X_features = self.rbfKernel.fit_transform(X_predicted)
-        self.stackingEstimator = SGDClassifier(max_iter=1000)
+        self.stackingEstimator = SGDClassifier(max_iter=config.getValueFromConfig("SGDClassifierIterations"))
         self.stackingEstimator.fit(X_features, y)
         logging.info("stacking-classifier: " + str(self.stackingEstimator.score(X_features, y)))
     

@@ -5,7 +5,7 @@ import configuration
 
 config = configuration.Configuration()
 
-classifierLocations = config.getValueFromConfig("classifier_locations")
+classifierLocations = config.getValueFromConfig("classifierLocations")
 rootFolder = config.getValueFromConfig("classifierFolder")
 
 
