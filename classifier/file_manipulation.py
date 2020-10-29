@@ -36,7 +36,7 @@ class FileManipulation:
         perm: numpy.ndarray = numpy.random.permutation(data.shape[0])
         assert perm.size, "No permutation was given"
         permutedArray: numpy.ndarray = data[perm]
-        assert permutedArray.size, "An error occurrsed during shuffleing "
+        assert permutedArray.size, "An error occurred during shuffleing"
         return permutedArray
 
     def openFile(self, filename: str, elementcount: int = config.getValueFromConfig("trainingConstants elementCount")) -> numpy.ndarray:
