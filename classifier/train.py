@@ -11,8 +11,7 @@ config = configuration.Configuration()
 categories:list = config.getValueFromConfig("categories") # [("doku", "bug")]#, ("doku", "api")]#, ("doku", "api"), ["doku", "bug", "enhancement"]]#, ("doku", "bug"), ("api", "bug")]
 
 def initWithAntMap():
-    """
-    Description: This method is used to init the classifier using an antmap
+    """This method is used to init the classifier using an antmap.
     """
     amp: AntMapPreprozessor = load_data_antmap.AntMapPreprozessor()
     catIDX:int = 0
@@ -28,7 +27,7 @@ def initWithAntMap():
         catIDX += 1
 
 def initEverything():
-    """This method is used to init the classifier without using an Ant map
+    """This method is used to init the classifier without using an antmap.
     """
     catIDX:int = 0
     processor = load_data.DataPreprocessor()

@@ -15,27 +15,31 @@ import configuration
 config = configuration.Configuration()
 
 class DataPreprocessor(vectorizer.Vectorizer):
-    """This class is used to preprocess the data before training
+    """This class is used to preprocess the data before training.
 
     Args:
-        vectorizer (Vectorizer): The Vectorizer is used for creating a feature vector
+        vectorizer (Vectorizer): The vectorizer is used for creating a feature vector.
     """
     def __init__(self):
-        """This is the constructor to create a DataPreprocessor object
+        """This is the constructor to create a DataPreprocessor object.
         """
         super().__init__()
         self.reverseData:list = []
 
     def train_test_split(self, X:numpy.ndarray, y:numpy.ndarray) -> tuple:
-        """This method is used to split the documents into a training and testing array
+        """This method is used to split the documents into a training and testing array.
 
         Args:
-            X (numpy.ndarray): a list of documents (strings).
-            y (numpy.ndarray): the description for the documents. Either a 1 or 0, shows whether the document uses label 1 or 0
+            X (numpy.ndarray): A list of documents (strings).
+            y (numpy.ndarray): The description for the documents. Either a 1 or 0, shows whether the document uses label 1 or 0.
 
         Returns:
-            tuple: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions
+            tuple: (X_train, X_test, y_train, y_test) The training data, testing data, solutions.
         """
+        if not X.size:
+            raise("Parameter 'X' of type numpy.ndarray is empty!")
+        if not y.size:
+            raise("Parameter 'y' of type numpy.ndarray is empty!")
         trainingPercentage:float = config.getValueFromConfig("trainingConstants trainingPercentage")
         numpy.random.seed(config.getValueFromConfig("trainingConstants randomSeed"))
         # 70% for training, 30% for testing - no cross validation yet
@@ -61,23 +65,25 @@ class DataPreprocessor(vectorizer.Vectorizer):
 
     def getTrainingAndTestingData(self) -> tuple:
         """This method returns the training and testing data for multiple categories.
-        It yields the specific data for each category tuple
+        It yields the specific data for each category tuple.
 
         Yields:
-            Iterator[tuple]: (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
+            Iterator[tuple]: (X_train, X_test, y_train, y_test) The training data, testing data, solutions for the specific categories.
         """
         for cat in config.getValueFromConfig("categories"):
             yield self.trainingAndTestingDataFromCategory(cat)
     
     def trainingAndTestingDataFromCategory(self, categorieArray:list) -> tuple:
-        """This method is used for loading the training and testing data from a specific categorie as well as creating the training and testing data
+        """This method is used for loading the training and testing data from a specific categorie as well as creating the training and testing data.
 
         Args:
-            categorieArray (list): A array of categories i.e. [("bug","enhancement"), ("doku", "api", "bug")]
+            categorieArray (list): A array of categories i.e. [("bug","enhancement"), ("doku", "api", "bug")].
 
         Returns:
-            tuple: [description] returns (X_train, X_test, y_train, y_test) the trainings data, testing data, trainings and testingdata solutions for the specific categories
+            tuple: [description] Returns (X_train, X_test, y_train, y_test) the training data, testing data, solutions for the specific categories.
         """
+        if not categorieArray:
+            raise("Parameter 'categorieArray' of type list is empty!")
         logging.info("train+testData")
         # input: [a,b,...,c] a wird gegen b,...,c getestet.
         path:str = "{}/{}.json".format(config.getValueFromConfig("issueFolder"), categorieArray[0])
