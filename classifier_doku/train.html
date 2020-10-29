@@ -33,9 +33,10 @@ import load_data_antmap
 import file_manipulation
 import load_data
 import label_classifier
+import configuration
 
-categories:list = file_manipulation.FileManipulation.values[&#34;categories&#34;] # [(&#34;doku&#34;, &#34;bug&#34;)]#, (&#34;doku&#34;, &#34;api&#34;)]#, (&#34;doku&#34;, &#34;api&#34;), [&#34;doku&#34;, &#34;bug&#34;, &#34;enhancement&#34;]]#, (&#34;doku&#34;, &#34;bug&#34;), (&#34;api&#34;, &#34;bug&#34;)]
-
+config = configuration.Configuration()
+categories:list = config.getValueFromConfig(&#34;categories&#34;) # [(&#34;doku&#34;, &#34;bug&#34;)]#, (&#34;doku&#34;, &#34;api&#34;)]#, (&#34;doku&#34;, &#34;api&#34;), [&#34;doku&#34;, &#34;bug&#34;, &#34;enhancement&#34;]]#, (&#34;doku&#34;, &#34;bug&#34;), (&#34;api&#34;, &#34;bug&#34;)]
 
 def initWithAntMap():
     &#34;&#34;&#34;
@@ -76,7 +77,7 @@ def initEverything():
 logging.basicConfig(level=logging.INFO)
 logging.info(&#39;Started&#39;)
 initEverything()
-initWithAntMap()
+#initWithAntMap()
 logging.info(&#39;Finished&#39;)</code></pre>
 </details>
 </section>

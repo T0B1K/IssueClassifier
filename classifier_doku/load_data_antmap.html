@@ -42,6 +42,9 @@ import joblib
 
 import vectorizer
 import file_manipulation
+import configuration
+
+config = configuration.Configuration()
 
 class AntMapPreprozessor(vectorizer.Vectorizer):
     &#34;&#34;&#34;This class is used to get a different kind of Preprozessor, the so called AntMapPreprozessor.
@@ -55,8 +58,8 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         &#34;&#34;&#34;
         super().__init__()
         self.reverseData:list = []
-        self.labelClasses:list = file_manipulation.FileManipulation.values[&#34;labelClasses&#34;]
-        self.categories:list = file_manipulation.FileManipulation.values[&#34;categories&#34;]
+        self.labelClasses:list = config.getValueFromConfig(&#34;labelClasses&#34;)
+        self.categories:list = config.getValueFromConfig(&#34;categories&#34;)
 
     def loadDataFromClasses(self) -&gt; list:
         &#34;&#34;&#34;This method is used to load the (data/documents) from the label classes
@@ -67,7 +70,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
 
         listOfDocuments:list = []
         for lblClass in self.labelClasses:
-            path:str = &#34;{}/{}.json&#34;.format(file_manipulation.FileManipulation.values[&#34;issueFolder&#34;], lblClass)
+            path:str = &#34;{}/{}.json&#34;.format(config.getValueFromConfig(&#34;issueFolder&#34;), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments.append(tmp)
         return listOfDocuments
@@ -107,8 +110,8 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
                     y_test  numpy.ndarray[String]    the test document solutions
         &#34;&#34;&#34;
                 
-        numpy.random.seed(file_manipulation.FileManipulation.values[&#34;trainingConstants&#34;][&#34;randomSeed&#34;])
-        trainingPercentage:float = file_manipulation.FileManipulation.values[&#34;trainingConstants&#34;][&#34;trainingPercentage&#34;]
+        numpy.random.seed(config.getValueFromConfig(&#34;trainingConstants randomSeed&#34;))
+        trainingPercentage:float = config.getValueFromConfig(&#34;trainingConstants trainingPercentage&#34;)
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx:numpy.ndarray = numpy.random.permutation(X.shape[0])
@@ -250,7 +253,7 @@ class AntMapPreprozessor(vectorizer.Vectorizer):
         
         listOfDocuments:numpy.ndarray = numpy.empty()
         for lblClass in self.labelClasses:
-            path:str = &#34;{}/{}.json&#34;.format(file_manipulation.FileManipulation.values[&#34;issueFolder&#34;], lblClass)
+            path:str = &#34;{}/{}.json&#34;.format(config.getValueFromConfig(&#34;issueFolder&#34;), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments:numpy.ndarray = numpy.append(listOfDocuments, tmp)
         return listOfDocuments</code></pre>
@@ -293,8 +296,8 @@ It is only used for sanity checking purposes, because it creates an so called "a
         &#34;&#34;&#34;
         super().__init__()
         self.reverseData:list = []
-        self.labelClasses:list = file_manipulation.FileManipulation.values[&#34;labelClasses&#34;]
-        self.categories:list = file_manipulation.FileManipulation.values[&#34;categories&#34;]
+        self.labelClasses:list = config.getValueFromConfig(&#34;labelClasses&#34;)
+        self.categories:list = config.getValueFromConfig(&#34;categories&#34;)
 
     def loadDataFromClasses(self) -&gt; list:
         &#34;&#34;&#34;This method is used to load the (data/documents) from the label classes
@@ -305,7 +308,7 @@ It is only used for sanity checking purposes, because it creates an so called "a
 
         listOfDocuments:list = []
         for lblClass in self.labelClasses:
-            path:str = &#34;{}/{}.json&#34;.format(file_manipulation.FileManipulation.values[&#34;issueFolder&#34;], lblClass)
+            path:str = &#34;{}/{}.json&#34;.format(config.getValueFromConfig(&#34;issueFolder&#34;), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments.append(tmp)
         return listOfDocuments
@@ -345,8 +348,8 @@ It is only used for sanity checking purposes, because it creates an so called "a
                     y_test  numpy.ndarray[String]    the test document solutions
         &#34;&#34;&#34;
                 
-        numpy.random.seed(file_manipulation.FileManipulation.values[&#34;trainingConstants&#34;][&#34;randomSeed&#34;])
-        trainingPercentage:float = file_manipulation.FileManipulation.values[&#34;trainingConstants&#34;][&#34;trainingPercentage&#34;]
+        numpy.random.seed(config.getValueFromConfig(&#34;trainingConstants randomSeed&#34;))
+        trainingPercentage:float = config.getValueFromConfig(&#34;trainingConstants trainingPercentage&#34;)
         threshold:int = int(trainingPercentage*X.shape[0])
         # this is a random permutation
         rnd_idx:numpy.ndarray = numpy.random.permutation(X.shape[0])
@@ -488,7 +491,7 @@ It is only used for sanity checking purposes, because it creates an so called "a
         
         listOfDocuments:numpy.ndarray = numpy.empty()
         for lblClass in self.labelClasses:
-            path:str = &#34;{}/{}.json&#34;.format(file_manipulation.FileManipulation.values[&#34;issueFolder&#34;], lblClass)
+            path:str = &#34;{}/{}.json&#34;.format(config.getValueFromConfig(&#34;issueFolder&#34;), lblClass)
             tmp:numpy.ndarray = self.openFile(path)
             listOfDocuments:numpy.ndarray = numpy.append(listOfDocuments, tmp)
         return listOfDocuments</code></pre>
@@ -697,7 +700,7 @@ It is only used for sanity checking purposes, because it creates an so called "a
     
     listOfDocuments:numpy.ndarray = numpy.empty()
     for lblClass in self.labelClasses:
-        path:str = &#34;{}/{}.json&#34;.format(file_manipulation.FileManipulation.values[&#34;issueFolder&#34;], lblClass)
+        path:str = &#34;{}/{}.json&#34;.format(config.getValueFromConfig(&#34;issueFolder&#34;), lblClass)
         tmp:numpy.ndarray = self.openFile(path)
         listOfDocuments:numpy.ndarray = numpy.append(listOfDocuments, tmp)
     return listOfDocuments</code></pre>
@@ -767,7 +770,7 @@ the test document solutions</dd>
 
     listOfDocuments:list = []
     for lblClass in self.labelClasses:
-        path:str = &#34;{}/{}.json&#34;.format(file_manipulation.FileManipulation.values[&#34;issueFolder&#34;], lblClass)
+        path:str = &#34;{}/{}.json&#34;.format(config.getValueFromConfig(&#34;issueFolder&#34;), lblClass)
         tmp:numpy.ndarray = self.openFile(path)
         listOfDocuments.append(tmp)
     return listOfDocuments</code></pre>
@@ -878,8 +881,8 @@ the test document solutions</dd>
                 y_test  numpy.ndarray[String]    the test document solutions
     &#34;&#34;&#34;
             
-    numpy.random.seed(file_manipulation.FileManipulation.values[&#34;trainingConstants&#34;][&#34;randomSeed&#34;])
-    trainingPercentage:float = file_manipulation.FileManipulation.values[&#34;trainingConstants&#34;][&#34;trainingPercentage&#34;]
+    numpy.random.seed(config.getValueFromConfig(&#34;trainingConstants randomSeed&#34;))
+    trainingPercentage:float = config.getValueFromConfig(&#34;trainingConstants trainingPercentage&#34;)
     threshold:int = int(trainingPercentage*X.shape[0])
     # this is a random permutation
     rnd_idx:numpy.ndarray = numpy.random.permutation(X.shape[0])
