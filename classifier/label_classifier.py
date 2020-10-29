@@ -20,12 +20,13 @@ class LabelClassifier:
     """Class implemens various label Classifiers """
 
     def __init__(self, categoryToClassify:list, pretrained = None):
+        """Constructor for Label Classier
+
+        Args:
+            categoryToClassify (list): data to save
+            pretrained ([type], optional): Pretrained classifier. Defaults to None.
         """
-        Description: Constructor for Label Classier 
-        Input:  filename name of the file
-                data to save
-        Output: Return nothing
-        """
+        
         self.category:list = categoryToClassify
         self.estimators = estimators=[('MultinomialNB', MultinomialNB()), \
         ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
@@ -37,13 +38,14 @@ class LabelClassifier:
         self.stackingEstimator = None
         self.rbfKernel = None
     
-    def trainingClassifier(self, X_train, y_train):
+    def trainingClassifier(self, X_train:numpy.ndarray, y_train:numpy.ndarray):
+        """Constructor for Label Classier
+
+        Args:
+            X_train (numpy.ndarray): X_train training documents
+            y_train (numpy.ndarray): y_train labels for training documents
         """
-        Description: Constructor for Label Classier 
-        Input:  X_train training documents
-                y_train labels for training documents
-        Output: Nothing
-        """
+        
         logging.info("> training classifier")
         voting = None
         if config.getValueFromConfig("classifier loadClassifier") == True:
@@ -62,47 +64,60 @@ class LabelClassifier:
                 logging.info("> dumped Classifier: {}".format(self.fileLocation))
         self.trainKernelApproxSvgOnVoting(voting, y_train)
 
-    def predict(self, X_test) -> numpy.ndarray:
+    def predict(self, X_test:numpy.ndarray) -> numpy.ndarray:
+        """Method labels data
+
+        Args:
+            X_test (numpy.ndarray): X_test data
+
+        Returns:
+            numpy.ndarray: Trained estimator prediction
         """
-        Description: Method labels data
-        Input:  X_test data
-        Output: Trained estimator
-        """
+        
         logging.info("> predicting")
         return self.trainedEstimator.predict(X_test)
 
     def generateFilename(self, folder = '../trained_classifiers/') -> str:
+        """Method generates Filename for classifier
+
+        Args:
+            folder (str, optional): The folder path. Defaults to '../trained_classifiers/'.
+
+        Returns:
+            str: Filename as string
         """
-        Description: Method generates Filename for classifier
-        Input:  Nothing
-        Output: Filename as string
-        """
+        
         if len(self.category) == 3:
             return "{}ensembleClassifier_{}-{}-{}.joblib.pkl".format(folder, self.category[0],self.category[1],self.category[2])
         else:
             return "{}ensembleClassifier_{}-{}.joblib.pkl".format(folder, self.category[0],self.category[1])
 
     def accuracy(self, X_test:numpy.ndarray, y_test:numpy.ndarray, predicted:numpy.ndarray):
+        """Methods plots the accuracy of the trained classifier
+
+        Args:
+            X_test (numpy.ndarray): The test documents
+            y_test (numpy.ndarray): The results for the test documents
+            predicted (numpy.ndarray): The predicted test values 
+
+        Raises:
+            AssertionError: This error is being thrown, if the classifier wasn't trained previousely
         """
-        Description: Methods plots the accuracy of the trained classifier
-        Input:  X_test test documents
-                y_test labels for the test documents
-                predicted 
-        Output: None
-        """
+        
         if self.trainedEstimator == None:
             raise AssertionError("Classifier has not been trained yet")
         logging.info("\n ->> ensemble-score:{}\n".format(numpy.mean(predicted == y_test)))
         plot_confusion_matrix(self.trainedEstimator, X_test, y_test, normalize="all",display_labels=[self.category[0],self.category[1]])
         plt.show()
     
-    def trainKernelApproxSvgOnVoting(self, X_predicted, y):
+    def trainKernelApproxSvgOnVoting(self, X_predicted:numpy.ndarray, y:numpy.ndarray):
+        """Train kernel for classifier
+
+        Args:
+            X_predicted (numpy.ndarray): The prediction of the other classifiers
+            y (numpy.ndarray): The real labels
         """
-        Description: Train kernel for classifier
-        Input:  X_predicted training data
-                y_test labels 
-        Output: Filename as string
-        """
+        
         logging.info("training stacking classifier")
         self.rbfKernel = RBFSampler(gamma=1, random_state=1)
         X_features = self.rbfKernel.fit_transform(X_predicted)
@@ -110,12 +125,16 @@ class LabelClassifier:
         self.stackingEstimator.fit(X_features, y)
         logging.info("stacking-classifier: " + str(self.stackingEstimator.score(X_features, y)))
     
-    def stackingPrediction(self, X_test):
+    def stackingPrediction(self, X_test: numpy.ndarray) -> numpy.ndarray:
+        """This method predicts the result using another classifier - so called "stacking"
+
+        Args:
+            X_test (numpy.ndarray): The vectorrized documents to test on 
+
+        Returns:
+            numpy.ndarray: The prediction for the labels using stacking
         """
-        Description: Method predict stacking 
-        Input:  X_test training documents
-        Output: Return Prediction
-        """
+        
         voting = self.trainedEstimator.transform(X_test)
         influencedVoting = self.rbfKernel.transform(voting)
         return self.stackingEstimator.predict(influencedVoting)
