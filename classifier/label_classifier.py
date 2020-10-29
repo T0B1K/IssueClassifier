@@ -26,7 +26,8 @@ class LabelClassifier:
             categoryToClassify (list): data to save
             pretrained ([type], optional): Pretrained classifier. Defaults to None.
         """
-        
+        if not categoryToClassify:
+            raise("no categories to classify have been provided")
         self.category:list = categoryToClassify
         self.estimators = estimators=[('MultinomialNB', MultinomialNB()), \
         ('SGDClassifier', SGDClassifier(loss='modified_huber', penalty='l2',alpha=1e-3, random_state=100, max_iter=200)),
@@ -45,7 +46,10 @@ class LabelClassifier:
             X_train (numpy.ndarray): X_train training documents
             y_train (numpy.ndarray): y_train labels for training documents
         """
-        
+        if not X_train.size:
+            raise("No X_train data was provided")
+        if not y_train.size:
+            raise("No y_train data was provided")
         logging.info("> training classifier")
         voting = None
         if config.getValueFromConfig("classifier loadClassifier") == True:
@@ -73,9 +77,12 @@ class LabelClassifier:
         Returns:
             numpy.ndarray: Trained estimator prediction
         """
-        
+        if not X_test.size:
+            raise("No test documents were provided")
         logging.info("> predicting")
-        return self.trainedEstimator.predict(X_test)
+        prediction = self.trainedEstimator.predict(X_test)
+        assert prediction.size, "No documents were predicted"
+        return prediction
 
     def generateFilename(self, folder = '../trained_classifiers/') -> str:
         """Method generates Filename for classifier
@@ -86,7 +93,10 @@ class LabelClassifier:
         Returns:
             str: Filename as string
         """
-        
+        if folder == None:
+            raise("No folder name was provided")
+        if len(self.category) <2 or len(self.category) > 3:
+            raise("To few or many categories")
         if len(self.category) == 3:
             return "{}ensembleClassifier_{}-{}-{}.joblib.pkl".format(folder, self.category[0],self.category[1],self.category[2])
         else:
@@ -103,7 +113,12 @@ class LabelClassifier:
         Raises:
             AssertionError: This error is being thrown, if the classifier wasn't trained previousely
         """
-        
+        if not X_test.size:
+            raise("X_test was empty")
+        if not y_test.size:
+            raise("y_test was empty")
+        if not predicted.size:
+            raise("predicted was empty")
         if self.trainedEstimator == None:
             raise AssertionError("Classifier has not been trained yet")
         logging.info("\n ->> ensemble-score:{}\n".format(numpy.mean(predicted == y_test)))
@@ -114,10 +129,13 @@ class LabelClassifier:
         """Train kernel for classifier
 
         Args:
-            X_predicted (numpy.ndarray): The prediction of the other classifiers
-            y (numpy.ndarray): The real labels
+            X_predicted (numpy.ndarray): The prediction of the other classifiers.
+            y (numpy.ndarray): The real labels.
         """
-        
+        if not X_predicted.size:
+            raise("No X_predicted data was orovided")
+        if not y.size:
+            raise("No y data was provided")
         logging.info("training stacking classifier")
         self.rbfKernel = RBFSampler(gamma=1, random_state=1)
         X_features = self.rbfKernel.fit_transform(X_predicted)
@@ -129,12 +147,15 @@ class LabelClassifier:
         """This method predicts the result using another classifier - so called "stacking"
 
         Args:
-            X_test (numpy.ndarray): The vectorrized documents to test on 
+            X_test (numpy.ndarray): The vectorized documents to test on. 
 
         Returns:
-            numpy.ndarray: The prediction for the labels using stacking
+            numpy.ndarray: The prediction for the labels using stacking.
         """
-        
+        if not X_test.size:
+            raise("No X_test data was provided")
         voting = self.trainedEstimator.transform(X_test)
         influencedVoting = self.rbfKernel.transform(voting)
-        return self.stackingEstimator.predict(influencedVoting)
+        prediction = self.stackingEstimator.predict(influencedVoting)
+        assert prediction.size
+        return prediction

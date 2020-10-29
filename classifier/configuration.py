@@ -1,7 +1,14 @@
 import json
 
 class Configuration():
-    
+    """This class is used for accessing the load_config.json and access the constants in the configuration
+
+    Raises:
+        KeyError: If no valid key was provided.
+
+    Returns:
+        [type]: The desired configuration value.
+    """
     configValues = json.loads(open("load_config.json").read())
 
     def __init__(self):
@@ -17,6 +24,8 @@ class Configuration():
         Returns:
             [type]: Returns the desired configuration value.
         """
+        if configPath == "":
+            raise("No config path was given")
         try:
             path = configPath.split()
             config = self.configValues
