@@ -9,12 +9,16 @@ classifierLocations = config.getValueFromConfig("classifier_locations")
 rootFolder = config.getValueFromConfig("classifierFolder")
 
 
-def getClassifier (categories):
+def getClassifier (categories:list):
+    """Method return classifier
+
+    Args:
+        categories (list): array of labels
+
+    Returns:
+        [type]: The corresponding classifier
     """
-        Description: Method return classifier 
-        Input:  categories  array of labels
-        Output: classifier 
-    """
+        
     classifierPath = None
     for element in classifierLocations:
         if element['labels'] == categories:
@@ -25,11 +29,12 @@ def getClassifier (categories):
     return classifier
 
 def getVotingClassifier():
+    """This method returns a voting classifier
+
+    Returns:
+        [type]: The voting classifier if it could be loaded
     """
-        Description: Return Voting Classifier  
-        Input:  categories  array of labels
-        Output: classifier 
-    """
+
     classifierPath = config.getValueFromConfig("trainingConstants voting")
     path:str = "{}/{}".format(rootFolder,classifierPath)
     classifier = joblib.load(path)
@@ -37,11 +42,13 @@ def getVotingClassifier():
 
 
 def getVectorizer ():
+    """Method returns Vectorizer
+
+    Returns:
+        [type]: the vectorrizer
     """
-        Description: Method returns Vectorizer   
-        Output: vectorizer
-    """
-    vecpath = '../classifier/trained_classifiers/vectoriser.vz'
+
+    vecpath = config.getValueFromConfig("vectorrizer path loadPath")
     vectorizer = joblib.load(vecpath)
     return vectorizer
 

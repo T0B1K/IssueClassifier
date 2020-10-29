@@ -33,9 +33,9 @@
     ],
     "trainingConstants": {
         "trainingPercentage": 0.7,
-        "sampleSize": 6000,
+        "sampleSize": 100,
         "randomSeed": 2020,
-        "elementCount": 6000,
+        "elementCount": 100,
         "voting": "voting_classifier"
     },
     "issueFolder": "../issues",
@@ -82,17 +82,18 @@
     ],
     "classifier": {
         "loadClassifier": false,
-        "saveClassifier": true,
+        "saveClassifier": false,
         "path": {
             "saveFolder": "",
             "loadFolder": ""
         }
     },
     "vectorrizer": {
-        "saveVectorrizer": true,
         "loadVectorizer": false,
+        "saveVectorrizer": false,
         "path": {
-            "saveTo": "../vectorizer.vz"
+            "saveTo": "../vectorizer.vz",
+            "loadPath":"'../classifier/trained_classifiers/vectoriser.vz'"
         }
     }
 }
