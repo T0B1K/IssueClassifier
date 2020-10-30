@@ -1,0 +1,225 @@
+[33mcommit dc12f72f1cac214286e921ae46953c4fc2b374c4[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Thu Oct 29 15:39:15 2020 +0100
+
+    refactoring code
+
+[33mcommit 6d0ed8ef4bf657dbbfc82ea9ef8b6f04e9f2acb7[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 15:13:40 2020 +0100
+
+    fixed spelling mistake
+
+[33mcommit e8fb80fd3887a51f2f55c474714ef2bc9618d859[m
+Merge: 1b3c277 3b6c917
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 15:11:15 2020 +0100
+
+    Merge branch 'master' of https://github.com/T0B1K/IssueClassifier
+
+[33mcommit 1b3c2772c6bb9b5ac3b54305cfb9359068b0684e[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 15:11:10 2020 +0100
+
+    refactored comments, added pre and postconditions
+
+[33mcommit 3b6c917d3a90e63351b2ddc287bf16b2b4aa9155[m
+Author: T0B1K <31769288+T0B1K@users.noreply.github.com>
+Date:   Thu Oct 29 12:50:21 2020 +0100
+
+    improved visibility
+
+[33mcommit e524522193bc66b9e1986a4f9fb91d91cfd23013[m
+Author: T0B1K <31769288+T0B1K@users.noreply.github.com>
+Date:   Thu Oct 29 12:49:07 2020 +0100
+
+    added new folder structure, refactored paths
+
+[33mcommit 955c7cb41e48e24de7d2b3d247c8200673258745[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 12:38:42 2020 +0100
+
+    added improved documentation
+
+[33mcommit cc798a01f2e72b9adc7199f6f21946ba23ceb3d0[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 12:31:33 2020 +0100
+
+    further outsourcing of constants, added docstring comments
+
+[33mcommit ece78184b1049cda35e7a0d29a9cbb026cb98b50[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Thu Oct 29 12:21:30 2020 +0100
+
+    changed the config logic in load_classifier.py
+
+[33mcommit d0910380278cff26edf087e2e8bdb839b3499517[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 12:17:13 2020 +0100
+
+    refactoring of the comments and data types of the file file_manipulation
+
+[33mcommit 9ac2d0986208e23e2331d34f06750cf5271605ba[m
+Merge: e707138 a10a670
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 12:10:23 2020 +0100
+
+    Merge branch 'master' of https://github.com/T0B1K/IssueClassifier
+
+[33mcommit e707138f5ad41c045a3787aeeebed3aa68fea1c2[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 12:08:55 2020 +0100
+
+    fixed comments and added typisation for the file label_classifier
+
+[33mcommit a10a670bb521b34f5c0967e3e7b50e73abf6ba81[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Thu Oct 29 12:07:46 2020 +0100
+
+    added try/except to the getValueFromConfig function
+
+[33mcommit 76e33500e6883d21e8e68b8c8ccf6bb3761b4f73[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 11:53:35 2020 +0100
+
+    fixed comments and added typisation
+
+[33mcommit 37a4e3f5a64d61acc4c7adeb3888211804fd5e15[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Thu Oct 29 11:17:26 2020 +0100
+
+    changed config doku
+
+[33mcommit d0fa5197cc99e1d8eda8db5fc52ac758fa9ae8f5[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Wed Oct 28 19:49:34 2020 +0100
+
+    refactored the configuration code
+
+[33mcommit 16a43a1be653bf2adbaeecac7a94c485c773a3af[m
+Author: schurpl <st155930@stud.uni-stuttgart.degit config --global user.email st155930@stud.uni-stuttgart.de>
+Date:   Wed Oct 28 15:50:05 2020 +0100
+
+    Add working tree logic. Add new trained calssifiers on 6000 docs
+
+[33mcommit 38076612fb88f5eb0c25c5ab6159d2e229a3dbd8[m
+Merge: d136c49 fa6f5bd
+Author: schurpl <st155930@stud.uni-stuttgart.degit config --global user.email st155930@stud.uni-stuttgart.de>
+Date:   Wed Oct 28 14:27:51 2020 +0100
+
+    Fix merge confilct in vectorizer.py
+
+[33mcommit d136c493e787079e4c47d83759cbb216a78582f3[m
+Author: schurpl <st155930@stud.uni-stuttgart.degit config --global user.email st155930@stud.uni-stuttgart.de>
+Date:   Wed Oct 28 14:20:58 2020 +0100
+
+    Fix worng value in if condition in loadvectorizer Fixed bugn in classification tree
+
+[33mcommit fa6f5bd2efa27e2cb14a3d0adf9806e89b11776b[m
+Merge: 613da39 65caf9a
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Wed Oct 28 13:40:19 2020 +0100
+
+    resolved merge conflicts
+
+[33mcommit 613da39e28b6191f9bef63fd9332ebe6b5bdfafe[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Wed Oct 28 13:25:40 2020 +0100
+
+    created the configuration class
+
+[33mcommit 65caf9aa53aa08a3354fce343912e0fa29f96d53[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Wed Oct 28 11:52:58 2020 +0100
+
+    add docustrings for load classifier as well as lablel classifier
+
+[33mcommit 3ed71439ac2c5a3c7d20a7b5db065724465cf039[m
+Merge: a032d8e b735379
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 17:08:56 2020 +0100
+
+    Merge branch 'master' of https://github.com/T0B1K/IssueClassifier
+
+[33mcommit a032d8e6e4efd3bd4a30bd4ce1637ac16b2bd474[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 17:08:36 2020 +0100
+
+    vectorizer docstring refactoring, documentation
+
+[33mcommit 24a2270689ba97f80ada2a84094b2a2138f7d366[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 17:08:02 2020 +0100
+
+    load_data_antmap docstring refactoring, documentation
+
+[33mcommit df30a3fbbbd46556c2eea09bb371c40200adc02a[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 17:07:30 2020 +0100
+
+    load_data docstring refactoring, documentation
+
+[33mcommit f73f649219aec510572148821053a877d8423a94[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 17:06:07 2020 +0100
+
+    train.py refactoring, dokumentation
+
+[33mcommit b735379795f86d2242fc84158c2a18a018b46cd3[m
+Merge: 6d8c533 d895548
+Author: schurpl <st155930@stud.uni-stuttgart.degit config --global user.email st155930@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 16:15:37 2020 +0100
+
+    Resolve merge conflict
+
+[33mcommit 6d8c533514e775ef3fbca165b32ca03bf3138ce6[m
+Author: schurpl <st155930@stud.uni-stuttgart.degit config --global user.email st155930@stud.uni-stuttgart.de>
+Date:   Tue Oct 27 16:00:47 2020 +0100
+
+    -Add new classifer files \n-Add classifier locations to load_config.json\n-Modifierd genereteFilename Operation to support classifers with 3 labels\n-Add aeertion to getClassifer Operation\n- Adjusted classifcation three to support multiple issue sending
+
+[33mcommit d895548ea7ce10e4d0022abf28890b2108150aa6[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Tue Oct 27 11:54:32 2020 +0100
+
+    further crawler refactoring
+
+[33mcommit 81621e0b0e2251a2bac5bdd395a029dce992e34e[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Mon Oct 26 16:33:09 2020 +0100
+
+    furhter refactoring and typisation as well as started to refactore the now blown-up load config
+
+[33mcommit d13792d3429373b08844ed6da6e7e5a17a9c2ad5[m
+Author: HendrikHenk <hendrik.henkelmann@gmail.com>
+Date:   Mon Oct 26 16:21:22 2020 +0100
+
+    refactored the crawler code
+
+[33mcommit 8b6cc8d343747f16ca4a685e1e524cdd17fa9eee[m
+Author: schurpl <st155930@stud.uni-stuttgart.degit config --global user.email st155930@stud.uni-stuttgart.de>
+Date:   Mon Oct 26 16:19:35 2020 +0100
+
+    Add type anotations to classification tree
+
+[33mcommit 0b05060f0d98e8b45231774895e391e2b9a1b54d[m
+Merge: 35db3b0 321fcc8
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Mon Oct 26 15:14:12 2020 +0100
+
+    Merge branch 'master' of https://github.com/T0B1K/IssueClassifier
+
+[33mcommit 35db3b022f5e78812682c564b78ec228e056af2b[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Mon Oct 26 15:14:07 2020 +0100
+
+    also refactored file manipulation
+
+[33mcommit 4d2d8424523ff73cdb382bc6c9ef062017931e99[m
+Author: Tobias Kässmann <st155019@stud.uni-stuttgart.de>
+Date:   Mon Oct 26 15:13:47 2020 +0100
+
+    further refactored code
+
+[33mcommit 6205a855e61674a5e2be9801bfacfacb7d01767b[m
+Author: Tobias Kässmann
