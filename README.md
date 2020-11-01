@@ -121,7 +121,7 @@ tree|explanation
 Issue Classifier| The main folder
 ├┬── [classifier](classifier/)| Here lays the logic for all the classifiers
 │└─── [trained_classifiers](classifier/trained_classifiers/)|Those are the pretrained classifiers
-├─── [classifier_doku](classifier/classifier_doku)|The documentation of the `python` files in `classifiers` in form of `HTML` documents
+├─── [classifier_doku](classifier_doku)|The documentation of the `python` files in `classifiers` in form of `HTML` documents
 ├┬── [github_crawler](github_crawler/)|This folder contains the HTML file and the related files that allow you to crawl and analyze issues from GitHub repositories. Please refer to the [crawler documentation](github_crawler/README.md) for further information.
 │├─── [scripts](github_crawler/scripts/)|Contains logic and libraries for the crawler
 │└─── [style](github_crawler/style)|Contains style sheets for the crawler
@@ -132,5 +132,5 @@ Issue Classifier| The main folder
 ││├┬── [classifier](microservice/microservice/classifier)|The logic for the classifier service
 │││└───[trained_classifiers](microservice/microservice/classifier/trained_classifiers)|The pretrained classifiers
 ││└───[vectoriser](microservice/microservice/vectoriser)|The logic for the vectorizer service
-│└─── [scripts](microservice/microservice/scripts)|**[TODO]**
-└─── [results](microservice/results)|Some results we had on the way
+│└─── [scripts](microservice/scripts)|**[TODO]**
+└─── [results](results)|Some results we had on the way
