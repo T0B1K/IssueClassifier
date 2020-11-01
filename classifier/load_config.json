@@ -44,8 +44,8 @@
     "vectorizerFolder": "classifier",
     "vecotrizerLocations": "vectorizer.vz",
     "labelClasses": [
-        "enhancement",
         "bug",
+        "enhancement",
         "api",
         "doku"
     ],

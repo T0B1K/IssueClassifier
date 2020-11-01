@@ -136,5 +136,3 @@ class rootNode:
         if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
-
-tree = ClassificationTree([])
