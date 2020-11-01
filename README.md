@@ -53,7 +53,8 @@ Using those classifiers, each classifier receives a given vector and decides for
 After each classifier decided what the issue describes, another classifier classifies their results and guesses the right answer (This method is called stacking, because one is stacking classifiers).
 > so basically the results [1,0,0,1,...] are taken as an input by another classifier.
 
-During our tests we found out, that a normal democratic majority vote outperforms this kind of stacking by about 1 Percent. Therefore we are letting the user decide, which kind they want to use. **[TODO]**\
+During our tests we found out, that a normal democratic majority vote outperforms this kind of stacking by about 1 Percent. Therefore we are letting the user decide, which kind they want to use.\
+The major differences during preprocessing using the antmap or not is as follows: using the antmap we are creating an antmap, but it takes only the first k issues and then chooses afterwards random issues to train and test. Using the "non antmap" preprocessor, the data gets shuffled at the beginning, so k random documents are choosen and from those j random documents are used for training and i=k-j for testing. Also this is the newer preprocessor and can for examle classify using muliple datasets i.e. `bug vs (doku and api)`. Threrefore we used this preprocessor to train the classifiers for the microservice. And the antmap one was choosen for finding mislabeled issues (by the humans creating them)
 \
 As you can see those classifiers are just able to binary classify data as either class 1 or 0.\
 Therefore we used multiple of those classifiers trained on binary input to create a binary tree. Due to the lack of multi- class trainings data. Otherwise we would have tried alternatives such as KNN, ...
@@ -61,7 +62,8 @@ Therefore we used multiple of those classifiers trained on binary input to creat
 #### **Tree logic**
 To classify the issues we use a tree structure. Each issue passes through the tree depending on the assigned labels given by the previous nodes. The classifiers also consider this knowledge and were trained on special data sets.
 ![treeLogic](treeLogic.png)
-
+An issue "flowing" through this binary tree gets classified correspondingly and deciding on the position it ends up (the right part of the picture), the labels will be set.
+An issue doesn't get duplicated, it just gets passed "up" or "down" while moving to the right (as can be seen in the picture)
 
 #### **Antmap**
 During training of the classifiers we created a "antmap" or thats at least what we are calling it. It's basically just a text document, which shows using emotes, which issues have been used for training, which for testing and whether or not an issues was labeled correctly.\
