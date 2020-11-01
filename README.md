@@ -18,7 +18,7 @@ Using the GitHub crawler those issues can also be inspected to check whether or 
 ### Issue classifier
 After having crawled [multiple issues](issues/) we began creating issue classifiers and training them by using the crawled issues and issue- labels. \
 But before classifying them, they have to be vectorized.\
-The whole logic can be seen in the [classifier folder](classifier/) and by running [train.py](classifier/train.py)
+The whole logic can be seen in the [classifier folder](classifier/) and by running [train.py](classifier/train.py) or running the [docker](Dockerfile) image.
 
 #### **Vectorizer**
 We trained an [tfidf vectorizer](https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.TfidfVectorizer.html?highlight=tfidf#sklearn.feature_extraction.text.TfidfVectorizer) by giving it data to vectorized. We used the following adjustments
@@ -29,7 +29,7 @@ stripAccents=None | stripping non unicode caraters or not didn't make a whole lo
 stopWords=None |...
 
 **[TODO] word occurences > 3; did we use a logweighted one?**\
-The trained vectorizer therefore takes the documents (also called issue bodies) and turns the words into pairs.\
+The trained vectorizer therefore takes the documents (also called issue bodies) and turns the words into pairs.
 > i.e. "Hello world" => "hello", "world", "hello world" (due to the bi-gram (2-[ngram](https://en.wikipedia.org/wiki/N-gram)) and the unigram taken)\
 > "hello", "world", "hello world" => [1,1,1] (which is [tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) weighted) 
 
@@ -85,14 +85,14 @@ Using this microservice architecture, we can extend the **TODO GROPIUS** tool by
 
 ---
 ## Extend the classifier creation or create your one ones
-Please refer to the [documentation](classifier_doku/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.\
+Please refer to the [documentation](classifier_doku/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.
 ### instructions for creating classifiers
 either run the docker image provided by running the [Dockerfile](Dockerfile) or by installing all the dependencies.s
 
 #### By running the Dockerfile:
 run those commands after installing [docker](https://www.docker.com/)\
 `docker build -t classifierimg .`\
-`docker run --name dockercont classifierim`
+`docker run --name dockercont classifierimg`
 in a console of choice.
 
 #### By installing all dependencies:
@@ -105,7 +105,7 @@ in a console of choice.
    - matplotlib.pyplot
    - sklearn
    - nltk
-3. run [train.py] (classifier/train.py). Make changes in the loadConfig.json to fit the training to your needs and change the classifiers / labels in train.py to train the specific classifier.
+3. run [train.py](classifier/train.py). Make changes in the loadConfig.json to fit the training to your needs and change the classifiers / labels in train.py to train the specific classifier.
 
 ### Instructions for running the crawler
 Just open the [crawler_and_analysis_tool](github_crawler/crawler_and_analysis_tool.html) and run the file.
@@ -115,7 +115,26 @@ To sanity check the issues crawled, just click on "prev" or "next" to change the
 The crawler is also used as analysis tool for sanity checking after the issues have been downloaded, to use it as such, open the [github_crawler/crawler_and_analysis_tool.html](github_crawler/crawler_and_analysis_tool), click on "browse" and open the specific .json file.
 To sanity check the issues crawled, just click on "prev" or "next" to change the current page 
 
-## directory structure
+## Directory structure
+tree|explanation
+---|---
+Issue Classifier| The main folder
+├┬──classifier| Here lays the logic for all the classifiers
+│├───trained_classifiers|Those are the pretrained classifiers
+│   └───__pycache__|python caches some libs and stuff
+├───classifier_doku|The documentation of the `python` files in `classifiers` in form of `HTML` documents
+├┬──github_crawler|Here lays the crawler for github
+│├───scripts|The logic of the crawler
+│└───style|The style files of the crawler
+├┬───issues|This file contains all the crawled issues 
+│└───todo-add|Issues which haven't been added yet
+├┬──microservice|All the logic used in the microservice
+│├───microservice|Here lays the logic for the microservice
+││├┬──classifier|The logic for the classifier service
+│││└───trained_classifiers|The pretrained classifiers
+││└───vectoriser|The logic for the vectorizer service
+│└───scripts|**[TODO]**
+└───results|Some results we had on the way
 
 ### classifier:
   Contains the current state of development. It includes the trained classifiers and the logic of how the classifiers work together to add an issue to its related class.
