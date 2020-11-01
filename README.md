@@ -13,8 +13,7 @@ First we created a github [crawler](github_crawler/) which automatially crawls t
 > I.e. one crawls the bugs from the repository *demoRepo* made by person *MrSmith*, it will be saved as *MrSmith_demoRepo_bug.json* and the issues crawled will look like
 > ```json 
 > [{"labels":["bug"],"text":"Houston we have a problem"},{"labels":["bug"],"text":"..."},{"labels":["bug"],"text":"..."}]
-Using the GitHub crawler those issues can also be inspected to check whether or not they make sense and further adjustments can be made - refer to the [crawler documentation](github_crawler/) **[TODO]** for more informations regarding the crawler and sanity checking.
-We crawled the issues of the [following repositories]() **[TODO]** 
+Using the GitHub crawler those issues can also be inspected to check whether or not they make sense and further adjustments can be made - refer to the [crawler documentation](github_crawler/README.md) for more informations regarding the crawler and sanity checking.
 
 ### Issue classifier
 After having crawled [multiple issues](issues/) we began creating issue classifiers and training them by using the crawled issues and issue- labels. \
