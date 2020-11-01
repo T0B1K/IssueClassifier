@@ -26,9 +26,8 @@ adjustment|why we made that adjustment
 ---|---
 ngram: tuple = (1, 2) | ngrams are used to see the word in the context of their neighbors - it was decided against larger [ngrams](https://en.wikipedia.org/wiki/N-gram) due to the space complexity so it only takes unigram and bigrams
 stripAccents=None | stripping non unicode caraters or not didn't make a whole lot of difference, because we used just english 
-stopWords=None |...
-
-**[TODO] word occurences > 3; did we use a logweighted one?**\
+stopWords=None | we didn't remove stopwords such as "the", "and"
+mindf=2 (min document frequency)|we assumend that a word is important iff it occured more than once
 The trained vectorizer therefore takes the documents (also called issue bodies) and turns the words into pairs.
 > i.e. "Hello world" => "hello", "world", "hello world" (due to the bi-gram (2-[ngram](https://en.wikipedia.org/wiki/N-gram)) and the unigram taken)\
 > "hello", "world", "hello world" => [1,1,1] (which is [tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) weighted) 
@@ -76,14 +75,9 @@ It uses queues to communicate due to the **using a pattern similar to the hotpoo
 Basically one runs the image and puts messages in the queue, afterwards a worker picks them up, vetorizes them, puts them in another queue and the three logic part starts. We decided us for using the tree logic with small classifiers, because of its scalable nature and further it uses the minimal amount of classifiers for each issue.
 > i.e. if an issue is labeled *bug* it shouldn't be tested, if it is either *bug* or *api*, because we already have the prior knowledge, that it is an bug.
 
-The classifiers can be added, removed or extended to ones likings, for examle we didn't use neuronal networks due to their complex nature and therefore hard understandable results. **[TODO see further research]**
+The classifiers can be added, removed or extended to ones likings, for examle we didn't use neuronal networks due to their complex nature and therefore hard understandable results. *(see further research)*
 
-Using this microservice architecture, we can extend the **TODO GROPIUS** tool by spethso to classify issues from github, jira and co.
-
-## Further ideas to improve the classifer
-- one vecorizer for each classifier, so that the vectorizer might are able to learn a bit more about the nature of the issues
-- using deep learning to increase the performance
-- ... **[TODO]**
+Using this microservice architecture, we can extend the [GROPIUS](https://github.com/ccims) tool by spethso to classify issues from github, jira and co.
 
 ---
 ## Extend the classifier creation or create your one ones
@@ -136,3 +130,10 @@ Issue Classifier| The main folder
 ││└───[vectoriser](microservice/microservice/vectoriser)|The logic for the vectorizer service
 │└─── [scripts](microservice/scripts)|**[TODO]**
 └─── [results](results)|Some results we had on the way
+
+---
+
+## Further ideas to improve the classifer
+- one vecorizer for each classifier, so that the vectorizer might are able to learn a bit more about the nature of the issues
+- using deep learning to increase the performance
+- ... **[TODO]**
