@@ -121,36 +121,17 @@ tree|explanation
 Issue Classifier| The main folder
 ├┬──classifier| Here lays the logic for all the classifiers
 │├───trained_classifiers|Those are the pretrained classifiers
-│   └───__pycache__|python caches some libs and stuff
+│└───__pycache__|python caches some libs and stuff
 ├───classifier_doku|The documentation of the `python` files in `classifiers` in form of `HTML` documents
-├┬──github_crawler|Here lays the crawler for github
-│├───scripts|The logic of the crawler
-│└───style|The style files of the crawler
-├┬───issues|This file contains all the crawled issues 
+├┬──github_crawler|This folder contains the HTML file and the related files that allow you to crawl and analyze issues from GitHub repositories. Please refer to the [crawler documentation](github_crawler/README.md)
+│├───scripts|Contains logic for the crawler
+│└───style|Contains style sheets for the crawler
+├┬───issues|This folder contains all crawled issues so far. 
 │└───todo-add|Issues which haven't been added yet
-├┬──microservice|All the logic used in the microservice
-│├───microservice|Here lays the logic for the microservice
+├┬──microservice|This folder contains all the documents required to run the microservice. Please refer to the [microservice dokumentation](microservice/README.md) for further information
+│├┬──microservice|Here lays the logic for the microservice
 ││├┬──classifier|The logic for the classifier service
 │││└───trained_classifiers|The pretrained classifiers
 ││└───vectoriser|The logic for the vectorizer service
 │└───scripts|**[TODO]**
 └───results|Some results we had on the way
-
-### classifier:
-  Contains the current state of development. It includes the trained classifiers and the logic of how the classifiers work together to add an issue to its related class.
-### classifier_doku:
-   [classifier_doku/index.html](classifier_doku/index.html) contains all the html documentation pages for the python files in [classifier](classifier)
-### github_crawler:
-  This folder contains the HTML file and the related scripts/stylesheets that allow you to crawl and analyze issues from GitHub repositories.
-
-### issues:
-  This folder contains all crawled issues so far. "To add" contains all issues not jet added to our dataset.
-
-### microservice:
-  This folder contains all the dokuments required to run the microservice
-
-### results:
-  This contains all output files from the software that let us review the quality of the software. 
-
-## instructinos for running the microservice
-please refer to the [microservice dokumentation](microservice/README.md) for further information
