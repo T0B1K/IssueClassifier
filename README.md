@@ -119,19 +119,18 @@ To sanity check the issues crawled, just click on "prev" or "next" to change the
 tree|explanation
 ---|---
 Issue Classifier| The main folder
-├┬──classifier| Here lays the logic for all the classifiers
-│├───trained_classifiers|Those are the pretrained classifiers
-│└───__pycache__|python caches some libs and stuff
-├───classifier_doku|The documentation of the `python` files in `classifiers` in form of `HTML` documents
-├┬──github_crawler|This folder contains the HTML file and the related files that allow you to crawl and analyze issues from GitHub repositories. Please refer to the [crawler documentation](github_crawler/README.md)
-│├───scripts|Contains logic for the crawler
-│└───style|Contains style sheets for the crawler
-├┬───issues|This folder contains all crawled issues so far. 
-│└───todo-add|Issues which haven't been added yet
-├┬──microservice|This folder contains all the documents required to run the microservice. Please refer to the [microservice dokumentation](microservice/README.md) for further information
-│├┬──microservice|Here lays the logic for the microservice
-││├┬──classifier|The logic for the classifier service
-│││└───trained_classifiers|The pretrained classifiers
-││└───vectoriser|The logic for the vectorizer service
-│└───scripts|**[TODO]**
-└───results|Some results we had on the way
+├┬── [classifier](classifier/)| Here lays the logic for all the classifiers
+│└─── [trained_classifiers](classifier/trained_classifiers/)|Those are the pretrained classifiers
+├─── [classifier_doku](classifier/classifier_doku)|The documentation of the `python` files in `classifiers` in form of `HTML` documents
+├┬── [github_crawler](github_crawler/)|This folder contains the HTML file and the related files that allow you to crawl and analyze issues from GitHub repositories. Please refer to the [crawler documentation](github_crawler/README.md) for further information.
+│├─── [scripts](github_crawler/scripts/)|Contains logic and libraries for the crawler
+│└─── [style](github_crawler/style)|Contains style sheets for the crawler
+├┬─── [issues](issues/)|This folder contains all crawled issues so far. 
+│└─── [todo-add](issues/todo-add)|Issues which haven't been added yet
+├┬── [microservice](microservice/)|This folder contains all the documents required to run the microservice. Please refer to the [microservice dokumentation](microservice/README.md) for further information
+│├┬── [microservice](microservice/microservice/)|Here lays the logic for the microservice
+││├┬── [classifier](microservice/microservice/classifier)|The logic for the classifier service
+│││└───[trained_classifiers](microservice/microservice/classifier/trained_classifiers)|The pretrained classifiers
+││└───[vectoriser](microservice/microservice/vectoriser)|The logic for the vectorizer service
+│└─── [scripts](microservice/microservice/scripts)|**[TODO]**
+└─── [results](microservice/results)|Some results we had on the way
