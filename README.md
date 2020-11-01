@@ -1,15 +1,15 @@
 # Automatic issue classifier
 ## Introduction
-In the context of software development projects, issues provide a vital tool to describe a variety of tasks to be accomplished by the team. Four of the most common types of issues are *feature requests*, *bug reports*, and tasks related to *documentation*, as well as tasks related to an *api*. The state-of-the-art involves manual classification of issues into their respective categories. While this requires marginal effort for projects of minimal scale with teams of comparably minimal size, large-scale projects involving multiple teams from different organisations pose a much larger problem in that regard. Mislabelling issues can lead to subsequent erroneous prioritisation of issues, resulting in misplaced time and energy. Furthermore, issues left unlabelled make it harder for project managers to pinpoint specific sources of errors and bugs in the software, whose impact can range from trivial to severe under certain circumstances.
+In the context of software development projects, issues provide a vital tool to describe a variety of tasks to be accomplished by the team. Four of the most common types of issues are *feature requests*, *bug reports*, and tasks related to *documentation*, as well as tasks related to an *api*. The state-of-the-art involves manual classification of issues into their respective categories. While this requires marginal effort for projects of minimal scale with teams of comparably minimal size, large-scale projects involving multiple teams from different organizations pose a much larger problem in that regard. Mislabeling issues can lead to subsequent erroneous prioritization of issues, resulting in misplaced time and energy. Furthermore, issues left unlabeled make it harder for project managers to pinpoint specific sources of errors and bugs in the software, whose impact can range from trivial to severe under certain circumstances.
 ## Problem statement
-These problems can be summarised into one problem statement: Software development teams require accurate classification of every software project issue promptly, calling for the need of an automatic issue classifier. Several attempts have been made to curb variants of this problem, for example by developing a GitHub app to automatically classify issues. However, several key aspects are missing from them: None of them can be easily integrated into software projects spanning multiple components from separate teams using different issue management systems.
+These problems can be summarized into one problem statement: Software development teams require accurate classification of every software project issue promptly, calling for the need of an automatic issue classifier. Several attempts have been made to curb variants of this problem, for example by developing a GitHub app to automatically classify issues. However, several key aspects are missing from them: None of them can be easily integrated into software projects spanning multiple components from separate teams using different issue management systems.
 ## Our solution
 We are providing a possible solution by deploying an automatic issue classifier in form of a microservice which classifies issues based on their body texts, returning the suggested label(s) most appropriate for the issue.
->For example, a bug related to an API of a component could be labelled as both "bug" and "api", while additions to documentation "docu" and "feature request".
+>For example, a bug related to an API of a component could be labeled as both "bug" and "api", while additions to documentation "documentation" and "feature request".
 
 ## How we addressed the issue
 ### Crawler
-First we created a github [crawler](github_crawler/) which automatially crawls the issues from manually selected github repositories and saves them in into *.json* files.
+First we created a github [crawler](github_crawler/) which automatically crawls the issues from manually selected github repositories and saves them in into *.json* files.
 > I.e. one crawls the bugs from the repository *demoRepo* made by person *MrSmith*, it will be saved as *MrSmith_demoRepo_bug.json* and the issues crawled will look like
 > ```json 
 > [{"labels":["bug"],"text":"Houston we have a problem"},{"labels":["bug"],"text":"..."},{"labels":["bug"],"text":"..."}]
@@ -94,15 +94,13 @@ run those commands after installing [docker](https://www.docker.com/)\
 in a console of choice.
 
 #### By installing all dependencies:
-1. Make sure you have at least `Python 3.7` installed.
+1. Make sure you have at least `Python 3.8` installed.
 2. Install all the necessary libraries.
-   - numpy
-   - pandas
-   - seaborn
-   - joblib
-   - matplotlib.pyplot
-   - sklearn
-   - nltk
+   - numpy == 1.19.2
+   - nltk == 3.5
+   - scikit-learn == 0.23.2
+   - joblib == 0.17.0
+   - matplotlib == 3.3.2
 3. run [train.py](classifier/train.py). Make changes in the loadConfig.json to fit the training to your needs and change the classifiers / labels in train.py to train the specific classifier.
 
 ### Instructions for running the crawler
@@ -129,13 +127,15 @@ Issue Classifier| The main folder
 │├┬── [microservice](microservice/microservice/)|Here lays the logic for the microservice
 ││├┬── [classifier](microservice/microservice/classifier)|The logic for the classifier service
 │││└───[trained_classifiers](microservice/microservice/classifier/trained_classifiers)|The pretrained classifiers
-││└───[vectoriser](microservice/microservice/vectoriser)|The logic for the vectorizer service
+││└───[vectorizer](microservice/microservice/vectoriser)|The logic for the vectorizer service
 │└─── [scripts](microservice/scripts)|**[TODO]**
 └─── [results](results)|Some results we had on the way
 
 ---
 
-## Further ideas to improve the classifer
-- one vecorizer for each classifier, so that the vectorizer might are able to learn a bit more about the nature of the issues
+## Further ideas to improve the classifier
+- one vectorizer for each classifier, so that the vectorizer might are able to learn a bit more about the nature of the issues
 - using deep learning to increase the performance
+- more sanity checks - not all the documents have been completely sanity checked and this is a major issue in the trainings data. 
+- if all the libraries are updated to python 3.9, the type annotations in python can be adapted / updated to a more understandable / better readable format.
 - ... **[TODO]**
