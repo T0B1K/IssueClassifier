@@ -86,8 +86,16 @@ Using this microservice architecture, we can extend the **TODO GROPIUS** tool by
 ## Extend the classifier creation or create your one ones
 Please refer to the [documentation](classifier_doku/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.\
 ### instructions for creating classifiers
-- either run the docker image provided or
-1. Make sure you have at least Python 3.7 installed.
+either run the docker image provided by running the [Dockerfile](Dockerfile) or by installing all the dependencies.s
+
+#### By running the Dockerfile:
+run those commands after installing [docker](https://www.docker.com/)\
+`docker build -t classifierimg .`\
+`docker run --name dockercont classifierim`
+in a console of choice.
+
+#### By installing all dependencies:
+1. Make sure you have at least `Python 3.7` installed.
 2. Install all the necessary libraries.
    - numpy
    - pandas
