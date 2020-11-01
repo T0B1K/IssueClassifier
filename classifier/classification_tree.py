@@ -6,7 +6,7 @@ import numpy
 class ClassificationTree:
     """ This class provides a classification tree """
 
-    def __init__(self, labelClasses: numpy.ndarray):
+    def __init__(self, labelClasses: list):
         """Constructor for classification trees.
 
         Args:
@@ -15,7 +15,7 @@ class ClassificationTree:
         
         self.rootNode = rootNode(labelClasses)
 
-    def classify(self, data: numpy.ndarray) -> list:
+    def classify(self, data: list) -> list:
         """This method classifies issues.
 
         Args:
@@ -38,16 +38,16 @@ class ClassificationTree:
 class Node:
     """Class provides a node implementation for the ClassificationTree """
 
-    def __init__(self, labelClasses: numpy.ndarray, knowledge: numpy.ndarray):
+    def __init__(self, labelClasses: list, knowledge: list):
         """Constructor for node objects.
 
         Args:
             labelClasses (numpy.ndarray): Array of labels as Strings.
             knowledge (numpy.ndarray): Array of checked labels by parent Nodes.
         """
-        if not labelClasses.size:
+        if not labelClasses:
             raise("There are no labelClasses provided")
-        if not knowledge.size:
+        if not knowledge:
             raise("There is no knowledge being provided")
         self.labelClasses: numpy.ndarray = labelClasses[0]
         self.knowledge: numpy.ndarray = knowledge
@@ -64,7 +64,7 @@ class Node:
             self.rightChild: Node = Node(
                 labelClasses[1:], self.knowledge + [("not{}".format(self.labelClasses))])
 
-    def classify(self, data: numpy.ndarray) -> numpy.ndarray:
+    def classify(self, data: list) -> list:
         """This method classifies issues.
 
         Args:
@@ -73,7 +73,7 @@ class Node:
         Returns:
             numpy.ndarray: Ordered List[List[labels]] for the given documents
         """
-        if not data.size:
+        if not data:
             raise("No data was provided")
         toleftChild: list = []
         torightChild: list = []
@@ -87,7 +87,7 @@ class Node:
                 toleftChild.append(issue)
             else:
                 torightChild.append(issue)
-        if self.rightChild is None or self.rightChild is None:
+        if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
 
@@ -95,13 +95,13 @@ class Node:
 class rootNode:
     """ This class provides the implemantation of the rootNode for the classification tree """
 
-    def __init__(self, labelClasses: numpy.ndarray):
+    def __init__(self, labelClasses: list):
         """Constructor for rootNode objects
 
         Args:
             labelClasses (numpy.ndarray): Array of labels as Strings.
         """
-        if not labelClasses.size:
+        if not labelClasses:
             raise("No labelclasses were provided")
         self.labelClasses: numpy.ndarray = labelClasses[0:2]
         self.classifier = load_classifier.getClassifier(self.labelClasses)
@@ -109,7 +109,7 @@ class rootNode:
         self.leftChild: Node = Node(labelClasses[2:], [labelClasses[0]])
         self.rightChild: Node = Node(labelClasses[2:], [labelClasses[1]])
 
-    def classify(self, data: numpy.ndarray) -> numpy.ndarray:
+    def classify(self, data: list) -> list:
         """Constructor for rootNode objects
 
         Args:
@@ -118,7 +118,7 @@ class rootNode:
         Returns:
             numpy.ndarray: Classified array of tuples.
         """
-        if not data.size:
+        if not data:
             raise("No data was provided")
         toleftChild: list = []
         torightChild: list = []
@@ -133,6 +133,8 @@ class rootNode:
             else:
                 issue[1].append(self.labelClasses[1])
                 torightChild.append(issue)
-        if self.rightChild is None or self.rightChild is None:
+        if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
+
+tree = ClassificationTree([])
