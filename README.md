@@ -53,7 +53,7 @@ After each classifier decided what the issue describes, another classifier class
 > so basically the results [1,0,0,1,...] are taken as an input by another classifier.
 
 During our tests we found out, that a normal democratic majority vote outperforms this kind of stacking by about 1 Percent. Therefore we are letting the user decide, which kind they want to use.\
-The major differences during preprocessing using the antmap or not is as follows: using the antmap we are creating an antmap, but it takes only the first k issues and then chooses afterwards random issues to train and test. Using the "non antmap" preprocessor, the data gets shuffled at the beginning, so k random documents are choosen and from those j random documents are used for training and i=k-j for testing. Also this is the newer preprocessor and can for examle classify using muliple datasets i.e. `bug vs (doku and api)`. Threrefore we used this preprocessor to train the classifiers for the microservice. And the antmap one was choosen for finding mislabeled issues (by the humans creating them)
+The major differences during preprocessing using the antmap or not is as follows: using the antmap we are creating an antmap, but it takes only the first k issues and then chooses afterwards random issues to train and test. Using the "non antmap" preprocessor, the data gets shuffled at the beginning, so k random documents are choosen and from those j random documents are used for training and i=k-j for testing. Also this is the newer preprocessor and can for examle classify using muliple datasets i.e. `bug vs (docu and api)`. Threrefore we used this preprocessor to train the classifiers for the microservice. And the antmap one was choosen for finding mislabeled issues (by the humans creating them)
 \
 As you can see those classifiers are just able to binary classify data as either class 1 or 0.\
 Therefore we used multiple of those classifiers trained on binary input to create a binary tree. Due to the lack of multi- class trainings data. Otherwise we would have tried alternatives such as KNN, ...
@@ -81,7 +81,7 @@ Using this microservice architecture, we can extend the [GROPIUS](https://github
 
 ---
 ## Extend the classifier creation or create your one ones
-Please refer to the [documentation](classifier_doku/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.
+Please refer to the [documentation](classifier_docu/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.
 ### instructions for creating classifiers
 either run the docker image provided by running the [Dockerfile](Dockerfile) or by installing all the dependencies.s
 
@@ -117,13 +117,13 @@ tree|explanation
 Issue Classifier| The main folder
 ├┬── [classifier](classifier/)| Here lays the logic for all the classifiers
 │└─── [trained_classifiers](classifier/trained_classifiers/)|Those are the pretrained classifiers
-├─── [classifier_doku](classifier_doku)|The documentation of the `python` files in `classifiers` in form of `HTML` documents
+├─── [classifier_docu](classifier_docu)|The documentation of the `python` files in `classifiers` in form of `HTML` documents
 ├┬── [github_crawler](github_crawler/)|This folder contains the HTML file and the related files that allow you to crawl and analyze issues from GitHub repositories. Please refer to the [crawler documentation](github_crawler/README.md) for further information.
 │├─── [scripts](github_crawler/scripts/)|Contains logic and libraries for the crawler
 │└─── [style](github_crawler/style)|Contains style sheets for the crawler
 ├┬─── [issues](issues/)|This folder contains all crawled issues so far. 
 │└─── [todo-add](issues/todo-add)|Issues which haven't been added yet
-├┬── [microservice](microservice/)|This folder contains all the documents required to run the microservice. Please refer to the [microservice dokumentation](microservice/README.md) for further information
+├┬── [microservice](microservice/)|This folder contains all the documents required to run the microservice. Please refer to the [microservice documentation](microservice/README.md) for further information
 │├┬── [microservice](microservice/microservice/)|Here lays the logic for the microservice
 ││├┬── [classifier](microservice/microservice/classifier)|The logic for the classifier service
 │││└───[trained_classifiers](microservice/microservice/classifier/trained_classifiers)|The pretrained classifiers
