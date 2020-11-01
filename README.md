@@ -59,7 +59,8 @@ As you can see those classifiers are just able to binary classify data as either
 Therefore we used multiple of those classifiers trained on binary input to create a binary tree. Due to the lack of multi- class trainings data. Otherwise we would have tried alternatives such as KNN, ...
 
 #### **Tree logic**
-**[TODO tree logic]**
+To classify the issues we use a tree structure. Each issue passes through the tree depending on the assigned labels given by the previous nodes. The classifiers also consider this knowledge and were trained on special data sets.
+
 
 #### **Antmap**
 During training of the classifiers we created a "antmap" or thats at least what we are calling it. It's basically just a text document, which shows using emotes, which issues have been used for training, which for testing and whether or not an issues was labeled correctly.\
