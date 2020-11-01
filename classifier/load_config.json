@@ -46,8 +46,8 @@
     "labelClasses": [
         "enhancement",
         "bug",
-        "doku",
-        "api"
+        "api",
+        "doku"
     ],
     "categories": [
         [
@@ -94,7 +94,7 @@
         "saveVectorizer": false,
         "path": {
             "saveTo": "../vectorizer.vz",
-            "loadPath":"'../classifier/trained_classifiers/vectoriser.vz'"
+            "loadPath":"../classifier/trained_classifiers/vectoriser.vz"
         }
     }
 }
