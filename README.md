@@ -27,7 +27,8 @@ adjustment|why we made that adjustment
 ---|---
 ngram: tuple = (1, 2) | ngrams are used to see the word in the context of their neighbors - it was decided against larger [ngrams](https://en.wikipedia.org/wiki/N-gram) due to the space complexity so it only takes unigram and bigrams
 stripAccents=None | stripping non unicode caraters or not didn't make a whole lot of difference, because we used just english 
-stopWords=None |...  
+stopWords=None |...
+
 **[TODO] word occurences > 3; did we use a logweighted one?**\
 The trained vectorizer therefore takes the documents (also called issue bodies) and turns the words into pairs.\
 > i.e. "Hello world" => "hello", "world", "hello world" (due to the bi-gram (2-[ngram](https://en.wikipedia.org/wiki/N-gram)) and the unigram taken)\
