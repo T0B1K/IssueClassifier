@@ -60,6 +60,7 @@ Therefore we used multiple of those classifiers trained on binary input to creat
 
 #### **Tree logic**
 To classify the issues we use a tree structure. Each issue passes through the tree depending on the assigned labels given by the previous nodes. The classifiers also consider this knowledge and were trained on special data sets.
+![treeLogic](treeLogic.png)
 
 
 #### **Antmap**
