@@ -96,7 +96,7 @@ in a console of choice.
 #### By installing all dependencies:
 1. Make sure you have at least `Python 3.8` installed.
 2. Install all the necessary libraries (we recommend using the pip installer).
-3. name | version
+   name | version
    ---|---
    numpy | `1.19.2`
    nltk | `3.5`
@@ -104,7 +104,7 @@ in a console of choice.
    joblib | `0.17.0`
    matplotlib | `3.3.2`
 
-4. run [train.py](classifier/train.py). Make changes in the `loadConfig.json` to fit the training to your needs and change the classifiers / labels in `train.py` to train the specific classifier.
+3. run [train.py](classifier/train.py). Make changes in the `loadConfig.json` to fit the training to your needs and change the classifiers / labels in `train.py` to train the specific classifier.
 
 ### Instructions for running the crawler
 Just open the [crawler_and_analysis_tool](github_crawler/crawler_and_analysis_tool.html) and run the file.
