@@ -13,8 +13,7 @@ First we created a github [crawler](github_crawler/) which automatially crawls t
 > I.e. one crawls the bugs from the repository *demoRepo* made by person *MrSmith*, it will be saved as *MrSmith_demoRepo_bug.json* and the issues crawled will look like
 > ```json 
 > [{"labels":["bug"],"text":"Houston we have a problem"},{"labels":["bug"],"text":"..."},{"labels":["bug"],"text":"..."}]
-Using the GitHub crawler those issues can also be inspected to check whether or not they make sense and further adjustments can be made - refer to the [crawler documentation](github_crawler/) **[TODO]** for more informations regarding the crawler and sanity checking.
-We crawled the issues of the [following repositories]() **[TODO]** 
+Using the GitHub crawler those issues can also be inspected to check whether or not they make sense and further adjustments can be made - refer to the [crawler documentation](github_crawler/README.md) for more informations regarding the crawler and sanity checking.
 
 ### Issue classifier
 After having crawled [multiple issues](issues/) we began creating issue classifiers and training them by using the crawled issues and issue- labels. \
@@ -60,7 +59,9 @@ As you can see those classifiers are just able to binary classify data as either
 Therefore we used multiple of those classifiers trained on binary input to create a binary tree. Due to the lack of multi- class trainings data. Otherwise we would have tried alternatives such as KNN, ...
 
 #### **Tree logic**
-**[TODO tree logic]**
+To classify the issues we use a tree structure. Each issue passes through the tree depending on the assigned labels given by the previous nodes. The classifiers also consider this knowledge and were trained on special data sets.
+![treeLogic](treeLogic.png)
+
 
 #### **Antmap**
 During training of the classifiers we created a "antmap" or thats at least what we are calling it. It's basically just a text document, which shows using emotes, which issues have been used for training, which for testing and whether or not an issues was labeled correctly.\
@@ -86,8 +87,16 @@ Using this microservice architecture, we can extend the **TODO GROPIUS** tool by
 ## Extend the classifier creation or create your one ones
 Please refer to the [documentation](classifier_doku/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.\
 ### instructions for creating classifiers
-- either run the docker image provided or
-1. Make sure you have at least Python 3.7 installed.
+either run the docker image provided by running the [Dockerfile](Dockerfile) or by installing all the dependencies.s
+
+#### By running the Dockerfile:
+run those commands after installing [docker](https://www.docker.com/)\
+`docker build -t classifierimg .`\
+`docker run --name dockercont classifierim`
+in a console of choice.
+
+#### By installing all dependencies:
+1. Make sure you have at least `Python 3.7` installed.
 2. Install all the necessary libraries.
    - numpy
    - pandas
