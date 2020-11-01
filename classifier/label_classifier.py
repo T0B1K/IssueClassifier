@@ -35,7 +35,7 @@ class LabelClassifier:
         ('RandomForest', RandomForestClassifier(200, bootstrap=False)),
         ('LogisticRegression',LogisticRegression(solver='sag',random_state=100))]
         self.trainedEstimator = pretrained
-        self.fileLocation:str = self.generateFilename(config.getValueFromConfig("classifier path saveFolder"))
+        self.fileLocation:str = self.generateFilename()
         self.stackingEstimator = None
         self.rbfKernel = None
     
@@ -84,15 +84,13 @@ class LabelClassifier:
         assert prediction.size, "No documents were predicted"
         return prediction
 
-    def generateFilename(self, folder = '../trained_classifiers/') -> str:
+    def generateFilename(self) -> str:
         """Method generates Filename for classifier
-
-        Args:
-            folder (str, optional): The folder path. Defaults to '../trained_classifiers/'.
 
         Returns:
             str: Filename as string
         """
+        folder = config.getValueFromConfig("classifier path saveFolder")
         if folder == None:
             raise("No folder name was provided")
         if len(self.category) <2 or len(self.category) > 3:

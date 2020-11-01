@@ -5,8 +5,8 @@ import configuration
 
 config = configuration.Configuration()
 
-classifierLocations = config.getValueFromConfig("classifierLocations")
-rootFolder = config.getValueFromConfig("classifierFolder")
+classifierLocations = config.getValueFromConfig("classifier classifierLocations")
+rootFolder = config.getValueFromConfig("classifier path loadFolder")
 
 
 def getClassifier (categories:list):
