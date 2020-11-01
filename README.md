@@ -28,7 +28,9 @@ ngram: tuple = (1, 2) | ngrams are used to see the word in the context of their 
 stripAccents=None | stripping non unicode caraters or not didn't make a whole lot of difference, because we used just english 
 stopWords=None | we didn't remove stopwords such as "the", "and"
 mindf=2 (min document frequency)|we assumend that a word is important iff it occured more than once
+
 The trained vectorizer therefore takes the documents (also called issue bodies) and turns the words into pairs.
+
 > i.e. "Hello world" => "hello", "world", "hello world" (due to the bi-gram (2-[ngram](https://en.wikipedia.org/wiki/N-gram)) and the unigram taken)\
 > "hello", "world", "hello world" => [1,1,1] (which is [tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) weighted) 
 
