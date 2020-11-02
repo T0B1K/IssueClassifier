@@ -64,7 +64,7 @@ Therefore we used multiple of those classifiers trained on binary input to creat
 To classify the issues we use a tree structure. Each issue passes through the tree depending on the assigned labels given by the previous nodes. The classifiers also consider this knowledge and were trained on special data sets.
 ![treeLogic](treeLogic.png)
 An issue "flowing" through this binary tree gets classified correspondingly and deciding on the position it ends up (the right part of the picture), the labels will be set.
-An issue doesn't get duplicated, it just gets passed "up" or "down" while moving to the right (as can be seen in the picture)
+An issue doesn't get duplicated, it just gets passed "up" or "down" while moving to the right (as can be seen in the picture).
 
 #### **Antmap**
 During training of the classifiers we created a "antmap" or thats at least what we are calling it. It's basically just a text document, which shows using emotes, which issues have been used for training, which for testing and whether or not an issues was labeled correctly.\
@@ -84,11 +84,11 @@ Using this microservice architecture, we can extend the [GROPIUS](https://github
 ---
 ## Extend the classifier creation or create your one ones
 Please refer to the [documentation](classifier_docu/) for an quick overview and an better visualization of the inner workings of the classifier / vectorizer creation.
-### instructions for creating classifiers
-either run the docker image provided by running the [Dockerfile](Dockerfile) or by installing all the dependencies.s
+### Instructions for creating classifiers
+Either run the docker image provided by running the [Dockerfile](Dockerfile) or by installing all the dependencies.
 
 #### By running the Dockerfile:
-run those commands after installing [docker](https://www.docker.com/)\
+Run those commands after installing [docker](https://www.docker.com/)\
 `docker build -t classifierimg .`\
 `docker run --name dockercont classifierimg`
 in a console of choice.
@@ -104,15 +104,13 @@ in a console of choice.
    joblib | `0.17.0`
    matplotlib | `3.3.2`
 
-3. run [train.py](classifier/train.py). Make changes in the `loadConfig.json` to fit the training to your needs and change the classifiers / labels in `train.py` to train the specific classifier.
+3. Run [train.py](classifier/train.py). Make changes in the `loadConfig.json` to fit the training to your needs and change the classifiers / labels in `train.py` to train the specific classifier.
 
 ### Instructions for running the crawler
 Just open the [crawler_and_analysis_tool](github_crawler/crawler_and_analysis_tool.html) and run the file.
 and paste in the information required. The crawling status can be seen at the top of the page, after clicking on the "start" button.
-To sanity check the issues crawled, just click on "prev" or "next" to change the current page
 
 The crawler is also used as analysis tool for sanity checking after the issues have been downloaded, to use it as such, open the [github_crawler/crawler_and_analysis_tool.html](github_crawler/crawler_and_analysis_tool), click on "browse" and open the specific .json file.
-To sanity check the issues crawled, just click on "prev" or "next" to change the current page 
 
 ## Directory structure
 tree|explanation
@@ -137,8 +135,8 @@ Issue Classifier| The main folder
 ---
 
 ## Further ideas to improve the classifier
-- one vectorizer for each classifier, so that the vectorizer might are able to learn a bit more about the nature of the issues
-- using deep learning to increase the performance
-- more sanity checks - not all the documents have been completely sanity checked and this is a major issue in the trainings data. 
-- if all the libraries are updated to python 3.9, the type annotations in python can be adapted / updated to a more understandable / better readable format.
+- One vectorizer for each classifier, so that the vectorizer might are able to learn a bit more about the nature of the issues.
+- Using deep learning to increase the performance.
+- More sanity checks - not all the documents have been completely sanity checked and this is a major issue in the trainings data. 
+- If all the libraries are updated to python 3.9, the type annotations in python can be adapted / updated to a more understandable / better readable format.
 - ... **[TODO]**
