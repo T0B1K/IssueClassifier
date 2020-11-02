@@ -14,7 +14,7 @@ Although the initial decision for Celery was multitude, including, but not limit
 
 ### Architecture
 
-![Picture of Architecutre of Microservice](./issue-classifier-microservice_architecture.png)
+![Picture of Architecture of Microservice](./issue-classifier-microservice_architecture.png)
 
 ### The following libraries/toolkits are utilised:
 - [RabbitMQ w/ AMQP](https://www.rabbitmq.com/): Acts as an inter- and intra-microservice message broker 
