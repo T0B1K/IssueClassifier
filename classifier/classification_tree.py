@@ -24,7 +24,7 @@ class ClassificationTree:
         Returns:
             list: An ordered List[List[str]] for the given documents.
         """
-        if data.size == 0:
+        if not data:
             raise("There are no documents to classify")
         toClassify: list = [(issue, [], idx)for idx, issue in enumerate(data)]
         classified: numpy.ndarray = self.rootNode.classify(toClassify)
@@ -136,5 +136,3 @@ class rootNode:
         if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
-
-tree = ClassificationTree([])

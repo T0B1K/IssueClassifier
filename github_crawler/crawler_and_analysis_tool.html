@@ -13,9 +13,11 @@
     <div id="crawlerWrapper">
         <h1>Crawler</h1>
         <h4> 
-            Mit diesem Werkzeug kann man Issues aus GitHub Repositories crawlen. Optional kann man außerdem Labels angeben, welche in dem
+			Using this tool, one can crawl issues from GitHub Repositories. Optionally one can set a label to download specific issues matching this label. 
+			Using the text field besides, one is able to rename the label to ones liking.  
+            <!-- Mit diesem Werkzeug kann man Issues aus GitHub Repositories crawlen. Optional kann man außerdem Labels angeben, welche in dem
             Repository genutzt werden, um nur Issues einer bestimmten Klasse herunterzuladen. Das Label kann man im nebenliegenden 
-            Textfeld umbenennen.
+            Textfeld umbenennen. :-->
         </h4><br>
         <!-- Input fields for the GitHub username, repository and the amount of requests:-->
         <div id="requestStatus"></div>
@@ -26,7 +28,7 @@
         <!-- List for the labels and a button to add more rows to the list:-->
         <ul id="labelList">
             <li>
-                <input type="text" id="isLbl0" placeholder="hat Label"><div class="autocomplete"><input id="toLbl0" placeholder="Label umbenennen zu..."></div>
+                <input type="text" id="isLbl0" placeholder="Current Label"><div class="autocomplete"><input id="toLbl0" placeholder="Rename label to..."></div>
             </li>
             <input id="addLabel" type="button" value="+" onclick="createListElement()">
         </ul>
@@ -36,10 +38,11 @@
 
     <!-- This wrapper contains the analysis tool:-->
     <div id="analysisWrapper">
-        <h1>Analyse</h1>
+        <h1>Analysis</h1>
         <h4>
-            Hier werden die soeben heruntergeladenen Issues angezeigt. Außerdem kann man hier andere Dateien mit Issues hochladen, 
-            um diese nachträglich zu analysieren.
+			Here one can see the issues one just downloaded. One can also upload other files using the same JSON format to analyze them later.
+            <!-- Hier werden die soeben heruntergeladenen Issues angezeigt. Außerdem kann man hier andere Dateien mit Issues hochladen, 
+            um diese nachträglich zu analysieren. :-->
         </h4>
         <!-- Button for uploading JSON-files with issues:-->
         <input type="file" onchange="uploadedFile()" id="fileUploader"><br>
