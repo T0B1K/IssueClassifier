@@ -7,7 +7,7 @@ classifier_locations = config.get_value_from_config("classifierLocations")
 root_folder = config.get_value_from_config("classifierFolder")
 
 
-def get_classifier(categories: list):
+def get_classifier(categories: List[str]):
     # if not categories:
     #     raise Exception("There are no categories provided")
 

@@ -1,25 +1,20 @@
 version: "3.8"
 services:
   main:
-    build:
+    build: &build
       context: .
       args:
-        DEBUG_MODE: "FALSE"
-    image: &img issue_classifier:prod
-    env_file: &env ./envs/.prod.env
-    entrypoint: /microservice/entrypoints/main.sh
+        DEBUG_MODE: "True"
+    image: &img issue_classifier:dev
+    env_file: &env ./envs/.dev.env
     depends_on: &dep
       - rabbitmq
       - redis
     restart: always
-    volumes:
-      - ./microservice:/microservice/microservice
 
   celery_bug_enhancement:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_bug_enhancement.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:
@@ -28,10 +23,8 @@ services:
     restart: always
 
   celery_api_enhancement:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_api_enhancement.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:
@@ -40,10 +33,8 @@ services:
     restart: always
 
   celery_api_bug:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_api_bug.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:
@@ -52,10 +43,8 @@ services:
     restart: always
 
   celery_doku_enhancement:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_enhancement.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:
@@ -64,10 +53,8 @@ services:
     restart: always
 
   celery_doku_api_enhancement:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_api_enhancement.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:
@@ -76,10 +63,8 @@ services:
     restart: always
 
   celery_doku_bug:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_bug.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:
@@ -88,10 +73,8 @@ services:
     restart: always
 
   celery_doku_api_bug:
-    build: .
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_api_bug.sh
-    hostname: celery
     env_file: *env
     depends_on: *dep
     links:

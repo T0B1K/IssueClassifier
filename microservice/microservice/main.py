@@ -2,7 +2,6 @@ import json
 import os
 from typing import Any, Optional
 
-from celery.bin.celery import celery
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel, BlockingConnection
 
@@ -137,13 +136,11 @@ class ICMPikaClient(object):
         """
         issues = json.loads(message_body)
         issues_body_list = [issue["body"] for issue in issues]
-        print(issues_body_list)
 
         classify_node_task = celery_app.register_task(ClassifyNodeTask())  # type: ignore
         classified_issues = classify_node_task.apply_async(
             (issues_body_list,), queue=CLASSIFY_QUEUE
         ).get(timeout=120, propagate=False)
-        print(classified_issues)
 
         self._return_classification_results(classified_issues)
 
@@ -169,10 +166,5 @@ class ICMPikaClient(object):
 
 
 if __name__ == "__main__":
-    if bool(os.getenv("DEBUG_MODE", False)):
-        import debugpy
-
-        debugpy.listen(("0.0.0.0", 1111))
-
     pika_client = ICMPikaClient()
     pika_client.start_consuming_issue_requests()
