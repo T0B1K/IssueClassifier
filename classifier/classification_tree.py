@@ -89,6 +89,11 @@ class Node:
                 torightChild.append(issue)
         if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
+
+        if not toleftChild and  torightChild:
+            return self.rightChild.classify(torightChild)
+        elif not torightChild and toleftChild:
+            return self.leftChild.classify(toleftChild)
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
 
 
@@ -135,4 +140,18 @@ class rootNode:
                 torightChild.append(issue)
         if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
+
+        if not toleftChild and  torightChild:
+            return self.rightChild.classify(torightChild)
+        elif not torightChild and toleftChild:
+            return self.leftChild.classify(toleftChild)
+
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
+
+tree = ClassificationTree( [
+        "bug",
+        "enhancement",
+        "api",
+        "doku"
+    ])
+print (tree.classify(["Hello World"]))

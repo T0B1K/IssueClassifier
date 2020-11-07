@@ -51,7 +51,7 @@
     ],
     "classifier": {
         "loadClassifier": false,
-        "saveClassifier": false,
+        "saveClassifier": true,
         "path": {
             "loadFolder": "../classifier/trained_classifiers/",
             "saveFolder": "../classifier/trained_classifiers/"
@@ -91,7 +91,7 @@
     },
     "vectorizer": {
         "loadVectorizer": false,
-        "saveVectorizer": false,
+        "saveVectorizer": true,
         "path": {
             "loadPath":"../classifier/trained_classifiers/vectorizer.vz",
             "saveTo":  "../classifier/trained_classifiers/vectorizer.vz"
