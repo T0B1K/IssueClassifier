@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import queue
 from queue import Queue
-from typing import Any, List, Optional, Tuple
+from typing import List, Optional, Tuple
 
 from microservice.config.classifier_configuration import Configuration
 from microservice.config.load_classifier import get_classifier
@@ -28,18 +28,24 @@ class ClassifyTreeNode:
 
         self._right_child: Optional[ClassifyTreeNode] = None
         self._left_child: Optional[ClassifyTreeNode] = None
-
+        self._get_classifier_for_current_node(label_classes=label_classes)
         self._init_children(
-            label_classes=label_classes, is_root_node=self._is_root_node
+            label_classes=label_classes,
         )
 
-    def _init_children(
-        self, label_classes: List[str], is_root_node: bool = False
-    ) -> None:
+    def _get_classifier_for_current_node(self, label_classes: List[str] = ...) -> None:
         if self._is_root_node:
             self._label_classes = label_classes[0:2]
             self._classifier = get_classifier(categories=self._label_classes)
+        else:
+            self._label_classes = label_classes[0]
 
+            self._classifier = get_classifier(
+                categories=[self._label_classes] + self._knowledge
+            )
+
+    def _init_children(self, label_classes: List[str] = ...) -> None:
+        if self._is_root_node:
             self._right_child = ClassifyTreeNode(
                 label_classes=label_classes[2:],
                 knowledge=[label_classes[1]],
@@ -49,12 +55,7 @@ class ClassifyTreeNode:
                 knowledge=[label_classes[0]],
             )
         else:
-            self._label_classes = label_classes[0]
-
             if len(label_classes) != 1:
-                self._classifier = get_classifier(
-                    categories=[self._label_classes] + self._knowledge
-                )
                 self._right_child = ClassifyTreeNode(
                     label_classes=label_classes[1:],
                     knowledge=self._knowledge + [("{}".format(self._label_classes))],
@@ -75,13 +76,13 @@ class ClassifyTreeNode:
 
     def _determine_input_for_children(
         self,
-        prediction: ndarray[Any],
-        current_issue: Tuple[ndarray[Any], List[str], int],
-        to_left_child: List[Tuple[ndarray[Any], List[str], int]],
-        to_right_child: List[Tuple[ndarray[Any], List[str], int]],
+        prediction: ndarray,
+        current_issue: Tuple[ndarray, List[str], int],
+        to_left_child: List[Tuple[ndarray, List[str], int]],
+        to_right_child: List[Tuple[ndarray, List[str], int]],
     ) -> Tuple[
-        List[Tuple[ndarray[Any], List[str], int]],
-        List[Tuple[ndarray[Any], List[str], int]],
+        List[Tuple[ndarray, List[str], int]],
+        List[Tuple[ndarray, List[str], int]],
     ]:
         current_issue_labels: List[str] = current_issue[1]
 
@@ -95,7 +96,7 @@ class ClassifyTreeNode:
             pass
         else:
             if prediction[0] == 0:
-                current_issue_labels.append(self._label_classes[0])
+                current_issue_labels.append(str(self._label_classes))
                 to_left_child.append(current_issue)
             else:
                 to_right_child.append(current_issue)
@@ -103,18 +104,19 @@ class ClassifyTreeNode:
         return to_left_child, to_right_child
 
     def classify(
-        self, issues: List[Tuple[ndarray[Any], List[str], int]]
+        self, issues: List[Tuple[ndarray, List[str], int]]
     ) -> Tuple[
-        List[Tuple[ndarray[Any], List[str], int]],
-        List[Tuple[ndarray[Any], List[str], int]],
+        List[Tuple[ndarray, List[str], int]],
+        List[Tuple[ndarray, List[str], int]],
     ]:
         if issues is None:
             raise ValueError("Invalid argument for issues!")
 
-        to_left_child: List[Tuple[ndarray[Any], List[str], int]] = []
-        to_right_child: List[Tuple[ndarray[Any], List[str], int]] = []
+        to_left_child: List[Tuple[ndarray, List[str], int]] = []
+        to_right_child: List[Tuple[ndarray, List[str], int]] = []
         for current_issue in issues:
-            prediction: ndarray[Any] = self._classifier.predict(current_issue)
+            current_issue_body: ndarray = current_issue[0]
+            prediction: ndarray = self._classifier.predict(current_issue_body)
             to_left_child, to_right_child = self._determine_input_for_children(
                 prediction,
                 current_issue,
@@ -137,7 +139,7 @@ class ClassifyTree:
         self._node_queue: "Queue[ClassifyTreeNode]" = queue.Queue()
         self._node_queue.put(self._root_node)
 
-        if not self._node_queue.empty():
+        while not self._node_queue.empty():
             current_node: ClassifyTreeNode = self._node_queue.get()
             if current_node.has_children():
                 left_child, right_child = current_node.get_children()
@@ -147,7 +149,7 @@ class ClassifyTree:
 
     def get_node_count(self) -> int:
         count = 0
-        for node in self.tree_node_generator():
+        for _ in self.tree_node_generator():
             count += 1
         return count
 

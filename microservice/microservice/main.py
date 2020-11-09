@@ -1,30 +1,36 @@
 import json
-import os
+import logging
+from os import getenv
 from typing import Any, Optional
 
+from celery import chain
+from celery.app import app_or_default
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel, BlockingConnection
 
 from microservice.ms_celery.celery import app as celery_app
-from microservice.ms_celery.tasks import ClassifyNodeTask
+from microservice.ms_celery.tasks import classify_issues, vectorise_issues
 
-PIKA_AUTO_ACK: bool = bool(os.getenv("PIKA_AUTO_ACK", True))
-PIKA_INPUT_ROUTING_KEY: str = os.getenv(
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+
+PIKA_AUTO_ACK: bool = bool(getenv("PIKA_AUTO_ACK", True))
+PIKA_INPUT_ROUTING_KEY: str = getenv(
     "PIKA_INPUT_ROUTING_KEY", "Classification.Classify"
 )
-PIKA_OUTPUT_ROUTING_KEY: str = os.getenv(
+PIKA_OUTPUT_ROUTING_KEY: str = getenv(
     "PIKA_OUTPUT_ROUTING_KEY", "Classification.Results"
 )
-PIKA_EXCHANGE_NAME: str = os.getenv("PIKA_EXCHANGE_NAME", "classification")
-PIKA_EXCHANGE_TYPE: str = os.getenv("PIKA_EXCHANGE_TYPE", "direct")
-PIKA_INPUT_QUEUE_NAME: str = os.getenv(
+PIKA_EXCHANGE_NAME: str = getenv("PIKA_EXCHANGE_NAME", "classification")
+PIKA_EXCHANGE_TYPE: str = getenv("PIKA_EXCHANGE_TYPE", "direct")
+PIKA_INPUT_QUEUE_NAME: str = getenv(
     "PIKA_INPUT_QUEUE_NAME", "ic_microservice_input_queue"
 )
-PIKA_OUTPUT_QUEUE_NAME: str = os.getenv(
+PIKA_OUTPUT_QUEUE_NAME: str = getenv(
     "PIKA_OUTPUT_QUEUE_NAME", "ic_microservice_output_queue"
 )
-PIKA_RABBITMQ_HOST: str = os.getenv("PIKA_RABBITMQ_HOST", "localhost")
-CLASSIFY_QUEUE: str = os.getenv("CLASSIFY_QUEUE", "classify_queue")
+PIKA_RABBITMQ_HOST: str = getenv("PIKA_RABBITMQ_HOST", "localhost")
+CLASSIFY_QUEUE: str = getenv("CLASSIFY_QUEUE", "classify_queue")
+VECTORISE_QUEUE: str = getenv("VECTORISE_QUEUE", "vectorise_queue")
 
 
 class ICMPikaClient(object):
@@ -37,13 +43,17 @@ class ICMPikaClient(object):
     the host for the running RabbitMQ instance, can be found above.
     """
 
-    def __init__(self, routing_key: str = PIKA_INPUT_ROUTING_KEY) -> None:
+    def __init__(
+        self, routing_key: str = PIKA_INPUT_ROUTING_KEY, celery_app=None
+    ) -> None:
         """Initialise the Issue Classification microservice pika client.
 
         Args:
             routing_key (str, optional): [description]. Defaults to PIKA_INPUT_ROUTING_KEY.
         """
         self.routing_key: str = routing_key
+
+        self._celery_app = app_or_default(celery_app)  # type: ignore
 
         self._init_connection()
         self._declare_exchange()
@@ -113,6 +123,7 @@ class ICMPikaClient(object):
                 routing_key=PIKA_OUTPUT_ROUTING_KEY,
             )
 
+    # Deprecated function!
     def _return_classification_results(self, results):
         """Return classification results back to the output queue.
 
@@ -135,14 +146,29 @@ class ICMPikaClient(object):
             message_body ([type]): The payload of the incoming message.
         """
         issues = json.loads(message_body)
+        logging.info("Received issue: " + str(issues))
         issues_body_list = [issue["body"] for issue in issues]
+        logging.info("Body list of previous issue: " + str(issues_body_list))
+        issues_indices = [issue["id"] for issue in issues]
+        logging.info("Index list of previous issue: " + str(issues_indices))
+        indexed_issues = [
+            (issue_body, [], issue_index)
+            for issue_body, issue_index in zip(issues_body_list, issues_indices)
+        ]
+        logging.info("Indexded issues: " + str(indexed_issues))
 
-        classify_node_task = celery_app.register_task(ClassifyNodeTask())  # type: ignore
-        classified_issues = classify_node_task.apply_async(
-            (issues_body_list,), queue=CLASSIFY_QUEUE
-        ).get(timeout=120, propagate=False)
+        vectorise_issues_sig = vectorise_issues.signature(
+            (indexed_issues,), queue=VECTORISE_QUEUE
+        )
+        classify_issues_sig = classify_issues.signature((), queue=CLASSIFY_QUEUE)
 
-        self._return_classification_results(classified_issues)
+        chain(vectorise_issues_sig, classify_issues_sig)()
+
+        # classified_issues = classify_issues.apply_async(
+        #     (issues_body_list,), queue=CLASSIFY_QUEUE
+        # ).get(timeout=120, propagate=False)
+
+        # self._return_classification_results(classified_issues)
 
     def start_consuming_issue_requests(self):
         """Begins consuming issue requests for processing.
@@ -166,5 +192,5 @@ class ICMPikaClient(object):
 
 
 if __name__ == "__main__":
-    pika_client = ICMPikaClient()
+    pika_client = ICMPikaClient(celery_app=celery_app)
     pika_client.start_consuming_issue_requests()

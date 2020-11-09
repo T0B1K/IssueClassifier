@@ -13,6 +13,7 @@ result_backend = getenv("RESULT_BACKEND_URL", "redis://localhost")
 
 task_routes = {
     "celery.classify_issues": getenv("CLASSIFY_QUEUE", "classify_queue"),
+    "celery.vectorise_issues": getenv("VECTORISE_QUEUE", "vectorise_queue"),
 }
 
 result_serializer = "pickle"
