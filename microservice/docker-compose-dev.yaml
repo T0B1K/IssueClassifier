@@ -1,0 +1,101 @@
+version: "3.8"
+services:
+  main:
+    build: &build
+      context: .
+      args:
+        DEBUG_MODE: "True"
+    image: &img issue_classifier:dev
+    env_file: &env ./envs/.dev.env
+    depends_on: &dep
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_bug_enhancement:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_api_enhancement:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_api_bug:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_doku_enhancement:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_doku_api_enhancement:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_doku_bug:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  celery_doku_api_bug:
+    build: *build
+    image: *img
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      - redis
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  redis:
+    image: redis:latest
+
+  flower:
+    image: mher/flower:0.9.4
+    command: ["--broker=amqp://guest:guest@rabbitmq:5672//"]
+    ports:
+      - 5555:5555
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq

@@ -1,4 +1,5 @@
 FROM python:3.8-buster
+SHELL [ "/bin/bash", "-c" ]
 
 ENV PYTHONFAULTHANDLER=1
 ENV PYTHONHASHSEED=random
@@ -14,9 +15,14 @@ RUN pip install "poetry==${POETRY_VERSION}"
 
 WORKDIR /microservice
 
+ARG DEBUG_MODE
+
 COPY pyproject.toml poetry.lock ./
-RUN poetry install --no-dev --no-interaction --no-ansi --no-root
+RUN if [[ ${DEBUG_MODE} == "True" ]]; \
+    then poetry install --no-interaction --no-ansi --no-root; \
+    else poetry install --no-dev --no-interaction --no-ansi --no-root; \
+    fi
 
 COPY . .
 
-RUN chmod -R +x ./scripts
+RUN chmod -R +x ./entrypoints

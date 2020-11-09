@@ -1,0 +1,5 @@
+[flake8]
+dictionaries = en_US,python,technical,django
+max-line-length = 88
+extend-ignore = E203,E501,W503
+extend-exclude = typings/**/*
