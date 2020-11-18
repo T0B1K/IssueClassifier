@@ -1,7 +1,7 @@
 from typing import List
 
 import joblib
-from microservice.config.classifier_configuration import Configuration
+from microservice.config.classifier_config import Configuration
 
 config = Configuration()
 
@@ -17,9 +17,9 @@ def get_classifier(categories: List[str]):
     for element in classifier_locations:
         if element["labels"] == categories:
             classifier_path = element["path"]
-    path: str = "{}/{}".format(root_folder, classifier_path)
+    _path: str = "{}/{}".format(root_folder, classifier_path)
     # assert classifier_path is not None, "Categories: {}".format(categories)
-    classifier = joblib.load(path)
+    classifier = joblib.load(_path)
 
     # assert classifier is not None, "Classifier couldn't be loaded from {}".format(path)
 
@@ -37,8 +37,8 @@ def get_voting_classifier():
 
 
 def get_vectoriser():
-    vectoriser_path = config.get_value_from_config("vectorizer path loadPath")
-    vectoriser = joblib.load(vectoriser_path)
+    _vectoriser_path = config.get_value_from_config("vectorizer path loadPath")
+    vectoriser = joblib.load(_vectoriser_path)
 
     # assert vectoriser is not None, "Vectorizer at {} couldn't be loaded".format(
     #     vectoriser_path

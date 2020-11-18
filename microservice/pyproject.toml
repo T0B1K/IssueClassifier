@@ -18,6 +18,9 @@ redis = "^3.5.3"
 flower = "^0.9.5"
 scikit-learn = "^0.23.2"
 debugpy = "^1.1.0"
+pydantic = "^1.7.2"
+ujson = "^4.0.1"
+pdoc3 = "^0.9.1"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.4"

@@ -1,7 +1,8 @@
 version: "3.8"
+
 services:
   main:
-    build:
+    build: &build
       context: .
       args:
         DEBUG_MODE: "FALSE"
@@ -15,23 +16,10 @@ services:
     volumes:
       - ./microservice:/microservice/microservice
 
-  celery_bug_enhancement:
-    build: .
+  celery_classifier:
+    build: *build
     image: *img
-    entrypoint: /microservice/entrypoints/celery_bug_enhancement.sh
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-    ports:
-      - 3000:3000
-
-  celery_api_enhancement:
-    build: .
-    image: *img
-    entrypoint: /microservice/entrypoints/celery_api_enhancement.sh
+    entrypoint: /microservice/entrypoints/celery_classifier.sh
     env_file: *env
     depends_on: *dep
     links:
@@ -39,63 +27,8 @@ services:
       - redis
     restart: always
 
-  celery_api_bug:
-    build: .
-    image: *img
-    entrypoint: /microservice/entrypoints/celery_api_bug.sh
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_enhancement:
-    build: .
-    image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_enhancement.sh
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_api_enhancement:
-    build: .
-    image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_api_enhancement.sh
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_bug:
-    build: .
-    image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_bug.sh
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_api_bug:
-    build: .
-    image: *img
-    entrypoint: /microservice/entrypoints/celery_doku_api_bug.sh
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  vectoriser:
-    build: .
+  celery_vectoriser:
+    build: *build
     image: *img
     entrypoint: /microservice/entrypoints/celery_vectoriser.sh
     env_file: *env

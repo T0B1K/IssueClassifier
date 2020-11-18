@@ -1,4 +1,5 @@
 version: "3.8"
+
 services:
   main:
     build: &build
@@ -7,14 +8,16 @@ services:
         DEBUG_MODE: "True"
     image: &img issue_classifier:dev
     env_file: &env ./envs/.dev.env
+    entrypoint: /microservice/entrypoints/main.sh
     depends_on: &dep
       - rabbitmq
       - redis
     restart: always
 
-  celery_bug_enhancement:
+  celery_classifier:
     build: *build
     image: *img
+    entrypoint: /microservice/entrypoints/celery_classifier.sh
     env_file: *env
     depends_on: *dep
     links:
@@ -22,59 +25,10 @@ services:
       - redis
     restart: always
 
-  celery_api_enhancement:
-    build: *build
+  celery_vectoriser:
+    build: .
     image: *img
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_api_bug:
-    build: *build
-    image: *img
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_enhancement:
-    build: *build
-    image: *img
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_api_enhancement:
-    build: *build
-    image: *img
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_bug:
-    build: *build
-    image: *img
-    env_file: *env
-    depends_on: *dep
-    links:
-      - rabbitmq
-      - redis
-    restart: always
-
-  celery_doku_api_bug:
-    build: *build
-    image: *img
+    entrypoint: /microservice/entrypoints/celery_vectoriser.sh
     env_file: *env
     depends_on: *dep
     links:
