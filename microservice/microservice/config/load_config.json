@@ -65,7 +65,7 @@
     "saveVectorizer": false,
     "path": {
       "saveTo": "../vectorizer.vz",
-      "loadPath": "/microservice/microservice/trained_classifiers/vectoriser.vz"
+      "loadPath": "/microservice/microservice/trained_classifiers/vectorizer.vz"
     }
   }
 }
