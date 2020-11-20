@@ -2,5 +2,5 @@
 
 set -e
 cd /microservice/microservice
-sleep 12
+sleep 15
 python -m main

@@ -11,6 +11,7 @@ from microservice.config.classifier_config import Configuration
 from microservice.config.load_classifier import get_vectoriser
 from microservice.tree_logic.classifier_tree import ClassifyTree
 
+import logging
 from celery import Task
 
 default_label_classes = Configuration().get_value_from_config("labelClasses")
@@ -44,6 +45,9 @@ class ClassifyTask(Task):
         if self._classify_tree is None:
             self._classify_tree = ClassifyTree(
                 label_classes,
+            )
+            logging.info(
+                "Classifier tree initialised for label classes: " + str(label_classes)
             )
 
     @property

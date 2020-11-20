@@ -4,10 +4,11 @@ This class consists primarily of the two classes responsible for the classifier
 tree and the classifier tree's nodes and their accompanying logic.
 """
 from __future__ import annotations
+import logging
 
 import queue
 from queue import Queue
-from typing import Generator, List, Optional, Tuple
+from typing import Generator, List, Optional, Tuple, Union
 
 from microservice.config.classifier_config import Configuration
 from microservice.config.load_classifier import get_classifier
@@ -57,11 +58,20 @@ class ClassifyTreeNode:
         self._knowledge: List[str] = knowledge
         self._is_root_node: bool = is_root_node
 
+        self._label_classes: Optional[Union[List[str], str]] = None
         self._right_child: Optional[ClassifyTreeNode] = None
         self._left_child: Optional[ClassifyTreeNode] = None
         self._get_classifier_for_current_node(label_classes=label_classes)
         self._init_children(
             label_classes=label_classes,
+        )
+
+        logging.debug(
+            "Node initialisation successful."
+            + "Current node label classes: "
+            + str(self._label_classes)
+            + "\nCurrent node knowledge: "
+            + str(self._knowledge)
         )
 
     def _get_classifier_for_current_node(self, label_classes: List[str]) -> None:
@@ -82,12 +92,12 @@ class ClassifyTreeNode:
         """
         if self._is_root_node:
             self._label_classes = label_classes[0:2]
-            self._classifier = get_classifier(categories=self._label_classes)
+            self._classifier = get_classifier(labels=self._label_classes)
         else:
             self._label_classes = label_classes[0]
 
             self._classifier = get_classifier(
-                categories=[self._label_classes] + self._knowledge
+                labels=[self._label_classes] + self._knowledge
             )
 
     def _init_children(self, label_classes: List[str]) -> None:

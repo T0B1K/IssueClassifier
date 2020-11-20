@@ -23,9 +23,7 @@ from microservice.classifier_celery.helper_functions import (
 )
 from microservice.classifier_celery.task_classes import ClassifyTask, VectoriseTask
 from microservice.models.models import IndexedIssue, VectorisedIssue
-from microservice.tree_logic.classifier_tree import ClassifyTree, ClassifyTreeNode
-
-from celery.canvas import group
+from microservice.tree_logic.classifier_tree import ClassifyTree
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
 
@@ -56,39 +54,34 @@ def _forward_issues(
             "Current node is a leaf node. Sending results back to output queue."
         )
         aggregated_results: List[VectorisedIssue] = to_left_child + to_right_child
-        aggregated_results_is_empty = aggregated_results == []
-        if aggregated_results_is_empty:
-            logging.info("Results are empty. Nothing to send, nothing more to do...")
-        else:
+        if aggregated_results:
             send_results_to_output(aggregated_results)
+        else:
+            logging.info("Results are empty. Nothing to send, nothing more to do...")
     else:
         logging.info(
             "Current node is not a leaf node. Sending results to corresponding nodes."
         )
         left_child_index = 2 * node_index
         right_child_index = 2 * node_index + 1
-        logging.info("Left child index: " + str(left_child_index))
-        logging.info("Right child index: " + str(right_child_index))
+        logging.debug("Left child index: " + str(left_child_index))
+        logging.debug("Right child index: " + str(right_child_index))
 
-        custom_left_child, custom_right_child = None, None
-        group(
+        if to_left_child:
             classify_issues.signature(
-                (to_left_child, left_child_index, custom_left_child),
+                (to_left_child, left_child_index),
                 queue=CLASSIFY_QUEUE,
-            ),
+            ).delay()
+
+        if to_right_child:
             classify_issues.signature(
-                (to_right_child, right_child_index, custom_right_child),
+                (to_right_child, right_child_index),
                 queue=CLASSIFY_QUEUE,
-            ),
-        ).delay()
+            ).delay()
 
 
 @celery_app.task(base=ClassifyTask)
-def classify_issues(
-    issues: List[VectorisedIssue],
-    node_index: int = 1,
-    custom_node: ClassifyTreeNode = None,
-) -> None:
+def classify_issues(issues: List[VectorisedIssue], node_index: int = 1) -> None:
     """Classify the issues based on its feature vectors produced by the vectoriser.
 
     This function outputs a prediction for the input issue based on its body,
@@ -122,13 +115,6 @@ def classify_issues(
         issues (List[VectorisedIssue]): The list of VectorisedIssue to be classified.
         node_index (int, optional): Index of classifier to be utilised for this
         specific call. If none is specified, the root node (with index 1) is assumed. Defaults to 1.
-        custom_node (ClassifyTreeNode, optional): Supplies a custom classifier
-        tree node to be used instead. Note that this has quite a high demand on
-        memory, since the entire classifier node, including the classifier
-        itself, is serialised using pickle and sent to RabbitMQ as an object,
-        whose size can be considerably larger than the message size limit.
-        Consider leaving this as None in order to let the worker use a
-        classifier from its own ClassifyTree object. Defaults to None.
     """
     logging.info("Current node index: " + str(node_index))
     logging.info("Received issue for classification: " + str(issues))
@@ -137,9 +123,7 @@ def classify_issues(
     max_node_index = classify_tree.get_node_count()
     logging.info("Node count in classification tree: " + str(max_node_index))
 
-    current_node = get_node(
-        node_index=node_index, custom_node=custom_node, classify_tree=classify_tree
-    )
+    current_node = get_node(node_index=node_index, classify_tree=classify_tree)
 
     to_left_child: List[VectorisedIssue]
     to_right_child: List[VectorisedIssue]
@@ -188,14 +172,14 @@ def vectorise_issues(
         logging.info("Current issue to be transformed: " + str(current_issue))
         current_issue_body = current_issue.body
         vectorised_current_issue_body = vectoriser.transform([current_issue_body])
-        logging.info("Transformed issue body: " + current_issue_body)
+        logging.debug("Transformed issue body: " + str(vectorised_current_issue_body))
 
         vectorised_issue: VectorisedIssue = VectorisedIssue(
             body=vectorised_current_issue_body,
             index=current_issue.index,
             labels=current_issue.labels,
         )
-        logging.info("Transformed issue: " + str(current_issue))
+        logging.debug("Transformed issue: " + str(vectorised_issue))
 
         vectorised_issues.append(vectorised_issue)
 

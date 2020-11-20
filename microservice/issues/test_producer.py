@@ -1,11 +1,8 @@
 import json
 import logging
-import pickle
-
-import numpy
 import pika
 
-DEFAULT_ROUTING_KEYS = ["Classification.Classify"]
+INPUT_ROUTING_KEY = ["Classification.Classify"]
 EXCHANGE_NAME = "classification"
 EXCHANGE_TYPE = "direct"
 RABBITMQ_HOST = "localhost"
@@ -15,14 +12,15 @@ channel = connection.channel()
 
 channel.exchange_declare(exchange=EXCHANGE_NAME, exchange_type=EXCHANGE_TYPE)
 
-routing_keys = "Classification.Classify"
+routing_key = INPUT_ROUTING_KEY[0]
 
 with open("enhancement.json") as file:
     data = json.loads(file.read())
 
 documents: list = list(map(lambda entry: entry["text"], data))[:4000]
 logging.warning("--------> documents.size: {} ---------".format(len(documents)))
-array = documents
+
+array: list = documents
 i: int = 0
 while i * 100 < len(array):
     idx = i * 100

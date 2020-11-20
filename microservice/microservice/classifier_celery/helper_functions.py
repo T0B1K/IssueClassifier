@@ -1,7 +1,7 @@
 """Helper functions for the Celery tasks."""
 import logging
 from os import getenv
-from typing import List, Optional, Tuple
+from typing import List, Tuple
 
 import ujson
 from microservice.models.models import VectorisedIssue
@@ -66,27 +66,19 @@ def send_results_to_output(results: List[VectorisedIssue]) -> None:
 
 def get_node(
     node_index: int,
-    custom_node: Optional[ClassifyTreeNode],
     classify_tree: ClassifyTree,
 ) -> ClassifyTreeNode:
     """Get the classifier tree node.
 
-    The node is returned based on the given node index and whether a custom node
-    has been supplied (although supplying a custom node is not the recommended
-    method. See the documentation for classify_issues).
+    The node is returned based on the given node index.
 
     Args:
         node_index (int): The index of the node to be returned.
-        custom_node (Optional[ClassifyTreeNode]): The custom node supplied.
         classify_tree (ClassifyTree): The classifier tree instance of the worker.
 
     Returns:
         ClassifyTreeNode: The chosen classifier tree node to be used.
     """
-    current_node: Optional[ClassifyTreeNode] = None
-    if custom_node is not None:
-        current_node = custom_node
-    else:
-        current_node = classify_tree.get_node(node_index)
+    current_node: ClassifyTreeNode = classify_tree.get_node(node_index)
 
     return current_node

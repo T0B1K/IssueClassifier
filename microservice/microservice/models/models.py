@@ -6,10 +6,9 @@ which is largely the same as IndexedIssue except for the fact that the issue
 body consists of a numpy array. This numpy array represents the feature
 vectors of the corresponding IndexedIssue body with the same index.
 """
-from typing import List, Union
+from typing import Any, List, Union
 
 import ujson
-from numpy import ndarray
 from pydantic import BaseModel
 
 
@@ -64,7 +63,7 @@ class VectorisedIssue(BaseModel):
     """
 
     index: Union[int, str]
-    body: ndarray
+    body: Any
     labels: List[str] = []
 
     class Config:
