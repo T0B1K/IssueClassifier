@@ -18,7 +18,7 @@ class Vectorizer(file_manipulation.FileManipulation):
         file_manipulation (FileManipulation): This class is used to access data from documents as well as to save them later on.
     """
 
-    def __init__(self, ngram: tuple = (1, 2), stripAccents=None, stopWords=None):
+    def __init__(self, ngram: tuple = (1,3), stripAccents=None, stopWords=None):
         """This is the constructor for the vectorizer class.
 
         Args:

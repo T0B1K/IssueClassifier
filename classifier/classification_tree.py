@@ -1,5 +1,6 @@
 import load_classifier
 import numpy
+import json
 # issiue = tupel[str,list[str],int]
 
 
@@ -50,19 +51,15 @@ class Node:
         if not knowledge:
             raise("There is no knowledge being provided")
         self.labelClasses: numpy.ndarray = labelClasses[0]
-        self.knowledge: numpy.ndarray = knowledge
+        self.knowledge: str = knowledge
         self.vectorizer = load_classifier.getVectorizer()
-        self.classifier = load_classifier.getClassifier(
-            [self.labelClasses] + self.knowledge)
+        self.classifier = load_classifier.getClassifier(["{}_{}".format(self.labelClasses,self.knowledge),self.knowledge])
 
         if len(labelClasses) == 1:
-            self.leftChild = None
-            self.rightChild = None
+            self.child = None
         else:
-            self.leftChild: Node = Node(
-                labelClasses[1:], self.knowledge + [("{}".format(self.labelClasses))])
-            self.rightChild: Node = Node(
-                labelClasses[1:], self.knowledge + [("not{}".format(self.labelClasses))])
+            self.child: Node = Node(
+                labelClasses[1:], self.knowledge)
 
     def classify(self, data: list) -> list:
         """This method classifies issues.
@@ -75,8 +72,6 @@ class Node:
         """
         if not data:
             raise("No data was provided")
-        toleftChild: list = []
-        torightChild: list = []
         for issue in data:
             vectorizedIssue: numpy.ndarray = self.vectorizer.transform([
                                                                        issue[0]])
@@ -84,18 +79,11 @@ class Node:
                 vectorizedIssue)
             if prediction[0] == 0:
                 issue[1].append(self.labelClasses)
-                toleftChild.append(issue)
-            else:
-                torightChild.append(issue)
-        if self.leftChild is None or self.rightChild is None:
-            return toleftChild + torightChild
-
-        if not toleftChild and  torightChild:
-            return self.rightChild.classify(torightChild)
-        elif not torightChild and toleftChild:
-            return self.leftChild.classify(toleftChild)
-        return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
-
+                
+        if self.child is None:
+            return data
+        else:
+            return self.child.classify(data)
 
 class rootNode:
     """ This class provides the implemantation of the rootNode for the classification tree """
@@ -111,8 +99,10 @@ class rootNode:
         self.labelClasses: numpy.ndarray = labelClasses[0:2]
         self.classifier = load_classifier.getClassifier(self.labelClasses)
         self.vectorizer = load_classifier.getVectorizer()
-        self.leftChild: Node = Node(labelClasses[2:], [labelClasses[0]])
-        self.rightChild: Node = Node(labelClasses[2:], [labelClasses[1]])
+        self.leftChild: Node = Node(labelClasses[2:], labelClasses[0])
+        print("LeftChild_{}_{}".format(labelClasses[2:], labelClasses[0]))
+        self.rightChild: Node = Node(labelClasses[2:], labelClasses[1])
+        print("RightChild_{}_{}".format(labelClasses[2:], labelClasses[1]))
 
     def classify(self, data: list) -> list:
         """Constructor for rootNode objects
@@ -138,20 +128,14 @@ class rootNode:
             else:
                 issue[1].append(self.labelClasses[1])
                 torightChild.append(issue)
+
         if self.leftChild is None or self.rightChild is None:
             return toleftChild + torightChild
 
         if not toleftChild and  torightChild:
             return self.rightChild.classify(torightChild)
+
         elif not torightChild and toleftChild:
             return self.leftChild.classify(toleftChild)
 
         return self.leftChild.classify(toleftChild) + self.rightChild.classify(torightChild)
-
-tree = ClassificationTree( [
-        "bug",
-        "enhancement",
-        "api",
-        "doku"
-    ])
-print (tree.classify(["Hello World"]))

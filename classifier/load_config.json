@@ -1,9 +1,9 @@
 {
     "trainingConstants": {
         "trainingPercentage": 0.7,
-        "sampleSize": 100,
+        "sampleSize": 12000,
         "randomSeed": 2020,
-        "elementCount": 100,
+        "elementCount": 1200,
         "voting": "voting_classifier"
     },
     "SGDClassifierIterations": 1000,
@@ -15,43 +15,18 @@
         "bug",
         "enhancement",
         "api",
-        "doku"
+        "docu"
     ],
     "categories": [
         [
-            "bug", 
+            "bug",
             "enhancement"
-        ],
-        [
-            "api",
-            "bug"
-        ],
-        [
-            "api",
-            "enhancement"
-        ],
-        [
-            "doku",
-            "enhancement"
-        ],
-        [
-            "doku",
-            "api",
-            "enhancement"
-        ],
-        [
-            "doku",
-            "bug"
-        ],
-        [
-            "doku",
-            "api",
-            "bug"
         ]
+        
     ],
     "classifier": {
-        "loadClassifier": false,
-        "saveClassifier": true,
+        "loadClassifier": true,
+        "saveClassifier": false,
         "path": {
             "loadFolder": "../classifier/trained_classifiers/",
             "saveFolder": "../classifier/trained_classifiers/"
@@ -62,36 +37,27 @@
                 "labels": ["bug","enhancement"]
             },
             {
-                "path":  "ensembleClassifier_api-bug.joblib.pkl",
-                "labels": ["api","enhancement"]
+                "path":  "ensembleClassifier_docu_enhancement-enhancement.joblib.pkl",
+                "labels": ["docu_enhancement","enhancement"]
             },
             {
-                "path": "ensembleClassifier_api-enhancement.joblib.pkl",
-                "labels": ["api","bug"]
+                "path":  "ensembleClassifier_api_enhancement-enhancement.joblib.pkl",
+                "labels": ["api_enhancement","enhancement"]
             },
             {
-                "path":  "ensembleClassifier_doku-enhancement.joblib.pkl",
-                "labels": ["doku","bug","api"]
-            },
+                "path":  "ensembleClassifier_docu_bug-bug.joblib.pkl",
+                "labels": ["docu_bug","bug"]
+            }, 
             {
-                "path": "ensembleClassifier_doku-api-enhancement.joblib.pkl",
-                "labels": ["doku","bug","notapi"]
-            },
-            {
-                "path":  "ensembleClassifier_doku-bug.joblib.pkl",
-                "labels": ["doku","enhancement","api"]
-            },
-            {
-                "path":  "ensembleClassifier_doku-api-bug.joblib.pkl",
-                "labels": ["doku","enhancement","notapi"]
+                "path":  "ensembleClassifier_api_bug-bug.joblib.pkl",
+                "labels": ["api_bug","bug"]
             }
-    
         ]
-
+        
     },
     "vectorizer": {
-        "loadVectorizer": false,
-        "saveVectorizer": true,
+        "loadVectorizer": true,
+        "saveVectorizer": false,
         "path": {
             "loadPath":"../classifier/trained_classifiers/vectorizer.vz",
             "saveTo":  "../classifier/trained_classifiers/vectorizer.vz"
