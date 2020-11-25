@@ -32,6 +32,7 @@ CLASSIFY_QUEUE: str = getenv("CLASSIFY_QUEUE", "classify_queue")
 
 def _forward_issues(
     node_index: int,
+    is_root_node: bool,
     is_leaf_node: bool,
     to_left_child: List[VectorisedIssue],
     to_right_child: List[VectorisedIssue],
@@ -62,22 +63,37 @@ def _forward_issues(
         logging.info(
             "Current node is not a leaf node. Sending results to corresponding nodes."
         )
-        left_child_index = 2 * node_index
-        right_child_index = 2 * node_index + 1
-        logging.debug("Left child index: " + str(left_child_index))
-        logging.debug("Right child index: " + str(right_child_index))
 
-        if to_left_child:
-            classify_issues.signature(
-                (to_left_child, left_child_index),
-                queue=CLASSIFY_QUEUE,
-            ).delay()
+        if is_root_node:
+            logging.debug("Current node is the root node.")
 
-        if to_right_child:
-            classify_issues.signature(
-                (to_right_child, right_child_index),
-                queue=CLASSIFY_QUEUE,
-            ).delay()
+            left_child_index: int = 2 * node_index
+            right_child_index: int = 2 * node_index + 1
+            logging.debug("Left child index: " + str(left_child_index))
+            logging.debug("Right child index: " + str(right_child_index))
+
+            logging.debug("Sending issues to children now...")
+            if to_left_child:
+                classify_issues.signature(
+                    (to_left_child, left_child_index),
+                    queue=CLASSIFY_QUEUE,
+                ).delay()
+
+            if to_right_child:
+                classify_issues.signature(
+                    (to_right_child, right_child_index),
+                    queue=CLASSIFY_QUEUE,
+                ).delay()
+        else:
+            logging.debug("Current node is NOT the root node.")
+            child_index: int = 2 + node_index
+            to_child: List[VectorisedIssue] = to_left_child + to_right_child
+
+            if to_child:
+                logging.debug("Sending issue to single child now...")
+                classify_issues.signature(
+                    (to_child, child_index), queue=CLASSIFY_QUEUE
+                ).delay()
 
 
 @celery_app.task(base=ClassifyTask)
@@ -131,9 +147,11 @@ def classify_issues(issues: List[VectorisedIssue], node_index: int = 1) -> None:
     logging.info("Issues destined for the left node: " + str(to_left_child))
     logging.info("Issues destined for the right node: " + str(to_right_child))
 
-    is_leaf_node = not current_node.has_children()
+    is_leaf_node: bool = not current_node.has_children()
+    is_root_node: bool = current_node.is_root_node()
     _forward_issues(
         node_index=node_index,
+        is_root_node=is_root_node,
         is_leaf_node=is_leaf_node,
         to_left_child=to_left_child,
         to_right_child=to_right_child,

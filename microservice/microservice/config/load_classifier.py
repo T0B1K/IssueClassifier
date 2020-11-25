@@ -4,8 +4,8 @@ import joblib
 from microservice.config.classifier_config import Configuration
 
 config = Configuration()
-classifier_locations = config.get_value_from_config("classifierLocations")
-root_folder = config.get_value_from_config("classifierFolder")
+classifier_locations = config.get_value_from_config("classifier classifierLocations")
+root_folder = config.get_value_from_config("classifier path loadFolder")
 
 
 def get_classifier(labels: List[str]):

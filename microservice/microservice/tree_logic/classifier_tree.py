@@ -10,14 +10,9 @@ import queue
 from queue import Queue
 from typing import Generator, List, Optional, Tuple, Union
 
-from microservice.config.classifier_config import Configuration
 from microservice.config.load_classifier import get_classifier
 from microservice.models.models import VectorisedIssue
 from numpy import ndarray
-
-label_classes_from_config: List[str] = Configuration().get_value_from_config(
-    "labelClasses"
-)
 
 
 class ClassifyTreeNode:
@@ -28,8 +23,8 @@ class ClassifyTreeNode:
 
     def __init__(
         self,
-        label_classes: List[str] = label_classes_from_config,
-        knowledge: List[str] = [],
+        label_classes: List[str],
+        knowledge: str = "",
         is_root_node: bool = False,
     ) -> None:
         """Initialise a classifier tree node.
@@ -55,13 +50,16 @@ class ClassifyTreeNode:
         if not label_classes:
             raise ValueError("Label classes has not been given as argument")
 
-        self._knowledge: List[str] = knowledge
+        self._knowledge: str = knowledge
         self._is_root_node: bool = is_root_node
 
         self._label_classes: Optional[Union[List[str], str]] = None
         self._right_child: Optional[ClassifyTreeNode] = None
         self._left_child: Optional[ClassifyTreeNode] = None
-        self._get_classifier_for_current_node(label_classes=label_classes)
+        self._child: Optional[ClassifyTreeNode] = None
+
+        self._init_current_node_label_classes(label_classes=label_classes)
+        self._get_classifier_for_current_node()
         self._init_children(
             label_classes=label_classes,
         )
@@ -74,7 +72,13 @@ class ClassifyTreeNode:
             + str(self._knowledge)
         )
 
-    def _get_classifier_for_current_node(self, label_classes: List[str]) -> None:
+    def _init_current_node_label_classes(self, label_classes: List[str]) -> None:
+        if self._is_root_node:
+            self._label_classes = label_classes[0:2]
+        else:
+            self._label_classes = label_classes[0]
+
+    def _get_classifier_for_current_node(self) -> None:
         """Get the classifier of the current classifier tree node.
 
         If the current node is a root node, the first two labels are used to
@@ -91,13 +95,13 @@ class ClassifyTreeNode:
             which the classifier is to be retrieved.
         """
         if self._is_root_node:
-            self._label_classes = label_classes[0:2]
-            self._classifier = get_classifier(labels=self._label_classes)
+            self._classifier = get_classifier(labels=self._label_classes)  # type: ignore
         else:
-            self._label_classes = label_classes[0]
-
             self._classifier = get_classifier(
-                labels=[self._label_classes] + self._knowledge
+                labels=[
+                    "{}_{}".format(self._label_classes, self._knowledge),
+                    self._knowledge,
+                ]
             )
 
     def _init_children(self, label_classes: List[str]) -> None:
@@ -120,35 +124,43 @@ class ClassifyTreeNode:
             current node.
         """
         if self._is_root_node:
-            self._right_child = ClassifyTreeNode(
-                label_classes=label_classes[2:],
-                knowledge=[label_classes[1]],
-            )
             self._left_child = ClassifyTreeNode(
                 label_classes=label_classes[2:],
-                knowledge=[label_classes[0]],
+                knowledge=label_classes[0],
+            )
+            self._right_child = ClassifyTreeNode(
+                label_classes=label_classes[2:],
+                knowledge=label_classes[1],
             )
         else:
             if len(label_classes) != 1:
-                self._right_child = ClassifyTreeNode(
+                self._child = ClassifyTreeNode(
                     label_classes=label_classes[1:],
-                    knowledge=self._knowledge + [("{}".format(self._label_classes))],
-                )
-                self._left_child = ClassifyTreeNode(
-                    label_classes=label_classes[1:],
-                    knowledge=self._knowledge + [("not{}".format(self._label_classes))],
+                    knowledge=self._knowledge,
                 )
 
     def has_children(self) -> bool:
         """Return whether the current node has child nodes or not.
 
         Returns:
-            bool: True if the current node has child nodes, and false otherwise
-            (would imply that the current node is a leaf node).
+            bool: True if the current node has any child nodes, and false
+            otherwise (this would imply that the current node is a leaf node).
         """
-        return (self._left_child is not None) and (self._right_child is not None)
+        return ((self._left_child is not None) and (self._right_child is not None)) or (
+            self._child is not None
+        )
 
-    def get_children(self) -> Tuple[ClassifyTreeNode, ClassifyTreeNode]:
+    def is_root_node(self) -> bool:
+        """Return whether the current node is a root node or not.
+
+        Returns:
+            bool: True if the current node is a root node, and false otherwise.
+        """
+        return self._is_root_node
+
+    def get_children(
+        self,
+    ) -> Union[ClassifyTreeNode, Tuple[ClassifyTreeNode, ClassifyTreeNode]]:
         """Return the children of the current node.
 
         Raises:
@@ -159,7 +171,11 @@ class ClassifyTreeNode:
             second elements correspond to the left and right child nodes, respectively.
         """
         if self.has_children():
-            return self._left_child, self._right_child  # type: ignore
+            if self._child is not None:
+                return self._child
+            else:
+                return self._left_child, self._right_child  # type: ignore
+
         else:
             raise Exception("Current node has no children")
 
@@ -261,7 +277,7 @@ class ClassifyTree:
     classifier tree instance.
     """
 
-    def __init__(self, label_classes: List[str] = label_classes_from_config) -> None:
+    def __init__(self, label_classes: List[str]) -> None:
         """Initialise the classifier tree.
 
         The classifier tree is generated based on the input label classes. The
@@ -276,7 +292,7 @@ class ClassifyTree:
             which the classifier tree will be generated. Defaults to label_classes_from_config.
         """
         self._root_node = ClassifyTreeNode(
-            label_classes=label_classes, knowledge=[], is_root_node=True
+            label_classes=label_classes, is_root_node=True
         )
 
     def tree_node_generator(
@@ -297,9 +313,13 @@ class ClassifyTree:
         while not self._node_queue.empty():
             current_node: ClassifyTreeNode = self._node_queue.get()
             if current_node.has_children():
-                left_child, right_child = current_node.get_children()
-                self._node_queue.put(left_child)
-                self._node_queue.put(right_child)
+                if current_node._is_root_node:
+                    left_child, right_child = current_node.get_children()  # type: ignore
+                    self._node_queue.put(left_child)
+                    self._node_queue.put(right_child)
+                else:
+                    child = current_node.get_children()
+                    self._node_queue.put(child)  # type: ignore
 
             yield current_node
 
