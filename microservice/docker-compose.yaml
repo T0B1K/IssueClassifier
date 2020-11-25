@@ -11,7 +11,6 @@ services:
     entrypoint: /microservice/entrypoints/main.sh
     depends_on: &dep
       - rabbitmq
-      # - redis
     restart: always
     volumes:
       - ./microservice:/microservice/microservice
@@ -24,7 +23,6 @@ services:
     depends_on: *dep
     links:
       - rabbitmq
-      # - redis
     restart: always
 
   celery_vectoriser:
@@ -35,7 +33,6 @@ services:
     depends_on: *dep
     links:
       - rabbitmq
-      # - redis
     restart: always
 
   rabbitmq:
@@ -45,9 +42,6 @@ services:
       - 15672:15672
     logging:
       driver: "none"
-
-  # redis:
-  #   image: redis:latest
 
   flower:
     image: mher/flower:0.9.4

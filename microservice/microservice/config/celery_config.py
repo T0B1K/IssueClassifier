@@ -13,7 +13,6 @@ from os import getenv
 imports = ["microservice.classifier_celery.tasks"]
 
 broker_url = getenv("CELERY_BROKER_URL", "amqp://guest:guest@rabbitmq:5672")
-# result_backend = getenv("RESULT_BACKEND_URL", "redis://localhost")
 
 task_routes = {
     "microservice.classifier_celery.tasks.classify_issues": getenv(
@@ -30,3 +29,5 @@ accept_content = ["pickle"]
 
 task_acks_late = True
 task_ignore_result = True
+
+worker_prefetch_multiplier = 1

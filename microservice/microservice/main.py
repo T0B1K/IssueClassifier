@@ -116,7 +116,7 @@ class ICMPikaClient(object):
             exclusive,
             i.e. whether the queue can only be used by the channel of the declaring running pika client.
         """
-        input_queue: Any = self.channel.queue_declare(queue=PIKA_INPUT_QUEUE_NAME)
+        input_queue: Any = self.channel.queue_declare(queue=PIKA_INPUT_QUEUE_NAME, durable=True)
         self.input_queue: Optional[str] = input_queue.method.queue
 
     def _declare_output_queue(self) -> None:
@@ -130,7 +130,7 @@ class ICMPikaClient(object):
             - PIKA_IS_QUEUE_EXCLUSIVE: Whether the queue should be declared as  exclusive,
         i.e. whether the queue can only be used by the channel of the declaring     running pika client.
         """
-        output_queue = self.channel.queue_declare(queue=PIKA_OUTPUT_QUEUE_NAME)
+        output_queue = self.channel.queue_declare(queue=PIKA_OUTPUT_QUEUE_NAME, durable=True)
         self.output_queue: Optional[str] = output_queue.method.queue
 
     def _bind_routing_keys_to_queues(self) -> None:
