@@ -1,0 +1,1016 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.1" />
+<title>microservice.tree_logic.classifier_tree API documentation</title>
+<meta name="description" content="Classifier tree and node logic of the microservice …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>microservice.tree_logic.classifier_tree</code></h1>
+</header>
+<section id="section-intro">
+<p>Classifier tree and node logic of the microservice.</p>
+<p>This class consists primarily of the two classes responsible for the classifier
+tree and the classifier tree's nodes and their accompanying logic.</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;Classifier tree and node logic of the microservice.
+
+This class consists primarily of the two classes responsible for the classifier
+tree and the classifier tree&#39;s nodes and their accompanying logic.
+&#34;&#34;&#34;
+from __future__ import annotations
+
+import queue
+from queue import Queue
+from typing import Generator, List, Optional, Tuple
+
+from microservice.config.classifier_config import Configuration
+from microservice.config.load_classifier import get_classifier
+from microservice.models.models import VectorisedIssue
+from numpy import ndarray
+
+label_classes_from_config: List[str] = Configuration().get_value_from_config(
+    &#34;labelClasses&#34;
+)
+
+
+class ClassifyTreeNode:
+    &#34;&#34;&#34;The classifier tree node class.
+
+    This class encapsulates the logic behind a single classifier tree node.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        label_classes: List[str] = label_classes_from_config,
+        knowledge: List[str] = [],
+        is_root_node: bool = False,
+    ) -&gt; None:
+        &#34;&#34;&#34;Initialise a classifier tree node.
+
+        The classifier tree node encapsulates various elements, including (1)
+        the label classes with which it works, (2) the knowledge about the
+        issues obtained thus far (i.e. what the node knows about the issue, for
+        example a given issue represents a bug but not related to API), (3)
+        whether it is the root node of the classifier tree, (4) its classifier,
+        and (5) its child nodes.
+
+        Args:
+            label_classes (List[str], optional): The label class(es) of the
+            current node. Defaults to label_classes_from_config.
+            knowledge (List[str], optional): The currently obtained knowledge
+            about the issues that are given to it. Defaults to [].
+            is_root_node (bool, optional): Whether the current node is a root
+            node of the classifier tree or not. Defaults to False.
+
+        Raises:
+            ValueError: [description]
+        &#34;&#34;&#34;
+        if not label_classes:
+            raise ValueError(&#34;Label classes has not been given as argument&#34;)
+
+        self._knowledge: List[str] = knowledge
+        self._is_root_node: bool = is_root_node
+
+        self._right_child: Optional[ClassifyTreeNode] = None
+        self._left_child: Optional[ClassifyTreeNode] = None
+        self._get_classifier_for_current_node(label_classes=label_classes)
+        self._init_children(
+            label_classes=label_classes,
+        )
+
+    def _get_classifier_for_current_node(self, label_classes: List[str]) -&gt; None:
+        &#34;&#34;&#34;Get the classifier of the current classifier tree node.
+
+        If the current node is a root node, the first two labels are used to
+        retrieve the classifier (in our original implementation, they represent
+        bug and enhancement).
+
+        If the current node is not a root node, the first label along with the
+        current node&#39;s knowledge (i.e. what the node knows about the issue, for
+        example a given issue represents a bug but not related to API) is used
+        to retrieve the classifier.
+
+        Args:
+            label_classes (List[str]): The input complete label classes from
+            which the classifier is to be retrieved.
+        &#34;&#34;&#34;
+        if self._is_root_node:
+            self._label_classes = label_classes[0:2]
+            self._classifier = get_classifier(categories=self._label_classes)
+        else:
+            self._label_classes = label_classes[0]
+
+            self._classifier = get_classifier(
+                categories=[self._label_classes] + self._knowledge
+            )
+
+    def _init_children(self, label_classes: List[str]) -&gt; None:
+        &#34;&#34;&#34;Initialise the children of the current node.
+
+        If the current node is a root node, then it classifies issues as either
+        a bug or enhancement; both labels are mutually exclusive. In this case,
+        the remaining children are to cover the remaining issue labels.
+
+        If the current node is not a root node, then it either attaches the
+        label it&#39;s responsible for (e.g. &#34;api&#34;, &#34;doku&#34; (without quotes)) or it
+        does not. In addition, the current node can make use of what labels have
+        already been attached to the issue(s) it handles.
+
+        Note that this imposes a requirement on how label classes are ordered in
+        the configuration.
+
+        Args:
+            label_classes (List[str], optional): The label classes of the
+            current node.
+        &#34;&#34;&#34;
+        if self._is_root_node:
+            self._right_child = ClassifyTreeNode(
+                label_classes=label_classes[2:],
+                knowledge=[label_classes[1]],
+            )
+            self._left_child = ClassifyTreeNode(
+                label_classes=label_classes[2:],
+                knowledge=[label_classes[0]],
+            )
+        else:
+            if len(label_classes) != 1:
+                self._right_child = ClassifyTreeNode(
+                    label_classes=label_classes[1:],
+                    knowledge=self._knowledge + [(&#34;{}&#34;.format(self._label_classes))],
+                )
+                self._left_child = ClassifyTreeNode(
+                    label_classes=label_classes[1:],
+                    knowledge=self._knowledge + [(&#34;not{}&#34;.format(self._label_classes))],
+                )
+
+    def has_children(self) -&gt; bool:
+        &#34;&#34;&#34;Return whether the current node has child nodes or not.
+
+        Returns:
+            bool: True if the current node has child nodes, and false otherwise
+            (would imply that the current node is a leaf node).
+        &#34;&#34;&#34;
+        return (self._left_child is not None) and (self._right_child is not None)
+
+    def get_children(self) -&gt; Tuple[ClassifyTreeNode, ClassifyTreeNode]:
+        &#34;&#34;&#34;Return the children of the current node.
+
+        Raises:
+            Exception: When the current node has no children.
+
+        Returns:
+            Tuple[ClassifyTreeNode, ClassifyTreeNode]: Tuple where the first and
+            second elements correspond to the left and right child nodes, respectively.
+        &#34;&#34;&#34;
+        if self.has_children():
+            return self._left_child, self._right_child  # type: ignore
+        else:
+            raise Exception(&#34;Current node has no children&#34;)
+
+    def _determine_input_for_children(
+        self,
+        prediction: ndarray,
+        current_issue: VectorisedIssue,
+        to_left_child: List[VectorisedIssue],
+        to_right_child: List[VectorisedIssue],
+    ) -&gt; Tuple[List[VectorisedIssue], List[VectorisedIssue]]:
+        &#34;&#34;&#34;Determine to which node the given issue with its prediction is to be forwarded to.
+
+        If the forwarding node is the root node, then exactly one label out of
+        bug/enhancement has to be attached. Issues with &#34;bug&#34; (without quotes)
+        attached as a label are then forwarded to the left child node (which
+        makes use of the fact that these issues have not been labelled as
+        &#34;enhancement&#34; (without quotes)). The same applies analogously to issues
+        with &#34;enhancement&#34; (without quotes) attached as a label to the right
+        child node.
+
+        Args:
+            prediction (ndarray): The prediction of the current issue
+            current_issue (VectorisedIssue): The current issue to be forwarded.
+            to_left_child (List[VectorisedIssue]): The list of issues destined
+            for the left child node.
+            to_right_child (List[VectorisedIssue]): The list of issues destined
+            for the right child node.
+
+        Returns:
+            Tuple[List[VectorisedIssue], List[VectorisedIssue]]: Tuple
+            consisting of two elements, where the first and second elements
+            correspond to the list of issues destined for the left child and
+            right child nodes, respectively.
+        &#34;&#34;&#34;
+        current_issue_labels: List[str] = current_issue.labels
+
+        if self._is_root_node:
+            if prediction[0] == 0:
+                current_issue_labels.append(self._label_classes[0])
+                to_left_child.append(current_issue)
+            else:
+                current_issue_labels.append(self._label_classes[1])
+                to_right_child.append(current_issue)
+            pass
+        else:
+            if prediction[0] == 0:
+                current_issue_labels.append(str(self._label_classes))
+                to_left_child.append(current_issue)
+            else:
+                to_right_child.append(current_issue)
+
+        return to_left_child, to_right_child
+
+    def classify(
+        self, issues: List[VectorisedIssue]
+    ) -&gt; Tuple[List[VectorisedIssue], List[VectorisedIssue]]:
+        &#34;&#34;&#34;Produce the prediction of the label for the input transformed issues.
+
+        The label that will be attached is based on the specific node that
+        performs the classification. After classification, the issues destinated
+        to the left child node and the right child node are determined and
+        returned.
+
+        Args:
+            issues (List[VectorisedIssue]): The list of transformed issues to be
+            classified.
+
+        Raises:
+            ValueError: If no issues have been passed.
+
+        Returns:
+            Tuple[List[VectorisedIssue], List[VectorisedIssue]]: Tuple of two
+            lists, where the first and seconds elements correspond to the list
+            of issues for the left and right child nodes, respectively.
+        &#34;&#34;&#34;
+        if issues is None:
+            raise ValueError(&#34;Invalid argument for issues!&#34;)
+
+        to_left_child: List[VectorisedIssue] = []
+        to_right_child: List[VectorisedIssue] = []
+        for current_issue in issues:
+            current_issue_body: ndarray = current_issue.body
+            prediction: ndarray = self._classifier.predict(current_issue_body)
+            to_left_child, to_right_child = self._determine_input_for_children(
+                prediction,
+                current_issue,
+                to_left_child,
+                to_right_child,
+            )
+
+        return to_left_child, to_right_child
+
+
+class ClassifyTree:
+    &#34;&#34;&#34;The classifier tree class.
+
+    This class encapsulates the logic behind a single classifier tree. The
+    classifier tree consists of a single node that is the root node of the
+    classifier tree instance.
+    &#34;&#34;&#34;
+
+    def __init__(self, label_classes: List[str] = label_classes_from_config) -&gt; None:
+        &#34;&#34;&#34;Initialise the classifier tree.
+
+        The classifier tree is generated based on the input label classes. The
+        default label classes are called from load_config.json with the help of
+        the load_classifier module. However, custom label classes can be input
+        as well. In such a case, it is the duty of the user to ensure that the
+        appropriate classifiers are stored under trained_classifiers in
+        pickelised form.
+
+        Args:
+            label_classes (List[str], optional): The label classes based on
+            which the classifier tree will be generated. Defaults to label_classes_from_config.
+        &#34;&#34;&#34;
+        self._root_node = ClassifyTreeNode(
+            label_classes=label_classes, knowledge=[], is_root_node=True
+        )
+
+    def tree_node_generator(
+        self,
+    ) -&gt; Generator[ClassifyTreeNode]:
+        &#34;&#34;&#34;Return a level-order generator for the classifier tree.
+
+        The generator iterates over the nodes in the classifier tree starting
+        from the root node whose index is 1. The iteration is level-order.
+
+        Yields:
+            Iterator[ClassifyTreeNode]: The level-order generator of the
+            classifier tree.
+        &#34;&#34;&#34;
+        self._node_queue: &#34;Queue[ClassifyTreeNode]&#34; = queue.Queue()
+        self._node_queue.put(self._root_node)
+
+        while not self._node_queue.empty():
+            current_node: ClassifyTreeNode = self._node_queue.get()
+            if current_node.has_children():
+                left_child, right_child = current_node.get_children()
+                self._node_queue.put(left_child)
+                self._node_queue.put(right_child)
+
+            yield current_node
+
+    def get_node_count(self) -&gt; int:
+        &#34;&#34;&#34;Get the number of nodes in the tree.
+
+        Returns:
+            int: The number of nodes in the classifier tree.
+        &#34;&#34;&#34;
+        count = 0
+        for _ in self.tree_node_generator():
+            count += 1
+
+        return count
+
+    def get_node(self, index: int) -&gt; ClassifyTreeNode:  # type: ignore
+        &#34;&#34;&#34;Return the node based on the input index.
+
+        Args:
+            index (int): The index of the node in the classifier tree.
+
+        Returns:
+            ClassifyTreeNode: The node corresponding to the input index
+        &#34;&#34;&#34;
+        tree_node_generator = self.tree_node_generator()
+
+        if index &lt;= self.get_node_count():
+            for current_node in tree_node_generator:
+                index -= 1
+                if index == 0:
+                    return current_node</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTree"><code class="flex name class">
+<span>class <span class="ident">ClassifyTree</span></span>
+<span>(</span><span>label_classes: List[str] = ['bug', 'enhancement', 'api', 'doku'])</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The classifier tree class.</p>
+<p>This class encapsulates the logic behind a single classifier tree. The
+classifier tree consists of a single node that is the root node of the
+classifier tree instance.</p>
+<p>Initialise the classifier tree.</p>
+<p>The classifier tree is generated based on the input label classes. The
+default label classes are called from load_config.json with the help of
+the load_classifier module. However, custom label classes can be input
+as well. In such a case, it is the duty of the user to ensure that the
+appropriate classifiers are stored under trained_classifiers in
+pickelised form.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>label_classes</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>The label classes based on</dd>
+</dl>
+<p>which the classifier tree will be generated. Defaults to label_classes_from_config.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ClassifyTree:
+    &#34;&#34;&#34;The classifier tree class.
+
+    This class encapsulates the logic behind a single classifier tree. The
+    classifier tree consists of a single node that is the root node of the
+    classifier tree instance.
+    &#34;&#34;&#34;
+
+    def __init__(self, label_classes: List[str] = label_classes_from_config) -&gt; None:
+        &#34;&#34;&#34;Initialise the classifier tree.
+
+        The classifier tree is generated based on the input label classes. The
+        default label classes are called from load_config.json with the help of
+        the load_classifier module. However, custom label classes can be input
+        as well. In such a case, it is the duty of the user to ensure that the
+        appropriate classifiers are stored under trained_classifiers in
+        pickelised form.
+
+        Args:
+            label_classes (List[str], optional): The label classes based on
+            which the classifier tree will be generated. Defaults to label_classes_from_config.
+        &#34;&#34;&#34;
+        self._root_node = ClassifyTreeNode(
+            label_classes=label_classes, knowledge=[], is_root_node=True
+        )
+
+    def tree_node_generator(
+        self,
+    ) -&gt; Generator[ClassifyTreeNode]:
+        &#34;&#34;&#34;Return a level-order generator for the classifier tree.
+
+        The generator iterates over the nodes in the classifier tree starting
+        from the root node whose index is 1. The iteration is level-order.
+
+        Yields:
+            Iterator[ClassifyTreeNode]: The level-order generator of the
+            classifier tree.
+        &#34;&#34;&#34;
+        self._node_queue: &#34;Queue[ClassifyTreeNode]&#34; = queue.Queue()
+        self._node_queue.put(self._root_node)
+
+        while not self._node_queue.empty():
+            current_node: ClassifyTreeNode = self._node_queue.get()
+            if current_node.has_children():
+                left_child, right_child = current_node.get_children()
+                self._node_queue.put(left_child)
+                self._node_queue.put(right_child)
+
+            yield current_node
+
+    def get_node_count(self) -&gt; int:
+        &#34;&#34;&#34;Get the number of nodes in the tree.
+
+        Returns:
+            int: The number of nodes in the classifier tree.
+        &#34;&#34;&#34;
+        count = 0
+        for _ in self.tree_node_generator():
+            count += 1
+
+        return count
+
+    def get_node(self, index: int) -&gt; ClassifyTreeNode:  # type: ignore
+        &#34;&#34;&#34;Return the node based on the input index.
+
+        Args:
+            index (int): The index of the node in the classifier tree.
+
+        Returns:
+            ClassifyTreeNode: The node corresponding to the input index
+        &#34;&#34;&#34;
+        tree_node_generator = self.tree_node_generator()
+
+        if index &lt;= self.get_node_count():
+            for current_node in tree_node_generator:
+                index -= 1
+                if index == 0:
+                    return current_node</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTree.get_node"><code class="name flex">
+<span>def <span class="ident">get_node</span></span>(<span>self, index: int) ‑> <a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the node based on the input index.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index of the node in the classifier tree.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code><a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a></code></dt>
+<dd>The node corresponding to the input index</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_node(self, index: int) -&gt; ClassifyTreeNode:  # type: ignore
+    &#34;&#34;&#34;Return the node based on the input index.
+
+    Args:
+        index (int): The index of the node in the classifier tree.
+
+    Returns:
+        ClassifyTreeNode: The node corresponding to the input index
+    &#34;&#34;&#34;
+    tree_node_generator = self.tree_node_generator()
+
+    if index &lt;= self.get_node_count():
+        for current_node in tree_node_generator:
+            index -= 1
+            if index == 0:
+                return current_node</code></pre>
+</details>
+</dd>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTree.get_node_count"><code class="name flex">
+<span>def <span class="ident">get_node_count</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get the number of nodes in the tree.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>int</code></dt>
+<dd>The number of nodes in the classifier tree.</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_node_count(self) -&gt; int:
+    &#34;&#34;&#34;Get the number of nodes in the tree.
+
+    Returns:
+        int: The number of nodes in the classifier tree.
+    &#34;&#34;&#34;
+    count = 0
+    for _ in self.tree_node_generator():
+        count += 1
+
+    return count</code></pre>
+</details>
+</dd>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTree.tree_node_generator"><code class="name flex">
+<span>def <span class="ident">tree_node_generator</span></span>(<span>self) ‑> Generator[<a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a level-order generator for the classifier tree.</p>
+<p>The generator iterates over the nodes in the classifier tree starting
+from the root node whose index is 1. The iteration is level-order.</p>
+<h2 id="yields">Yields</h2>
+<dl>
+<dt><code>Iterator[<a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a>]</code></dt>
+<dd>The level-order generator of the</dd>
+</dl>
+<p>classifier tree.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tree_node_generator(
+    self,
+) -&gt; Generator[ClassifyTreeNode]:
+    &#34;&#34;&#34;Return a level-order generator for the classifier tree.
+
+    The generator iterates over the nodes in the classifier tree starting
+    from the root node whose index is 1. The iteration is level-order.
+
+    Yields:
+        Iterator[ClassifyTreeNode]: The level-order generator of the
+        classifier tree.
+    &#34;&#34;&#34;
+    self._node_queue: &#34;Queue[ClassifyTreeNode]&#34; = queue.Queue()
+    self._node_queue.put(self._root_node)
+
+    while not self._node_queue.empty():
+        current_node: ClassifyTreeNode = self._node_queue.get()
+        if current_node.has_children():
+            left_child, right_child = current_node.get_children()
+            self._node_queue.put(left_child)
+            self._node_queue.put(right_child)
+
+        yield current_node</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTreeNode"><code class="flex name class">
+<span>class <span class="ident">ClassifyTreeNode</span></span>
+<span>(</span><span>label_classes: List[str] = ['bug', 'enhancement', 'api', 'doku'], knowledge: List[str] = [], is_root_node: bool = False)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>The classifier tree node class.</p>
+<p>This class encapsulates the logic behind a single classifier tree node.</p>
+<p>Initialise a classifier tree node.</p>
+<p>The classifier tree node encapsulates various elements, including (1)
+the label classes with which it works, (2) the knowledge about the
+issues obtained thus far (i.e. what the node knows about the issue, for
+example a given issue represents a bug but not related to API), (3)
+whether it is the root node of the classifier tree, (4) its classifier,
+and (5) its child nodes.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>label_classes</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>The label class(es) of the</dd>
+<dt>current node. Defaults to label_classes_from_config.</dt>
+<dt><strong><code>knowledge</code></strong> :&ensp;<code>List[str]</code>, optional</dt>
+<dd>The currently obtained knowledge</dd>
+<dt>about the issues that are given to it. Defaults to [].</dt>
+<dt><strong><code>is_root_node</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Whether the current node is a root</dd>
+</dl>
+<p>node of the classifier tree or not. Defaults to False.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>[description]</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class ClassifyTreeNode:
+    &#34;&#34;&#34;The classifier tree node class.
+
+    This class encapsulates the logic behind a single classifier tree node.
+    &#34;&#34;&#34;
+
+    def __init__(
+        self,
+        label_classes: List[str] = label_classes_from_config,
+        knowledge: List[str] = [],
+        is_root_node: bool = False,
+    ) -&gt; None:
+        &#34;&#34;&#34;Initialise a classifier tree node.
+
+        The classifier tree node encapsulates various elements, including (1)
+        the label classes with which it works, (2) the knowledge about the
+        issues obtained thus far (i.e. what the node knows about the issue, for
+        example a given issue represents a bug but not related to API), (3)
+        whether it is the root node of the classifier tree, (4) its classifier,
+        and (5) its child nodes.
+
+        Args:
+            label_classes (List[str], optional): The label class(es) of the
+            current node. Defaults to label_classes_from_config.
+            knowledge (List[str], optional): The currently obtained knowledge
+            about the issues that are given to it. Defaults to [].
+            is_root_node (bool, optional): Whether the current node is a root
+            node of the classifier tree or not. Defaults to False.
+
+        Raises:
+            ValueError: [description]
+        &#34;&#34;&#34;
+        if not label_classes:
+            raise ValueError(&#34;Label classes has not been given as argument&#34;)
+
+        self._knowledge: List[str] = knowledge
+        self._is_root_node: bool = is_root_node
+
+        self._right_child: Optional[ClassifyTreeNode] = None
+        self._left_child: Optional[ClassifyTreeNode] = None
+        self._get_classifier_for_current_node(label_classes=label_classes)
+        self._init_children(
+            label_classes=label_classes,
+        )
+
+    def _get_classifier_for_current_node(self, label_classes: List[str]) -&gt; None:
+        &#34;&#34;&#34;Get the classifier of the current classifier tree node.
+
+        If the current node is a root node, the first two labels are used to
+        retrieve the classifier (in our original implementation, they represent
+        bug and enhancement).
+
+        If the current node is not a root node, the first label along with the
+        current node&#39;s knowledge (i.e. what the node knows about the issue, for
+        example a given issue represents a bug but not related to API) is used
+        to retrieve the classifier.
+
+        Args:
+            label_classes (List[str]): The input complete label classes from
+            which the classifier is to be retrieved.
+        &#34;&#34;&#34;
+        if self._is_root_node:
+            self._label_classes = label_classes[0:2]
+            self._classifier = get_classifier(categories=self._label_classes)
+        else:
+            self._label_classes = label_classes[0]
+
+            self._classifier = get_classifier(
+                categories=[self._label_classes] + self._knowledge
+            )
+
+    def _init_children(self, label_classes: List[str]) -&gt; None:
+        &#34;&#34;&#34;Initialise the children of the current node.
+
+        If the current node is a root node, then it classifies issues as either
+        a bug or enhancement; both labels are mutually exclusive. In this case,
+        the remaining children are to cover the remaining issue labels.
+
+        If the current node is not a root node, then it either attaches the
+        label it&#39;s responsible for (e.g. &#34;api&#34;, &#34;doku&#34; (without quotes)) or it
+        does not. In addition, the current node can make use of what labels have
+        already been attached to the issue(s) it handles.
+
+        Note that this imposes a requirement on how label classes are ordered in
+        the configuration.
+
+        Args:
+            label_classes (List[str], optional): The label classes of the
+            current node.
+        &#34;&#34;&#34;
+        if self._is_root_node:
+            self._right_child = ClassifyTreeNode(
+                label_classes=label_classes[2:],
+                knowledge=[label_classes[1]],
+            )
+            self._left_child = ClassifyTreeNode(
+                label_classes=label_classes[2:],
+                knowledge=[label_classes[0]],
+            )
+        else:
+            if len(label_classes) != 1:
+                self._right_child = ClassifyTreeNode(
+                    label_classes=label_classes[1:],
+                    knowledge=self._knowledge + [(&#34;{}&#34;.format(self._label_classes))],
+                )
+                self._left_child = ClassifyTreeNode(
+                    label_classes=label_classes[1:],
+                    knowledge=self._knowledge + [(&#34;not{}&#34;.format(self._label_classes))],
+                )
+
+    def has_children(self) -&gt; bool:
+        &#34;&#34;&#34;Return whether the current node has child nodes or not.
+
+        Returns:
+            bool: True if the current node has child nodes, and false otherwise
+            (would imply that the current node is a leaf node).
+        &#34;&#34;&#34;
+        return (self._left_child is not None) and (self._right_child is not None)
+
+    def get_children(self) -&gt; Tuple[ClassifyTreeNode, ClassifyTreeNode]:
+        &#34;&#34;&#34;Return the children of the current node.
+
+        Raises:
+            Exception: When the current node has no children.
+
+        Returns:
+            Tuple[ClassifyTreeNode, ClassifyTreeNode]: Tuple where the first and
+            second elements correspond to the left and right child nodes, respectively.
+        &#34;&#34;&#34;
+        if self.has_children():
+            return self._left_child, self._right_child  # type: ignore
+        else:
+            raise Exception(&#34;Current node has no children&#34;)
+
+    def _determine_input_for_children(
+        self,
+        prediction: ndarray,
+        current_issue: VectorisedIssue,
+        to_left_child: List[VectorisedIssue],
+        to_right_child: List[VectorisedIssue],
+    ) -&gt; Tuple[List[VectorisedIssue], List[VectorisedIssue]]:
+        &#34;&#34;&#34;Determine to which node the given issue with its prediction is to be forwarded to.
+
+        If the forwarding node is the root node, then exactly one label out of
+        bug/enhancement has to be attached. Issues with &#34;bug&#34; (without quotes)
+        attached as a label are then forwarded to the left child node (which
+        makes use of the fact that these issues have not been labelled as
+        &#34;enhancement&#34; (without quotes)). The same applies analogously to issues
+        with &#34;enhancement&#34; (without quotes) attached as a label to the right
+        child node.
+
+        Args:
+            prediction (ndarray): The prediction of the current issue
+            current_issue (VectorisedIssue): The current issue to be forwarded.
+            to_left_child (List[VectorisedIssue]): The list of issues destined
+            for the left child node.
+            to_right_child (List[VectorisedIssue]): The list of issues destined
+            for the right child node.
+
+        Returns:
+            Tuple[List[VectorisedIssue], List[VectorisedIssue]]: Tuple
+            consisting of two elements, where the first and second elements
+            correspond to the list of issues destined for the left child and
+            right child nodes, respectively.
+        &#34;&#34;&#34;
+        current_issue_labels: List[str] = current_issue.labels
+
+        if self._is_root_node:
+            if prediction[0] == 0:
+                current_issue_labels.append(self._label_classes[0])
+                to_left_child.append(current_issue)
+            else:
+                current_issue_labels.append(self._label_classes[1])
+                to_right_child.append(current_issue)
+            pass
+        else:
+            if prediction[0] == 0:
+                current_issue_labels.append(str(self._label_classes))
+                to_left_child.append(current_issue)
+            else:
+                to_right_child.append(current_issue)
+
+        return to_left_child, to_right_child
+
+    def classify(
+        self, issues: List[VectorisedIssue]
+    ) -&gt; Tuple[List[VectorisedIssue], List[VectorisedIssue]]:
+        &#34;&#34;&#34;Produce the prediction of the label for the input transformed issues.
+
+        The label that will be attached is based on the specific node that
+        performs the classification. After classification, the issues destinated
+        to the left child node and the right child node are determined and
+        returned.
+
+        Args:
+            issues (List[VectorisedIssue]): The list of transformed issues to be
+            classified.
+
+        Raises:
+            ValueError: If no issues have been passed.
+
+        Returns:
+            Tuple[List[VectorisedIssue], List[VectorisedIssue]]: Tuple of two
+            lists, where the first and seconds elements correspond to the list
+            of issues for the left and right child nodes, respectively.
+        &#34;&#34;&#34;
+        if issues is None:
+            raise ValueError(&#34;Invalid argument for issues!&#34;)
+
+        to_left_child: List[VectorisedIssue] = []
+        to_right_child: List[VectorisedIssue] = []
+        for current_issue in issues:
+            current_issue_body: ndarray = current_issue.body
+            prediction: ndarray = self._classifier.predict(current_issue_body)
+            to_left_child, to_right_child = self._determine_input_for_children(
+                prediction,
+                current_issue,
+                to_left_child,
+                to_right_child,
+            )
+
+        return to_left_child, to_right_child</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTreeNode.classify"><code class="name flex">
+<span>def <span class="ident">classify</span></span>(<span>self, issues: List[VectorisedIssue]) ‑> Tuple[List[<a title="microservice.models.models.VectorisedIssue" href="../models/models.html#microservice.models.models.VectorisedIssue">VectorisedIssue</a>], List[<a title="microservice.models.models.VectorisedIssue" href="../models/models.html#microservice.models.models.VectorisedIssue">VectorisedIssue</a>]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Produce the prediction of the label for the input transformed issues.</p>
+<p>The label that will be attached is based on the specific node that
+performs the classification. After classification, the issues destinated
+to the left child node and the right child node are determined and
+returned.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>issues</code></strong> :&ensp;<code>List[VectorisedIssue]</code></dt>
+<dd>The list of transformed issues to be</dd>
+</dl>
+<p>classified.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>ValueError</code></dt>
+<dd>If no issues have been passed.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Tuple[List[VectorisedIssue], List[VectorisedIssue]]</code></dt>
+<dd>Tuple of two</dd>
+</dl>
+<p>lists, where the first and seconds elements correspond to the list
+of issues for the left and right child nodes, respectively.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def classify(
+    self, issues: List[VectorisedIssue]
+) -&gt; Tuple[List[VectorisedIssue], List[VectorisedIssue]]:
+    &#34;&#34;&#34;Produce the prediction of the label for the input transformed issues.
+
+    The label that will be attached is based on the specific node that
+    performs the classification. After classification, the issues destinated
+    to the left child node and the right child node are determined and
+    returned.
+
+    Args:
+        issues (List[VectorisedIssue]): The list of transformed issues to be
+        classified.
+
+    Raises:
+        ValueError: If no issues have been passed.
+
+    Returns:
+        Tuple[List[VectorisedIssue], List[VectorisedIssue]]: Tuple of two
+        lists, where the first and seconds elements correspond to the list
+        of issues for the left and right child nodes, respectively.
+    &#34;&#34;&#34;
+    if issues is None:
+        raise ValueError(&#34;Invalid argument for issues!&#34;)
+
+    to_left_child: List[VectorisedIssue] = []
+    to_right_child: List[VectorisedIssue] = []
+    for current_issue in issues:
+        current_issue_body: ndarray = current_issue.body
+        prediction: ndarray = self._classifier.predict(current_issue_body)
+        to_left_child, to_right_child = self._determine_input_for_children(
+            prediction,
+            current_issue,
+            to_left_child,
+            to_right_child,
+        )
+
+    return to_left_child, to_right_child</code></pre>
+</details>
+</dd>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTreeNode.get_children"><code class="name flex">
+<span>def <span class="ident">get_children</span></span>(<span>self) ‑> Tuple[<a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a>, <a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a>]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return the children of the current node.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><code>Exception</code></dt>
+<dd>When the current node has no children.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Tuple[<a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a>, <a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a>]</code></dt>
+<dd>Tuple where the first and</dd>
+</dl>
+<p>second elements correspond to the left and right child nodes, respectively.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_children(self) -&gt; Tuple[ClassifyTreeNode, ClassifyTreeNode]:
+    &#34;&#34;&#34;Return the children of the current node.
+
+    Raises:
+        Exception: When the current node has no children.
+
+    Returns:
+        Tuple[ClassifyTreeNode, ClassifyTreeNode]: Tuple where the first and
+        second elements correspond to the left and right child nodes, respectively.
+    &#34;&#34;&#34;
+    if self.has_children():
+        return self._left_child, self._right_child  # type: ignore
+    else:
+        raise Exception(&#34;Current node has no children&#34;)</code></pre>
+</details>
+</dd>
+<dt id="microservice.tree_logic.classifier_tree.ClassifyTreeNode.has_children"><code class="name flex">
+<span>def <span class="ident">has_children</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return whether the current node has child nodes or not.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>bool</code></dt>
+<dd>True if the current node has child nodes, and false otherwise</dd>
+</dl>
+<p>(would imply that the current node is a leaf node).</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_children(self) -&gt; bool:
+    &#34;&#34;&#34;Return whether the current node has child nodes or not.
+
+    Returns:
+        bool: True if the current node has child nodes, and false otherwise
+        (would imply that the current node is a leaf node).
+    &#34;&#34;&#34;
+    return (self._left_child is not None) and (self._right_child is not None)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="microservice.tree_logic" href="index.html">microservice.tree_logic</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="microservice.tree_logic.classifier_tree.ClassifyTree" href="#microservice.tree_logic.classifier_tree.ClassifyTree">ClassifyTree</a></code></h4>
+<ul class="">
+<li><code><a title="microservice.tree_logic.classifier_tree.ClassifyTree.get_node" href="#microservice.tree_logic.classifier_tree.ClassifyTree.get_node">get_node</a></code></li>
+<li><code><a title="microservice.tree_logic.classifier_tree.ClassifyTree.get_node_count" href="#microservice.tree_logic.classifier_tree.ClassifyTree.get_node_count">get_node_count</a></code></li>
+<li><code><a title="microservice.tree_logic.classifier_tree.ClassifyTree.tree_node_generator" href="#microservice.tree_logic.classifier_tree.ClassifyTree.tree_node_generator">tree_node_generator</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode">ClassifyTreeNode</a></code></h4>
+<ul class="">
+<li><code><a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode.classify" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode.classify">classify</a></code></li>
+<li><code><a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode.get_children" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode.get_children">get_children</a></code></li>
+<li><code><a title="microservice.tree_logic.classifier_tree.ClassifyTreeNode.has_children" href="#microservice.tree_logic.classifier_tree.ClassifyTreeNode.has_children">has_children</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.1</a>.</p>
+</footer>
+</body>
+</html>

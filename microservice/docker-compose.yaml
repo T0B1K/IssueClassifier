@@ -1,67 +1,61 @@
-version: '3.8'
-services: 
-    ic_microservice:
-        build: .
-        image: &img ic_microservice
-        environment: &env
-            - CELERY_BROKER_URL=amqp://guest:guest@rabbitmq
-            - RESULT_BACKEND_URL=redis://redis
-            - PIKA_AUTO_ACK=True
-            - PIKA_INPUT_ROUTING_KEY=Classification.Classify
-            - PIKA_OUTPUT_ROUTING_KEY=Classification.Results
-            - PIKA_EXCHANGE_NAME=classification
-            - PIKA_EXCHANGE_TYPE=direct
-            - PIKA_INPUT_QUEUE_NAME='ic_microservice_input_queue'
-            - PIKA_OUTPUT_QUEUE_NAME='ic_microservice_output_queue'
-            - PIKA_RABBITMQ_HOST=rabbitmq
-            - VECTORISER_PATH=/microservice/microservice/vectoriser/vectoriser.vz
-            - CLASSIFIER_PATH=/microservice/microservice/classifier/trained_classifiers/
-            - PYTHONPATH=/microservice/
-            - VECTORISER_QUEUE=vectorise_queue
-            - CLASSIFIER_QUEUE=classify_queue
-            - C_FORCE_ROOT=True
-        entrypoint: /microservice/scripts/entrypoint_main.sh
-        depends_on: &dep
-            - rabbitmq
-            - redis
-        restart: always
-    
-    vectoriser_worker:
-        build: .
-        image: *img
-        entrypoint: /microservice/scripts/entrypoint_vectoriser.sh
-        hostname: vectoriser_worker
-        environment: *env
-        depends_on: *dep
-        links: 
-            - rabbitmq
-            - redis
-    
-    classifier_worker:
-        build: .
-        image: *img
-        entrypoint: /microservice/scripts/entrypoint_classifier.sh
-        hostname: classifier_worker
-        environment: *env
-        depends_on: *dep
-        links: 
-            - rabbitmq
-            - redis
+version: "3.8"
 
-    rabbitmq:
-        image: rabbitmq:3-management
-        ports: 
-            - "5672:5672"
-            - "15672:15672"
-    
-    redis:
-        image: redis:latest
-    
-    flower:
-        image: mher/flower:0.9.4
-        command: ["--broker=amqp://guest:guest@rabbitmq:5672//"]
-        ports:
-            - 5555:5555
-        restart: unless-stopped
-        depends_on:
-            - rabbitmq
+services:
+  main:
+    build: &build
+      context: .
+      args:
+        DEBUG_MODE: "FALSE"
+    image: &img issue_classifier:prod
+    env_file: &env ./envs/.prod.env
+    entrypoint: /microservice/entrypoints/main.sh
+    depends_on: &dep
+      - rabbitmq
+      # - redis
+    restart: always
+    volumes:
+      - ./microservice:/microservice/microservice
+
+  celery_classifier:
+    build: *build
+    image: *img
+    entrypoint: /microservice/entrypoints/celery_classifier.sh
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      # - redis
+    restart: always
+
+  celery_vectoriser:
+    build: *build
+    image: *img
+    entrypoint: /microservice/entrypoints/celery_vectoriser.sh
+    env_file: *env
+    depends_on: *dep
+    links:
+      - rabbitmq
+      # - redis
+    restart: always
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - 5672:5672
+      - 15672:15672
+    logging:
+      driver: "none"
+
+  # redis:
+  #   image: redis:latest
+
+  flower:
+    image: mher/flower:0.9.4
+    command: ["--broker=amqp://guest:guest@rabbitmq:5672//"]
+    ports:
+      - 5555:5555
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+    logging:
+      driver: "none"
