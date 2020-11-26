@@ -66,7 +66,7 @@ class ClassifyTreeNode:
 
         logging.debug(
             "Node initialisation successful."
-            + "Current node label classes: "
+            + "\nCurrent node label classes: "
             + str(self._label_classes)
             + "\nCurrent node knowledge: "
             + str(self._knowledge)

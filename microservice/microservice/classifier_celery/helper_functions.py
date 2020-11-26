@@ -1,7 +1,8 @@
 """Helper functions for the Celery tasks."""
 import logging
+from math import ceil
 from os import getenv
-from typing import List, Tuple
+from typing import Any, List, Tuple
 
 import ujson
 from microservice.models.models import VectorisedIssue
@@ -16,6 +17,7 @@ PIKA_OUTPUT_QUEUE_NAME = getenv("PIKA_OUTPUT_QUEUE_NAME", "issue_classifier_outp
 PIKA_RABBITMQ_HOST = getenv("PIKA_RABBITMQ_HOST", "rabbitmq")
 PIKA_OUTPUT_ROUTING_KEY = getenv("PIKA_OUTPUT_ROUTING_KEY", "Classification.Results")
 CLASSIFY_QUEUE: str = getenv("CLASSIFY_QUEUE", "classify_queue")
+COMPUTER_CORE_COUNT: int = int(getenv("COMPUTER_CORE_COUNT", 8))
 
 
 def _init_publisher() -> Tuple[BlockingConnection, BlockingChannel]:
@@ -82,3 +84,24 @@ def get_node(
     current_node: ClassifyTreeNode = classify_tree.get_node(node_index)
 
     return current_node
+
+
+def determine_issues_per_worker(issues: List[Any]) -> int:
+    """Return the number of issues that each worker should process per task.
+
+    This function is utilised in an attempt to evenly distribute the work across
+    several workers instead of just one. This step should take place after
+    vector transformation has been done in order to determine how to split the
+    tasks across the classifier worker(s).
+
+    Args:
+        issues (List[Any]): The issues to be sent to the classifiers after
+        vector transformation.
+
+    Returns:
+        int: The number of issues per task.
+    """
+    computer_core_count: int = COMPUTER_CORE_COUNT
+    total_issue_count: int = len(issues)
+
+    return ceil(total_issue_count / computer_core_count)

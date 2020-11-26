@@ -20,13 +20,12 @@ import logging
 from os import getenv
 from typing import Any, List, Optional
 
-from celery import chain
 from pika import ConnectionParameters
 from pika.adapters.blocking_connection import BlockingChannel, BlockingConnection
 from pika.spec import Basic, BasicProperties
 from pydantic.tools import parse_raw_as
 
-from microservice.classifier_celery.tasks import classify_issues, vectorise_issues
+from microservice.classifier_celery.tasks import vectorise_issues
 from microservice.models.models import IndexedIssue
 
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
@@ -116,7 +115,9 @@ class ICMPikaClient(object):
             exclusive,
             i.e. whether the queue can only be used by the channel of the declaring running pika client.
         """
-        input_queue: Any = self.channel.queue_declare(queue=PIKA_INPUT_QUEUE_NAME, durable=True)
+        input_queue: Any = self.channel.queue_declare(
+            queue=PIKA_INPUT_QUEUE_NAME, durable=True
+        )
         self.input_queue: Optional[str] = input_queue.method.queue
 
     def _declare_output_queue(self) -> None:
@@ -130,7 +131,9 @@ class ICMPikaClient(object):
             - PIKA_IS_QUEUE_EXCLUSIVE: Whether the queue should be declared as  exclusive,
         i.e. whether the queue can only be used by the channel of the declaring     running pika client.
         """
-        output_queue = self.channel.queue_declare(queue=PIKA_OUTPUT_QUEUE_NAME, durable=True)
+        output_queue = self.channel.queue_declare(
+            queue=PIKA_OUTPUT_QUEUE_NAME, durable=True
+        )
         self.output_queue: Optional[str] = output_queue.method.queue
 
     def _bind_routing_keys_to_queues(self) -> None:
@@ -230,11 +233,9 @@ class ICMPikaClient(object):
             message_body=message_body
         )
 
-        vectorise_issues_sig = vectorise_issues.signature(
+        vectorise_issues.signature(
             (indexed_issues,), queue=VECTORISE_QUEUE
-        )
-        classify_issues_sig = classify_issues.signature((), queue=CLASSIFY_QUEUE)
-        chain(vectorise_issues_sig, classify_issues_sig).delay()
+        ).apply_async()
         logging.info("Issues sent to Celery for processing.")
 
     def start_consuming_issue_requests(self) -> None:

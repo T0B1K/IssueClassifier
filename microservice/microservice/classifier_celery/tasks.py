@@ -15,11 +15,11 @@ by each worker for each task call.
 import logging
 from os import getenv
 from typing import List
-
 from microservice.classifier_celery.celery import app as celery_app
 from microservice.classifier_celery.helper_functions import (
     get_node,
     send_results_to_output,
+    determine_issues_per_worker,
 )
 from microservice.classifier_celery.task_classes import ClassifyTask, VectoriseTask
 from microservice.models.models import IndexedIssue, VectorisedIssue
@@ -158,10 +158,20 @@ def classify_issues(issues: List[VectorisedIssue], node_index: int = 1) -> None:
     )
 
 
+def _forward_issues_to_classifiers(vectorised_issues: List[VectorisedIssue]) -> None:
+    issues_per_task: int = determine_issues_per_worker(vectorised_issues)
+    chunks: List[List[VectorisedIssue]] = [
+        vectorised_issues[x : x + issues_per_task]
+        for x in range(0, len(vectorised_issues), issues_per_task)
+    ]
+    for chunk in chunks:
+        classify_issues.signature((chunk,), queue=CLASSIFY_QUEUE).delay()
+
+
 @celery_app.task(base=VectoriseTask)
 def vectorise_issues(
     issues: List[IndexedIssue],
-) -> List[VectorisedIssue]:
+) -> None:
     """Vectorise the input issues.
 
     Based on the body of each issue, feature vectors are produced. These feature
@@ -201,4 +211,4 @@ def vectorise_issues(
 
         vectorised_issues.append(vectorised_issue)
 
-    return vectorised_issues
+    _forward_issues_to_classifiers(vectorised_issues=vectorised_issues)
