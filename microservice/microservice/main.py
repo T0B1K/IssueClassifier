@@ -28,7 +28,7 @@ from pydantic.tools import parse_raw_as
 from microservice.classifier_celery.tasks import vectorise_issues
 from microservice.models.models import IndexedIssue
 
-logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.DEBUG)
+logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
 
 # Environment variables used throughout this module
 PIKA_AUTO_ACK: bool = bool(getenv("PIKA_AUTO_ACK", True))

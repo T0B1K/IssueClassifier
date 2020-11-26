@@ -30,7 +30,7 @@ indexed_issues: List[Dict] = [
 
 i: int = 0
 delta: int = 2000
-delay: int = 60
+delay: int = 1200
 while i + delta < len(indexed_issues):
     print("Round " + str(i) + " of sending")
     start: int = i

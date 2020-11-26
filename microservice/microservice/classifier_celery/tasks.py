@@ -50,17 +50,18 @@ def _forward_issues(
         to_right_child (List[VectorisedIssue]): The list of VectorisedIssue
         instances to be forwarded to the right child node (if such a node exists.)
     """
+    logging.info("Task received for classification.")
     if is_leaf_node:
-        logging.info(
+        logging.debug(
             "Current node is a leaf node. Sending results back to output queue."
         )
         aggregated_results: List[VectorisedIssue] = to_left_child + to_right_child
         if aggregated_results:
             send_results_to_output(aggregated_results)
         else:
-            logging.info("Results are empty. Nothing to send, nothing more to do...")
+            logging.debug("Results are empty. Nothing to send, nothing more to do...")
     else:
-        logging.info(
+        logging.debug(
             "Current node is not a leaf node. Sending results to corresponding nodes."
         )
 
@@ -94,6 +95,7 @@ def _forward_issues(
                 classify_issues.signature(
                     (to_child, child_index), queue=CLASSIFY_QUEUE
                 ).delay()
+    logging.info("Task classification complete.")
 
 
 @celery_app.task(base=ClassifyTask)
@@ -132,20 +134,20 @@ def classify_issues(issues: List[VectorisedIssue], node_index: int = 1) -> None:
         node_index (int, optional): Index of classifier to be utilised for this
         specific call. If none is specified, the root node (with index 1) is assumed. Defaults to 1.
     """
-    logging.info("Current node index: " + str(node_index))
-    logging.info("Received issue for classification: " + str(issues))
+    logging.debug("Current node index: " + str(node_index))
+    logging.debug("Received issue for classification: " + str(issues))
 
     classify_tree: ClassifyTree = classify_issues.classify_tree
     max_node_index = classify_tree.get_node_count()
-    logging.info("Node count in classification tree: " + str(max_node_index))
+    logging.debug("Node count in classification tree: " + str(max_node_index))
 
     current_node = get_node(node_index=node_index, classify_tree=classify_tree)
 
     to_left_child: List[VectorisedIssue]
     to_right_child: List[VectorisedIssue]
     to_left_child, to_right_child = current_node.classify(issues)
-    logging.info("Issues destined for the left node: " + str(to_left_child))
-    logging.info("Issues destined for the right node: " + str(to_right_child))
+    logging.debug("Issues destined for the left node: " + str(to_left_child))
+    logging.debug("Issues destined for the right node: " + str(to_right_child))
 
     is_leaf_node: bool = not current_node.has_children()
     is_root_node: bool = current_node.is_root_node()
@@ -193,11 +195,12 @@ def vectorise_issues(
     Returns:
         List[VectorisedIssue]: The transformed issues as as list of VectorisedIssue.
     """
+    logging.info("Task received for transformation.")
     vectorised_issues: List[VectorisedIssue] = []
     vectoriser = vectorise_issues.vectoriser
 
     for current_issue in issues:
-        logging.info("Current issue to be transformed: " + str(current_issue))
+        logging.debug("Current issue to be transformed: " + str(current_issue))
         current_issue_body = current_issue.body
         vectorised_current_issue_body = vectoriser.transform([current_issue_body])
         logging.debug("Transformed issue body: " + str(vectorised_current_issue_body))
@@ -212,3 +215,4 @@ def vectorise_issues(
         vectorised_issues.append(vectorised_issue)
 
     _forward_issues_to_classifiers(vectorised_issues=vectorised_issues)
+    logging.info("Transformation complete.")
