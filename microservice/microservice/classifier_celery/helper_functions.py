@@ -3,6 +3,7 @@ import logging
 from math import ceil
 from os import getenv
 from typing import Any, List, Tuple
+from multiprocessing import cpu_count
 
 import ujson
 from microservice.models.models import VectorisedIssue
@@ -17,7 +18,6 @@ PIKA_OUTPUT_QUEUE_NAME = getenv("PIKA_OUTPUT_QUEUE_NAME", "issue_classifier_outp
 PIKA_RABBITMQ_HOST = getenv("PIKA_RABBITMQ_HOST", "rabbitmq")
 PIKA_OUTPUT_ROUTING_KEY = getenv("PIKA_OUTPUT_ROUTING_KEY", "Classification.Results")
 CLASSIFY_QUEUE: str = getenv("CLASSIFY_QUEUE", "classify_queue")
-COMPUTER_CORE_COUNT: int = int(getenv("COMPUTER_CORE_COUNT", 8))
 
 
 def _init_publisher() -> Tuple[BlockingConnection, BlockingChannel]:
@@ -101,7 +101,7 @@ def determine_issues_per_worker(issues: List[Any]) -> int:
     Returns:
         int: The number of issues per task.
     """
-    computer_core_count: int = COMPUTER_CORE_COUNT
+    computer_core_count: int = cpu_count()
     total_issue_count: int = len(issues)
 
     return ceil(total_issue_count / computer_core_count)
