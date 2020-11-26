@@ -35,7 +35,7 @@ The trained vectorizer therefore takes the documents (also called issue bodies) 
 > "hello", "world", "hello world" => [1,1,1] (which is [tf-idf](https://en.wikipedia.org/wiki/Tf%E2%80%93idf) weighted) 
 
 So it basically takes documents and turns them into enourmous vectors.\
-Vectors are the "language" of the classifiers and thus we can do fancy math related things with them. The vectorizer is trained on random documents of all the labels from multiple label-categories therefore it is not specialized on just one Classifier **[TODO see furhter research]** 
+Vectors are the "language" of the classifiers and thus we can do fancy math related things with them. The vectorizer is trained on random documents of all the labels from multiple label-categories therefore it is not specialized on just one Classifier
 
 #### **Classifier**
 We are using following estimators provided by sykit-learn.
@@ -61,10 +61,14 @@ As you can see those classifiers are just able to binary classify data as either
 Therefore we used multiple of those classifiers trained on binary input to create a binary tree. Due to the lack of multi- class trainings data. Otherwise we would have tried alternatives such as KNN, ...
 
 #### **Tree logic**
-To classify the issues we use a tree structure. Each issue passes through the tree depending on the assigned labels given by the previous nodes. The classifiers also consider this knowledge and were trained on special data sets.
+To classify issues, issues are passed through a kind of tree structure.
+First they are classified into bug and enhancement and afterwards they'll get passed further.
+The rest of the classifiers use the previous knowledge on whether an issue is a bug or an enhancement.
+Using this previous knowledge, the classifiers can decide to  either assign an "api" and "docu" label to it or not.
+After the issues got handed through the architecture and reached the right part, they'll get collected and passed back into an output queue.
+
 ![treeLogic](treeLogic.png)
-An issue "flowing" through this binary tree gets classified correspondingly and deciding on the position it ends up (the right part of the picture), the labels will be set.
-An issue doesn't get duplicated, it just gets passed "up" or "down" while moving to the right (as can be seen in the picture).
+
 
 #### **Antmap**
 During training of the classifiers we created a "antmap" or thats at least what we are calling it. It's basically just a text document, which shows using emotes, which issues have been used for training, which for testing and whether or not an issues was labeled correctly.\
@@ -72,7 +76,9 @@ We used that observations to check whether or not the issues were labeled wrong 
 
 ## Microservice
 After having classifiers which are able to classify given documents, we wanted to create an sacaleable and loosely coupled [microservice](microservice/). Refere to our [microservice documentation](microservice/README.md) for further information.\
-The microservice looks as follows **[TODO architecture picture]**
+The microservice looks as follows\
+![microservice pic](classifierArchitecture.png)
+
 It uses queues to communicate due to the **using a pattern similar to the hotpool pattern** to make it scalable for the future.\
 Basically one runs the image and puts messages in the queue, afterwards a worker picks them up, vetorizes them, puts them in another queue and the three logic part starts. We decided us for using the tree logic with small classifiers, because of its scalable nature and further it uses the minimal amount of classifiers for each issue.
 > i.e. if an issue is labeled *bug* it shouldn't be tested, if it is either *bug* or *api*, because we already have the prior knowledge, that it is an bug.
@@ -139,4 +145,3 @@ Issue Classifier| The main folder
 - Using deep learning to increase the performance.
 - More sanity checks - not all the documents have been completely sanity checked and this is a major issue in the trainings data. 
 - If all the libraries are updated to python 3.9, the type annotations in python can be adapted / updated to a more understandable / better readable format.
-- ... **[TODO]**
